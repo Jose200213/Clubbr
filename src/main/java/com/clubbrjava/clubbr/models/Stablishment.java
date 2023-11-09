@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Entity
-public class Local {
+public class Stablishment {
     @Id @Getter
     private Long localID, capacity;
 
