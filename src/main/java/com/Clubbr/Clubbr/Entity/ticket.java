@@ -22,16 +22,24 @@ public class ticket {
     private int ticketID;
 
     @ManyToOne
+    @JoinColumn(name = "eventID")
     private event eventID;
 
+    @ManyToOne
+    @JoinColumn(name = "userID")
     private user userID;
 
+    @ManyToOne
+    @JoinColumn(name = "stablishmentID")
     private stablishment stablishmentID;
 
+    @Column(name = "ticketPrice")
     private float ticketPrice;
 
+    @Column(name = "purchaseDateTime")
     private LocalDateTime purchaseDateTime;
 
-
+    @Column(name = "validated")
+    private boolean validated;
 
 }
