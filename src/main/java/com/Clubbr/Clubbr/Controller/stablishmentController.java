@@ -35,12 +35,12 @@ public class stablishmentController {
         stabService.deleteStab(stabID);
     }
 
-        @RequestMapping("/events")
+        /*@RequestMapping("/events")
 
         @PostMapping("{id}/addEvent")
         public void addEvent(@PathVariable int stabID){
         ticketService.addTicket
-        }
+        }*/
 
 
 

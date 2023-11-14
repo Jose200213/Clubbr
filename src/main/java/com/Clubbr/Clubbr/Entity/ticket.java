@@ -22,15 +22,15 @@ public class ticket {
     private int ticketID;
 
     @ManyToOne
-    @JoinColumn(name = "eventID")
+    //@JoinColumn(name = "eventID")
     private event eventID;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    //@JoinColumn(name = "userID")
     private user userID;
 
     @ManyToOne
-    @JoinColumn(name = "stablishmentID")
+    //@JoinColumn(name = "stablishmentID")
     private stablishment stablishmentID;
 
     @Column(name = "ticketPrice")
