@@ -16,9 +16,9 @@ import java.util.List;
 public class stablishment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stablishmentID")
-    private int stablishmentID;
+    private Long stablishmentID;
 
     @Column(name = "stabName")
     private String stabName;
@@ -39,6 +39,7 @@ public class stablishment {
     private List<worker> workers;
 
     @OneToMany(mappedBy = "stablishmentID")
+    @JsonManagedReference
     private List<interestPoint> interestPoints;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)

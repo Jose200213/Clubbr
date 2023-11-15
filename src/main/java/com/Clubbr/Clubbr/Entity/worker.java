@@ -24,7 +24,7 @@ public class worker {
     private stablishment stablishmentID;
 
     @ManyToOne
-    @JoinColumn (name = "interestPoint")
-    private interestPoint interestPoint;
+    @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")
+    private interestPoint interestPointID;
 
 }

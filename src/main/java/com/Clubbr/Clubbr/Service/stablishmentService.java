@@ -21,9 +21,9 @@ public class stablishmentService {
     @Transactional(readOnly = true)
     public List<stablishment> getAllStab() { return stabRepo.findAll(); }
 
-    public stablishment getStab(int stabID) { return stabRepo.findById(stabID).orElse(null);}
+    public stablishment getStab(Long stabID) { return stabRepo.findById(stabID).orElse(null);}
 
-    public void deleteStab(int stabID) { stabRepo.deleteById(stabID);}
+    public void deleteStab(Long stabID) { stabRepo.deleteById(stabID);}
 
     public void addStablishment(stablishment newStab) {stabRepo.save(newStab);}
 

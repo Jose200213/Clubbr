@@ -25,7 +25,7 @@ public class eventService {
    // }
 
     @Transactional
-    public void addEventToStab(int stabID, event newEvent){
+    public void addEventToStab(Long stabID, event newEvent){
         stablishment stablishment = stablishmentRepo.findById(stabID).orElse(null);
 
         newEvent.setStablishmentID(stablishment);

@@ -15,6 +15,6 @@ import java.time.LocalDate;
 public class eventID implements java.io.Serializable {
 
     private String eventName;
-    private int stablishmentID;
+    private Long stablishmentID;
     private LocalDate eventDate;
 }

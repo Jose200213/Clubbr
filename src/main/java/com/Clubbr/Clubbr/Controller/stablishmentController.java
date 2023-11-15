@@ -29,10 +29,10 @@ public class stablishmentController {
     }
 
     @GetMapping("/{id}")
-    public stablishment getStab(@PathVariable int stabID) { return stabService.getStab(stabID);}
+    public stablishment getStab(@PathVariable Long stabID) { return stabService.getStab(stabID);}
 
     @PostMapping("/add")
-    public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab);}
+    public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab); }
 
     @PutMapping("/update")
     public void updateStab(@RequestBody stablishment targetStab) {
@@ -40,13 +40,13 @@ public class stablishmentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteStab(@PathVariable int stabID) {
+    public void deleteStab(@PathVariable Long stabID) {
         stabService.deleteStab(stabID);
     }
 
 
-    @PostMapping("{stablishmentID}/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") int stablishmentID, @RequestBody event newEvent){
+    @PostMapping("/{stablishmentID}/event/add")
+    public void addEventToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody event newEvent){
         eventService.addEventToStab(stablishmentID, newEvent);
     }
 

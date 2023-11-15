@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,13 +15,14 @@ import java.util.List;
 public class interestPoint {
 
     @Id
-    @Column (name = "interestPoint")
-    @GeneratedValue
-    private int interestPoint;
+    @Column (name = "interestPointID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int interestPointID;
 
 
     @ManyToOne
     @JoinColumn (name = "stablishmentID")
+    @JsonBackReference
     private stablishment stablishmentID;
 
     @ManyToOne
@@ -30,7 +32,7 @@ public class interestPoint {
     })
     private event eventName;
 
-    @OneToMany(mappedBy = "interestPoint")
+    @OneToMany(mappedBy = "interestPointID")
     private List<worker> workers;
 
     @Column (name = "xCoordinate")
