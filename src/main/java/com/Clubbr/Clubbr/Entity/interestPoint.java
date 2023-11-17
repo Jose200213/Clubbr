@@ -21,15 +21,16 @@ public class interestPoint {
 
 
     @ManyToOne
-    @JoinColumn (name = "stablishmentID")
-    @JsonBackReference
+    @JoinColumn(name = "stablishmentID")
+    @JsonBackReference(value = "stablishmentInterestPoints")
     private stablishment stablishmentID;
 
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
-            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
+    @JsonBackReference
     private event eventName;
 
     @OneToMany(mappedBy = "interestPointID")

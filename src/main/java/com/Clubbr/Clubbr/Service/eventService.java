@@ -31,7 +31,7 @@ public class eventService {
         newEvent.setStablishmentID(stablishment);
         stablishment.getEvents().add(newEvent);
 
-        eventRepo.save(newEvent);
         stablishmentRepo.save(stablishment);
+        eventRepo.save(newEvent);
     }
 }

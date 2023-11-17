@@ -38,11 +38,11 @@ public class stablishment {
     @OneToMany(mappedBy = "stablishmentID")
     private List<worker> workers;
 
-    @OneToMany(mappedBy = "stablishmentID")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentInterestPoints")
     private List<interestPoint> interestPoints;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "stablishmentEvents")
     private List<event> events;
 }

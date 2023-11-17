@@ -1,10 +1,9 @@
 package com.Clubbr.Clubbr.Controller;
 
-import com.Clubbr.Clubbr.Entity.stablishment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.interestPointService;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+
 import com.Clubbr.Clubbr.Entity.interestPoint;
 
 import java.util.List;
@@ -16,8 +15,6 @@ public class interestPointController {
     @Autowired
     private interestPointService interestPointService;
 
-    @Autowired
-    private stablishmentRepo stablishmentRepo;
 
     @PostMapping("/interestPoint/add")
     public void addInterestPointToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody interestPoint newInterestPoint){
@@ -26,8 +23,31 @@ public class interestPointController {
 
     @GetMapping("/interestPoint/all")
     public List<interestPoint> getInterestPointsByStablishment(@PathVariable("stablishmentID") Long stablishmentID){
-        //TODO: usar el repo aqui creo que es una mierda, pero por ahora me sirve, he sufrido demasiado, se cambiara
-        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
-        return interestPointService.getInterestPointsByStablishment(stablishment);
+        return interestPointService.getInterestPointsByStablishment(stablishmentID);
+    }
+
+    @PostMapping("/events/{eventName}/interestPoint/add")
+    public void addInterestPointToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestBody interestPoint newInterestPoint){
+        interestPointService.addInterestPointToEvent(stablishmentID, eventName, newInterestPoint);
+    }
+
+    @GetMapping("/events/{eventName}/interestPoint/all")
+    public List<interestPoint> getInterestPointsByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
+        return interestPointService.getInterestPointsByEventName(eventName, stablishmentID);
+    }
+
+    @PutMapping("/interestPoint/update")
+    public void updateInterestPointFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody interestPoint targetInterestPoint){
+        interestPointService.updateInterestPointFromStablishment(stablishmentID, targetInterestPoint);
+    }
+
+    @PutMapping("/events/{eventName}/interestPoint/update")
+    public void updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestBody interestPoint targetInterestPoint){
+        interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, targetInterestPoint);
+    }
+
+    @DeleteMapping("/interestPoint/delete/{interestPointID}")
+    public void deleteInterestPoint(@PathVariable("interestPointID") Long interestPointID){
+        interestPointService.deleteInterestPoint(interestPointID);
     }
 }
