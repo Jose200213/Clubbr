@@ -14,7 +14,11 @@ public class stablishmentService {
     @Autowired
     private stablishmentRepo stabRepo;
 
-    public List<stablishment> getAllStab() { return stabRepo.findAll();}
+    public List<stablishment> getAllStab() {
+        //stablishment stablishment = new stablishment();
+        //stablishment.getEvents().
+        return stabRepo.findAll();
+    }
 
     public stablishment getStab(int stabID) { return stabRepo.findById(stabID).orElse(null);}
 

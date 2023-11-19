@@ -20,11 +20,11 @@ public class worker {
 
     @Id
     @ManyToOne
-    @JoinColumn (name = "StablishmentID")
+    @JoinColumn (name = "stablishmentID")
     private stablishment stablishmentID;
 
     @ManyToOne
-    @JoinColumn (name = "InterestPoint")
+    @JoinColumn (name = "InterestPoint", referencedColumnName = "InterestPoint")
     private interestPoint interestPoint;
 
 }

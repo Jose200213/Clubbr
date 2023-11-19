@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,12 +16,13 @@ public class interestPoint {
 
     @Id
     @Column (name = "InterestPoint")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int interestPoint;
 
 
     @ManyToOne
-    @JoinColumn (name = "StablishmentID")
+    @JoinColumn (name = "stablishmentID")
+    @JsonBackReference(value = "stablishmentInterestPoints")
     private stablishment stablishmentID;
 
     @ManyToOne
@@ -28,6 +30,7 @@ public class interestPoint {
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
             @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
     })
+    @JsonBackReference
     private event eventName;
 
     @OneToMany(mappedBy = "interestPoint")

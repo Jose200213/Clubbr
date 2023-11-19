@@ -18,19 +18,23 @@ import java.time.LocalDateTime;
 public class ticket {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ticketID")
     private int ticketID;
 
     @ManyToOne
-    //@JoinColumn(name = "eventID")
-    private event eventID;
+    @JoinColumns({
+            @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
+    })
+    private event eventName;
 
     @ManyToOne
-    //@JoinColumn(name = "userID")
+    @JoinColumn(name = "userID")
     private user userID;
 
     @ManyToOne
-    //@JoinColumn(name = "stablishmentID")
+    @JoinColumn(name = "stablishmentID")
     private stablishment stablishmentID;
 
     @Column(name = "ticketPrice")
