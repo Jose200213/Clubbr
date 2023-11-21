@@ -42,18 +42,19 @@ public class eventService {
         if(stabRepo.existsById(stabID) == false){
             throw new NotFoundException("Stablishment with id: " + stabID + " does not exist");
         }
-        stablishment stab = stabRepo.findById(stabID).orElse(null);//stabRepo.getStab(stabID);
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
         List<event> events = new ArrayList<>();
         events = getAllEvents(stab);  //Corregir, la comprobacion con eventAux, hay que comprobar que no haya un evento con esos params conincidentes dentro de events.
 
         event eventAux = new event();
-        eventAux = getEvent(newEvent.getEventName(), newEvent.getEventDate());
+        eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
 
         if(events.isEmpty()){ //Procedera a crear el nuevo evento en caso de que no haya ni un evento asignado al local
             //Procedo a crearlo
             eventX = initEvent(newEvent, stab);
             //hacer funcion para inicializar evento. Hacer otra para inicializar Interest point especificos . Lo de los trabajadores me parece q no hace falta hacerlo aqui.
         }else{
+
             if(eventAux != null){
                 throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
             }
@@ -72,16 +73,16 @@ public class eventService {
         event.setEventDescription(newEvent.getEventDescription());
         event.setEventTime(newEvent.getEventTime());
         if(newEvent.getInterestPoint() != null){
-            event.setInterestPoint(initInterestPoints(newEvent));
+            event.setInterestPoint(initInterestPoints(newEvent, stab));
         }
         return event;
     }
 
-    private List<interestPoint> initInterestPoints(event specEvent){
+    private List<interestPoint> initInterestPoints(event specEvent, stablishment stab){
         List<interestPoint> interestPointsAux = new ArrayList<>();
         for(interestPoint interestPoint : specEvent.getInterestPoint()){
             interestPoint interestPointAux = new interestPoint();
-            interestPointAux.setStablishmentID(specEvent.getStablishmentID());
+            interestPointAux.setStablishmentID(stab);
             interestPointAux.setEventName(specEvent);  //Primero pruebo a devolver el objeto completo
             interestPointAux.setXCoordinate(interestPoint.getXCoordinate());
             interestPointAux.setYCoordinate(interestPoint.getYCoordinate());
@@ -96,7 +97,7 @@ public class eventService {
 
     }
 
-    public event getEvent(String name, LocalDate date) {
-        return eventRepo.findByEventNameAndEventDate(name, date);
+    public event getEvent(stablishment stabID, String name, LocalDate date) {
+        return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stabID, name, date);
     }
 }
