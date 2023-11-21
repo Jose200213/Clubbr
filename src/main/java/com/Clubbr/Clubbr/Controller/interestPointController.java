@@ -15,7 +15,7 @@ public class interestPointController {
     @Autowired
     private interestPointService interestPointService;
 
-//fdd
+
     @PostMapping("/interestPoint/add")
     public void addInterestPointToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody interestPoint newInterestPoint){
         interestPointService.addInterestPointToStab(stablishmentID, newInterestPoint);
@@ -47,7 +47,12 @@ public class interestPointController {
     }
 
     @DeleteMapping("/interestPoint/delete/{interestPointID}")
-    public void deleteInterestPoint(@PathVariable("interestPointID") Long interestPointID){
-        interestPointService.deleteInterestPoint(interestPointID);
+    public void deleteInterestPointFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID){
+        interestPointService.deleteInterestPointFromStablishment(stablishmentID, interestPointID);
+    }
+
+    @DeleteMapping("/events/{eventName}/interestPoint/delete/{interestPointID}")
+    public void deleteInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
+        interestPointService.deleteInterestPointFromEvent(stablishmentID, eventName, interestPointID);
     }
 }

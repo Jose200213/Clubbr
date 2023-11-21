@@ -79,7 +79,21 @@ public class interestPointService {
     }
 
     @Transactional
-    public void deleteInterestPoint(Long interestPointID){
-        interestPointRepo.deleteById(interestPointID);
+    public void deleteInterestPointFromStablishment(Long stablishmentID, Long interestPointID){
+        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        if (interestPoint.getStablishmentID() == stablishment){
+            interestPointRepo.deleteById(interestPointID);
+        }
+    }
+
+    @Transactional
+    public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID){
+        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
+        event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        if (interestPoint.getEventName() == event){
+            interestPointRepo.deleteById(interestPointID);
+        }
     }
 }
