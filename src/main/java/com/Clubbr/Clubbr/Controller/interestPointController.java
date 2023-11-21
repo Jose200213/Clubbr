@@ -15,7 +15,7 @@ public class interestPointController {
     @Autowired
     private interestPointService interestPointService;
 
-
+//fdd
     @PostMapping("/interestPoint/add")
     public void addInterestPointToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody interestPoint newInterestPoint){
         interestPointService.addInterestPointToStab(stablishmentID, newInterestPoint);
