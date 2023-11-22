@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -20,11 +22,12 @@ public class event {
 
     @Id
     @Column(name = "eventDate")
-    private String eventDate;
+    private LocalDate eventDate;
 
     @Id
     @ManyToOne
     @JoinColumn (name = "stablishmentID")
+    @JsonBackReference(value = "stablishmentEvents")
     private stablishment stablishmentID;
 
     @Column (name = "eventFinishDate")
@@ -36,7 +39,7 @@ public class event {
     @Column(name = "eventTime")
     private String eventTime;
 
-    @OneToMany(mappedBy = "eventName")
-    private List<interestPoint> interestPoint;
-
+    @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<interestPoint> interestPoints;
 }

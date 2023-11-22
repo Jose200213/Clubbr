@@ -18,28 +18,28 @@ import lombok.*;
 public class user {
 
     @Id
-    @Column (name = "UserID")
+    @Column (name = "userID")
     private String userID;
 
-    @Column (name = "Password")
+    @Column (name = "password")
     private String password;
 
-    @Column (name = "Role")
+    @Column (name = "role")
     private int role;
 
-    @Column (name = "Name")
+    @Column (name = "name")
     private String name;
 
-    @Column (name = "Surname")
+    @Column (name = "surname")
     private String surname;
 
-    @Column (name = "Country")
+    @Column (name = "country")
     private String country;
 
-    @Column (name = "Address")
+    @Column (name = "address")
     private String address;
 
-    @Column (name = "Email")
+    @Column (name = "email")
     private String email;
 }
 

@@ -15,16 +15,16 @@ public class worker {
 
     @Id
     @ManyToOne
-    @JoinColumn (name = "UserID")
+    @JoinColumn (name = "userID")
     private user userID;
 
     @Id
     @ManyToOne
-    @JoinColumn (name = "StablishmentID")
+    @JoinColumn (name = "stablishmentID")
     private stablishment stablishmentID;
 
     @ManyToOne
-    @JoinColumn (name = "InterestPoint")
-    private interestPoint interestPoint;
+    @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")
+    private interestPoint interestPointID;
 
 }

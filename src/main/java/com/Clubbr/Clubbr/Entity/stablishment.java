@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,9 +16,9 @@ import java.util.List;
 public class stablishment {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stablishmentID")
-    private int stablishmentID;
+    private Long stablishmentID;
 
     @Column(name = "stabName")
     private String stabName;
@@ -37,9 +38,15 @@ public class stablishment {
     @OneToMany(mappedBy = "stablishmentID")
     private List<worker> workers;
 
-    @OneToMany(mappedBy = "stablishmentID")
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentInterestPoints")
     private List<interestPoint> interestPoints;
 
-    @OneToMany(mappedBy = "stablishmentID")
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentEvents")
     private List<event> events;
+
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<item> inventory;
 }
