@@ -5,4 +5,8 @@ com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\Entity\ticket.class
 com\Clubbr\Clubbr\Service\interestPointService.class
 com\Clubbr\Clubbr\Service\ticketService.class
+com\Clubbr\Clubbr\Controller\itemController.class
+com\Clubbr\Clubbr\Repository\itemRepo.class
+com\Clubbr\Clubbr\Service\itemService.class
+com\Clubbr\Clubbr\Entity\item.class
 com\Clubbr\Clubbr\Repository\interestPointRepo.class

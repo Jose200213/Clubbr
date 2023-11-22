@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,7 @@ public class interestPoint {
     @Id
     @Column (name = "interestPointID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int interestPointID;
+    private Long interestPointID;
 
 
     @ManyToOne
@@ -37,9 +38,11 @@ public class interestPoint {
     private List<worker> workers;
 
     @Column (name = "xCoordinate")
+    @JsonProperty("xCoordinate")
     private float xCoordinate;
 
     @Column (name = "yCoordinate")
+    @JsonProperty("yCoordinate")
     private float yCoordinate;
 
     @Column (name = "description")

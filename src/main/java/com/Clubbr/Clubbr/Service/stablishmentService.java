@@ -2,9 +2,11 @@ package com.Clubbr.Clubbr.Service;
 
 import java.util.List;
 
+import com.Clubbr.Clubbr.Entity.item;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.Repository.itemRepo;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +18,7 @@ public class stablishmentService {
     private stablishmentRepo stabRepo;
 
     @Autowired
-    private eventService eventService;
+    private itemRepo itemRepo;
 
     @Transactional(readOnly = true)
     public List<stablishment> getAllStab() { return stabRepo.findAll(); }

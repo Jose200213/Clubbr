@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
+import com.Clubbr.Clubbr.Entity.item;
 import com.Clubbr.Clubbr.Entity.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class stablishmentController {
         return stabService.getAllStab();
     }
 
-    @GetMapping("/{id}")
-    public stablishment getStab(@PathVariable Long stabID) { return stabService.getStab(stabID);}
+    @GetMapping("/{stablishmentID}")
+    public stablishment getStab(@PathVariable Long stablishmentID) { return stabService.getStab(stablishmentID);}
 
     @PostMapping("/add")
     public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab); }

@@ -9,7 +9,6 @@ import com.Clubbr.Clubbr.Repository.interestPointRepo;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -42,11 +41,34 @@ public class interestPointService {
         return interestPointRepo.findByStablishmentID(stablishment);
     }
 
+    @Transactional(readOnly = true)
+    public interestPoint getInterestPointByStablishment(Long stablishmentID, Long interestPointID){
+        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+
+        if (interestPoint.getStablishmentID() == stablishment){
+            return interestPoint;
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public interestPoint getInterestPointsByEventName(Long stablishmentID, String eventName, Long interestPointID){
+        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
+        event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+
+        if (interestPoint.getEventName() == event){
+            return interestPoint;
+        }
+        return null;
+    }
+
     @Transactional
     public void addInterestPointToEvent(Long stabID, String eventName, interestPoint newInterestPoint){
         stablishment stablishment = stablishmentRepo.findById(stabID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-
+        System.out.print(newInterestPoint.getXCoordinate());
         newInterestPoint.setEventName(event);
         event.getInterestPoints().add(newInterestPoint);
 
