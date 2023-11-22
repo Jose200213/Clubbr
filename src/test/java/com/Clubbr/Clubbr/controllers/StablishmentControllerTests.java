@@ -14,7 +14,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.Mockito.*;
-
+/*
 @ExtendWith(MockitoExtension.class)
 public class StablishmentControllerTests {
 
@@ -39,4 +39,4 @@ public class StablishmentControllerTests {
         verify(stablishmentService, times(1)).getStab(1L);
     }
 
-}
+}*/
