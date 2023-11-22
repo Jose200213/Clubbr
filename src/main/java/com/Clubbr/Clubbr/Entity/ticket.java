@@ -25,7 +25,7 @@ public class ticket {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
-            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
     private event eventName;
 

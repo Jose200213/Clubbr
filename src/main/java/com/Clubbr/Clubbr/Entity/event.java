@@ -11,12 +11,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-/*@Table(
-        name = "eventRepository",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "event_unique", columnNames = {"eventName", "eventDate", "stablishmentID"})
-        }
-)*/
 @Table(name = "eventRepository")
 @NoArgsConstructor
 @AllArgsConstructor

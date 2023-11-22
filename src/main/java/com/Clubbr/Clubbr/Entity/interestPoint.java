@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,7 +29,7 @@ public class interestPoint {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
-            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
     @JsonBackReference
     private event eventName;
@@ -37,9 +38,11 @@ public class interestPoint {
     private List<worker> workers;
 
     @Column (name = "xCoordinate")
+    @JsonProperty("xCoordinate")
     private float xCoordinate;
 
     @Column (name = "yCoordinate")
+    @JsonProperty("yCoordinate")
     private float yCoordinate;
 
     @Column (name = "description")

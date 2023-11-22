@@ -45,13 +45,13 @@ public class stablishmentController {
 
 
     @PostMapping("/{stablishmentID}/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") int stabID, @RequestBody event newEvent) {
-        //try{
+    public ResponseEntity<String> addEventToStab(@PathVariable("stablishmentID") int stabID, @RequestBody event newEvent) {
+        try{
             eventService.addEventToStab(stabID, newEvent);
-            //return ResponseEntity.ok("Event added successfully");
-        //}catch (Exception e){
-            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
-        //}
+            return ResponseEntity.ok("Event added successfully");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
+        }
 
         /*@RequestMapping("/events")
 
