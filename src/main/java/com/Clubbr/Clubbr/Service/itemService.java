@@ -35,4 +35,41 @@ public class itemService {
         stablishment stablishment = stabRepo.findById(stablishmentID).orElse(null);
         return itemRepo.findByStablishmentID(stablishment);
     }
+
+    @Transactional(readOnly = true)
+    public item getItemFromStablishment(Long stablishmentID, Long itemID){
+        item item = itemRepo.findById(itemID).orElse(null);
+        stablishment stablishment = stabRepo.findById(stablishmentID).orElse(null);
+
+        if (item.getStablishmentID() == stablishment){
+            return item;
+        }
+        return null;
+    }
+
+    @Transactional
+    public void updateItemFromStablishment(Long stablishmentID, Long itemID, item updateItem){
+        stablishment stablishment = stabRepo.findById(stablishmentID).orElse(null);
+        item item = itemRepo.findById(itemID).orElse(null);
+        if (item.getStablishmentID() == stablishment){
+            item.setItemQuantity(updateItem.getItemQuantity());
+            item.setItemDistributor(updateItem.getItemDistributor());
+            item.setItemName(updateItem.getItemName());
+            item.setItemPrice(updateItem.getItemPrice());
+            item.setItemReference(updateItem.getItemReference());
+            item.setItemStock(updateItem.getItemStock());
+
+            itemRepo.save(item);
+        }
+    }
+
+    @Transactional
+    public void deleteItemFromStablishment(Long stablishmentID, Long itemID){
+        stablishment stablishment = stabRepo.findById(stablishmentID).orElse(null);
+        item item = itemRepo.findById(itemID).orElse(null);
+
+        if (item.getStablishmentID() == stablishment){
+            itemRepo.delete(item);
+        }
+    }
 }

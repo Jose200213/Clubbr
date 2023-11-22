@@ -23,4 +23,19 @@ public class itemController {
     public List<item> getItemsFromStablishment(@PathVariable("stablishmentID") Long stablishmentID){
         return itemService.getItemsFromStablishment(stablishmentID);
     }
+
+    @GetMapping("/item/{itemID}")
+    public item getItemFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("itemID") Long itemID){
+        return itemService.getItemFromStablishment(stablishmentID, itemID);
+    }
+
+    @PutMapping("item/update/{itemID}")
+    public void updateItemFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("itemID") Long itemID, @RequestBody item updateItem){
+        itemService.updateItemFromStablishment(stablishmentID, itemID, updateItem);
+    }
+
+    @DeleteMapping("item/delete/{itemID}")
+    public void deleteItemFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("itemID") Long itemID){
+        itemService.deleteItemFromStablishment(stablishmentID, itemID);
+    }
 }

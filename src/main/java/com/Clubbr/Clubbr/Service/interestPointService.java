@@ -68,7 +68,6 @@ public class interestPointService {
     public void addInterestPointToEvent(Long stabID, String eventName, interestPoint newInterestPoint){
         stablishment stablishment = stablishmentRepo.findById(stabID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-        System.out.print(newInterestPoint.getXCoordinate());
         newInterestPoint.setEventName(event);
         event.getInterestPoints().add(newInterestPoint);
 
@@ -84,19 +83,31 @@ public class interestPointService {
     }
 
     @Transactional
-    public void updateInterestPointFromStablishment(Long stablishmentID, interestPoint targetInterestPoint){
+    public void updateInterestPointFromStablishment(Long stablishmentID, Long interestPointID, interestPoint targetInterestPoint){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
-        if (targetInterestPoint.getStablishmentID() == stablishment){
-            interestPointRepo.save(targetInterestPoint);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+
+        if (interestPoint.getStablishmentID() == stablishment){
+            interestPoint.setDescription(targetInterestPoint.getDescription());
+            interestPoint.setWorkers(targetInterestPoint.getWorkers());
+            interestPoint.setXCoordinate(targetInterestPoint.getXCoordinate());
+            interestPoint.setYCoordinate(targetInterestPoint.getYCoordinate());
+            interestPointRepo.save(interestPoint);
         }
     }
 
     @Transactional
-    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, interestPoint targetInterestPoint){
+    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, interestPoint targetInterestPoint){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-        if (targetInterestPoint.getEventName() == event){
-            interestPointRepo.save(targetInterestPoint);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+
+        if (interestPoint.getEventName() == event){
+            interestPoint.setDescription(targetInterestPoint.getDescription());
+            interestPoint.setWorkers(targetInterestPoint.getWorkers());
+            interestPoint.setXCoordinate(targetInterestPoint.getXCoordinate());
+            interestPoint.setYCoordinate(targetInterestPoint.getYCoordinate());
+            interestPointRepo.save(interestPoint);
         }
     }
 

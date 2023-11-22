@@ -35,14 +35,14 @@ public class stablishmentController {
     @PostMapping("/add")
     public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab); }
 
-    @PutMapping("/update")
-    public void updateStab(@RequestBody stablishment targetStab) {
-        stabService.updateStab(targetStab);
+    @PutMapping("/update/{stablishmentID}")
+    public void updateStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody stablishment targetStab) {
+        stabService.updateStab(stablishmentID, targetStab);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteStab(@PathVariable Long stabID) {
-        stabService.deleteStab(stabID);
+    @DeleteMapping("/delete/{stablishmentID}")
+    public void deleteStab(@PathVariable("stablishmentID") Long stablishmentID) {
+        stabService.deleteStab(stablishmentID);
     }
 
 

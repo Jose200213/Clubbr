@@ -67,16 +67,16 @@ public class interestPointController {
     //region UPDATE
 
     // UPDATE FROM STAB
-    @PutMapping("/interestPoint/update")
-    public void updateInterestPointFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody interestPoint targetInterestPoint){
-        interestPointService.updateInterestPointFromStablishment(stablishmentID, targetInterestPoint);
+    @PutMapping("/interestPoint/update/{interestPointID}")
+    public void updateInterestPointFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID, @RequestBody interestPoint targetInterestPoint){
+        interestPointService.updateInterestPointFromStablishment(stablishmentID, interestPointID, targetInterestPoint);
     }
 
 
     // UPDATE FROM EVENT
-    @PutMapping("/events/{eventName}/interestPoint/update")
-    public void updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestBody interestPoint targetInterestPoint){
-        interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, targetInterestPoint);
+    @PutMapping("/events/{eventName}/interestPoint/update/{interestPointID}")
+    public void updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID, @RequestBody interestPoint targetInterestPoint){
+        interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, interestPointID, targetInterestPoint);
     }
 
     //endregion
