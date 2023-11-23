@@ -43,28 +43,6 @@ public class stablishmentController {
         stabService.deleteStab(stablishmentID);
     }
 
-
-    @PostMapping("/{stablishmentID}/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) {
-        //try{
-            eventService.addEventToStab(stabID, newEvent);
-            //return ResponseEntity.ok("Event added successfully");
-        //}catch (Exception e){
-            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
-        //}
-
-    }
-
-    @PostMapping("/{stablishmentID}/event/addPersistent/{persistence}")
-    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("persistence") int persistence, @RequestBody event newEvent) {
-        //try{
-            eventService.addPersistentEventToStab(stabID, persistence, newEvent);
-            //return ResponseEntity.ok("Event added successfully");
-        //}catch (Exception e){
-            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
-        //}
-
-    }
 }
 
 

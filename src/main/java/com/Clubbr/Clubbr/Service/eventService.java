@@ -6,6 +6,7 @@ import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
+import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +68,40 @@ public class eventService {
     }
 
     @Transactional
-    public void addPersistentEventToStab(Long stabID, int persistence, event newEvent) {
+    public void addPersistentEventToStab(Long stabID, eventWithPersistenceDto newEventDto) {
+        event newEvent = new event();
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        //event eventAux = new event();
+        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
+
+        if(eventFlag != null){
+
+            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+
+        }
+
+        newEvent.setStablishmentID(stab);
+        newEvent.setEventName(newEventDto.getEventName());
+        newEvent.setEventDate(newEventDto.getEventDate());
+        newEvent.setEventDescription(newEventDto.getEventDescription());
+        newEvent.setEventTime(newEventDto.getEventTime());
+        newEvent.setEventFinishDate(newEventDto.getEventFinishDate());
+
+        int i = 0;
+
+        do{
+
+            eventRepo.save(newEvent);
+            newEvent.setEventDate(newEvent.getEventDate().plusDays(newEventDto.getFrecuencia()));
+            i++;
+
+        }while(i < newEventDto.getRepeticiones());
+
+    }
+
+    //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
+    /*@Transactional
+    public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent) {
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
@@ -83,34 +117,7 @@ public class eventService {
 
         int i = 0;
 
-        if(newEvent.getInterestPoints() != null){
-
-            List<interestPoint> iPsToStore = new ArrayList<>();
-
-            for(interestPoint ip : newEvent.getInterestPoints()){
-
-                interestPoint interestPointAux = new interestPoint();
-                interestPointAux.setStablishmentID(stab);
-                interestPointAux.setEventName(newEvent);
-                interestPointAux.setXCoordinate(ip.getXCoordinate());
-                interestPointAux.setYCoordinate(ip.getYCoordinate());
-                interestPointAux.setDescription(ip.getDescription());
-                iPsToStore.add(interestPointAux);
-
-            }
-            newEvent.setInterestPoints(iPsToStore);
-            eventRepo.save(newEvent);
-            i++;
-        }
-
-
         do{
-
-            if(i == 1 && newEvent.getInterestPoints() != null){
-                List<interestPoint> emptyList = new ArrayList<>();
-                newEvent.setInterestPoints(emptyList);
-                newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
-            }
 
             eventRepo.save(newEvent);
             newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
@@ -118,7 +125,9 @@ public class eventService {
 
         }while(i < persistence);
 
-    }
+    }*/
+
+    //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
     
     //Esta version solo añade un evento a un local, no debe recibir interest points en el body ni los contempla.
     ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////

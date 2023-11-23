@@ -11,10 +11,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class eventWithPersistenceDto {
+
     private String eventName;
     private LocalDate eventDate;
     private LocalDate eventFinishDate;
     private String eventDescription;
     private String eventTime;
+    private int repeticiones;
+    private int frecuencia;
 
 }
