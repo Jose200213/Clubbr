@@ -20,13 +20,22 @@ public class stablishmentService {
         return stabRepo.findAll();
     }
 
-    public stablishment getStab(int stabID) { return stabRepo.findById(stabID).orElse(null);}
+    public stablishment getStab(Long stabID) { return stabRepo.findById(stabID).orElse(null);}
 
-    public void deleteStab(int stabID) { stabRepo.deleteById(stabID);}
+    public void deleteStab(Long stabID) { stabRepo.deleteById(stabID);}
 
     public void addStablishment(stablishment newStab) {stabRepo.save(newStab);}
 
-    public void updateStab(stablishment targetStab) {stabRepo.save(targetStab);}
+    public void updateStab(Long stablishmentID, stablishment targetStab) {
+        stablishment stablishment = stabRepo.findById(stablishmentID).orElse(null);
+
+        stablishment.setCapacity(targetStab.getCapacity());
+        stablishment.setStabAddress(targetStab.getStabAddress());
+        stablishment.setCloseTime(targetStab.getCloseTime());
+        stablishment.setOpenTime(targetStab.getOpenTime());
+        stablishment.setStabName(targetStab.getStabName());
+        stabRepo.save(targetStab);
+    }
 
 
 }

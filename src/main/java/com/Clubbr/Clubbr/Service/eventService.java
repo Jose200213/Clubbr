@@ -1,21 +1,18 @@
 package com.Clubbr.Clubbr.Service;
 
-import com.Clubbr.Clubbr.Entity.*;
+import com.Clubbr.Clubbr.Entity.event;
+import com.Clubbr.Clubbr.Entity.interestPoint;
 import com.Clubbr.Clubbr.Entity.stablishment;
+import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
-import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Service.stablishmentService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class eventService {
@@ -25,100 +22,132 @@ public class eventService {
 
     @Autowired
     private stablishmentRepo stabRepo;
-
+    
+    //Esta version añade un evento a un local y añade interest points especificos al evento si y solo si los hay en el body.
+    //La funcion debe tener manejada si o si la excepcion de eventos con el mismo nombre y fecha pues de no ser asi,
+    //jpa no detecta que haya error y al insertar el evento con el mismo nombre y fecha que otro, lo trata como un update
+    //y no como un insert, por lo que no se lanza excepcion (restriccion clave primaria) y se actualiza el evento existente y
+    //se añaden los interest points (si los hay en el body) al mismo (Todo esto sin añadir un nuevo evento a la DB, si no solo actualizarlo => interest points replicados en DB)
+    //////////////////////////////////////////// FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
     @Transactional
-    public void addEventToStab(int stabID, event newEvent) {
-        event eventX = new event();
-        /*if(stabRepo.existsById(stabID) == false){
-            throw new NotFoundException("Stablishment with id: " + stabID + " does not exist");
-        }*/
+    public void addEventToStab(Long stabID, event newEvent) {
+        
         stablishment stab = stabRepo.findById(stabID).orElse(null);
-        //List<event> events = new ArrayList<>();
-        //events = getAllEvents(stab);  //Corregir, la comprobacion con eventAux, hay que comprobar que no haya un evento con esos params conincidentes dentro de events.
+        //event eventAux = new event();
+        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
 
-        event eventAux = new event();
-        eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
-
-        if(eventAux != null){
+        if(eventFlag != null){
+            
                 throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-            }
+        
+        }
 
-        //if(events.isEmpty()){ //Procedera a crear el nuevo evento en caso de que no haya ni un evento asignado al local
-            //Procedo a crearlo
-            //eventX = initEvent(newEvent, stab);
-            eventX.setEventName(newEvent.getEventName());
-            eventX.setEventDate(newEvent.getEventDate());
-            eventX.setStablishmentID(stab);
-            eventX.setEventFinishDate(newEvent.getEventFinishDate());
-            eventX.setEventDescription(newEvent.getEventDescription());
-            eventX.setEventTime(newEvent.getEventTime());
-            //hacer funcion para inicializar evento. Hacer otra para inicializar Interest point especificos . Lo de los trabajadores me parece q no hace falta hacerlo aqui.
-        //}else{
+        newEvent.setStablishmentID(stab);
 
-            //if(eventAux != null){
-            //    throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-            //}
-            //eventX = initEvent(newEvent, stab);
-        //}
-        if(newEvent.getInterestPoint() != null){
-            //eventX.setInterestPoint(initInterestPoints(newEvent, stab, eventX));
-            List<interestPoint> interestPointsAux = new ArrayList<>();
+        if(newEvent.getInterestPoints() != null){
+            
+            List<interestPoint> iPsToStore = new ArrayList<>();
 
-            for(interestPoint ip : newEvent.getInterestPoint()){
+            for(interestPoint ip : newEvent.getInterestPoints()){
+                
                 interestPoint interestPointAux = new interestPoint();
-                // ... existing code ...
-
                 interestPointAux.setStablishmentID(stab);
-                interestPointAux.setEventName(eventX);  // Use the saved event object
+                interestPointAux.setEventName(newEvent);  
                 interestPointAux.setXCoordinate(ip.getXCoordinate());
                 interestPointAux.setYCoordinate(ip.getYCoordinate());
                 interestPointAux.setDescription(ip.getDescription());
-                interestPointsAux.add(interestPointAux);
-                // ... existing code ...
+                iPsToStore.add(interestPointAux);
+               
             }
-            eventX.setInterestPoint(interestPointsAux);
-            //eventRepo.save(eventX);
+            newEvent.setInterestPoints(iPsToStore);
         }
-        eventRepo.save(eventX);
-
+        
+        eventRepo.save(newEvent);
 
     }
 
-    /*private event initEvent(event newEvent, stablishment stab){
-        event event = new event();
-        event.setEventName(newEvent.getEventName());
-        event.setEventDate(newEvent.getEventDate());
-        event.setStablishmentID(stab);
-        event.setEventFinishDate(newEvent.getEventFinishDate());
-        event.setEventDescription(newEvent.getEventDescription());
-        event.setEventTime(newEvent.getEventTime());
-        if(newEvent.getInterestPoint() != null){
+    @Transactional
+    public void addPersistentEventToStab(Long stabID, int persistence, event newEvent) {
 
-            event.setInterestPoint(initInterestPoints(newEvent, stab));
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        //event eventAux = new event();
+        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
+
+        if(eventFlag != null){
+
+                throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+
         }
-        return event;
+
+        newEvent.setStablishmentID(stab);
+
+        int i = 0;
+
+        if(newEvent.getInterestPoints() != null){
+
+            List<interestPoint> iPsToStore = new ArrayList<>();
+
+            for(interestPoint ip : newEvent.getInterestPoints()){
+
+                interestPoint interestPointAux = new interestPoint();
+                interestPointAux.setStablishmentID(stab);
+                interestPointAux.setEventName(newEvent);
+                interestPointAux.setXCoordinate(ip.getXCoordinate());
+                interestPointAux.setYCoordinate(ip.getYCoordinate());
+                interestPointAux.setDescription(ip.getDescription());
+                iPsToStore.add(interestPointAux);
+
+            }
+            newEvent.setInterestPoints(iPsToStore);
+            eventRepo.save(newEvent);
+            i++;
+        }
+
+
+        do{
+
+            if(i == 1 && newEvent.getInterestPoints() != null){
+                List<interestPoint> emptyList = new ArrayList<>();
+                newEvent.setInterestPoints(emptyList);
+                newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
+            }
+
+            eventRepo.save(newEvent);
+            newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
+            i++;
+
+        }while(i < persistence);
+
     }
+    
+    //Esta version solo añade un evento a un local, no debe recibir interest points en el body ni los contempla.
+    ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
+    /*@Transactional
+    public void addEventToStab(Long stabID, event newEvent) {
+        
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        
+        event eventAux = new event();
+        
+        eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
 
-    private List<interestPoint> initInterestPoints(event specEvent, stablishment stab){
-        List<interestPoint> interestPointsAux = new ArrayList<>();
-        for(interestPoint interestPoint : specEvent.getInterestPoint()){
-            interestPoint interestPointAux = new interestPoint();
-            interestPointAux.setStablishmentID(stab);
-            interestPointAux.setEventName(specEvent);  //Primero pruebo a devolver el objeto completo
-            interestPointAux.setXCoordinate(interestPoint.getXCoordinate());
-            interestPointAux.setYCoordinate(interestPoint.getYCoordinate());
-            interestPointAux.setDescription(interestPoint.getDescription());
-            interestPointsAux.add(interestPointAux);
+        if(eventAux != null){
+            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
         }
-        return interestPointsAux;
+        
+        newEvent.setStablishmentID(stab);
+        
+        eventRepo.save(newEvent);
+        
     }*/
+    ////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
 
     public List<event> getAllEvents(stablishment stablishment) {
         return eventRepo.findAllByStablishmentID(stablishment);
 
     }
 
-    public event getEvent(stablishment stabID, String name, LocalDate date) {
+    public event getEventByStabNameDate(stablishment stabID, String name, LocalDate date) {
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stabID, name, date);
     }
 }

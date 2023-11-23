@@ -16,9 +16,9 @@ import java.util.List;
 public class interestPoint {
 
     @Id
-    @Column (name = "InterestPoint")
+    @Column (name = "InterestPointID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int interestPoint;
+    private Long interestPointID;
 
 
     @ManyToOne
@@ -34,7 +34,7 @@ public class interestPoint {
     @JsonBackReference
     private event eventName;
 
-    @OneToMany(mappedBy = "interestPoint")
+    @OneToMany(mappedBy = "interestPointID")
     private List<worker> workers;
 
     @Column (name = "xCoordinate")

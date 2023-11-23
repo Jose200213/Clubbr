@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import java.util.List;
 import com.Clubbr.Clubbr.Service.stablishmentService;
+import com.Clubbr.Clubbr.Service.ticketService;
 import com.Clubbr.Clubbr.Service.eventService;
-import org.springframework.transaction.annotation.Transactional;
 
 @RestController
 @RequestMapping("/stablishment")
@@ -27,53 +27,45 @@ public class stablishmentController {
         return stabService.getAllStab();
     }
 
-    @GetMapping("/{id}")
-    public stablishment getStab(@PathVariable("id") int stabID) { return stabService.getStab(stabID);}
+    @GetMapping("/{stablishmentID}")
+    public stablishment getStab(@PathVariable Long stablishmentID) { return stabService.getStab(stablishmentID);}
 
     @PostMapping("/add")
-    public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab);}
+    public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab); }
 
-    @PutMapping("/update")
-    public void updateStab(@RequestBody stablishment targetStab) {
-        stabService.updateStab(targetStab);
+    @PutMapping("/update/{stablishmentID}")
+    public void updateStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody stablishment targetStab) {
+        stabService.updateStab(stablishmentID, targetStab);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteStab(@PathVariable("id") int stabID) {
-        stabService.deleteStab(stabID);
+    @DeleteMapping("/delete/{stablishmentID}")
+    public void deleteStab(@PathVariable("stablishmentID") Long stablishmentID) {
+        stabService.deleteStab(stablishmentID);
     }
 
 
     @PostMapping("/{stablishmentID}/event/add")
-    public ResponseEntity<String> addEventToStab(@PathVariable("stablishmentID") int stabID, @RequestBody event newEvent) {
-        try{
+    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) {
+        //try{
             eventService.addEventToStab(stabID, newEvent);
-            return ResponseEntity.ok("Event added successfully");
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
-        }
+            //return ResponseEntity.ok("Event added successfully");
+        //}catch (Exception e){
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
+        //}
 
-        /*@RequestMapping("/events")
+    }
 
-        @PostMapping("{id}/addEvent")
-        public void addEvent(@PathVariable int stabID){
-        ticketService.addTicket
-        }*/
+    @PostMapping("/{stablishmentID}/event/addPersistent/{persistence}")
+    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("persistence") int persistence, @RequestBody event newEvent) {
+        //try{
+            eventService.addPersistentEventToStab(stabID, persistence, newEvent);
+            //return ResponseEntity.ok("Event added successfully");
+        //}catch (Exception e){
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
+        //}
+
     }
 }
 
-/*
-* {
-*   "eventName": "Evento 1",
-*   "eventDate": "2020-12-12",
-*   "eventFinishDate": "2020-12-13",
-*   "eventTime": "22:00",
-*   "eventFinishTime": "06:00",
-*   "interestPoints": [{}]
-* }
-*
-*
-*
-* */
 
 

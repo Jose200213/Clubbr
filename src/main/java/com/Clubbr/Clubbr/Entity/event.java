@@ -42,6 +42,6 @@ public class event {
 
     @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<interestPoint> interestPoint;
+    private List<interestPoint> interestPoints;
 
 }

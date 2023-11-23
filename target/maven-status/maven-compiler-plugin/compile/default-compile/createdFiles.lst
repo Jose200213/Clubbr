@@ -18,6 +18,8 @@ com\Clubbr\Clubbr\Entity\workerID.class
 com\Clubbr\Clubbr\Service\ticketService.class
 com\Clubbr\Clubbr\Controller\userController.class
 com\Clubbr\Clubbr\Service\userService.class
+com\Clubbr\Clubbr\dto\interestPointDto.class
+com\Clubbr\Clubbr\dto\eventWithPersistenceDto.class
 com\Clubbr\Clubbr\Repository\workerRepo.class
 com\Clubbr\Clubbr\Repository\interestPointRepo.class
 com\Clubbr\Clubbr\Entity\stablishment.class

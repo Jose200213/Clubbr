@@ -18,7 +18,7 @@ public class stablishment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stablishmentID")
-    private int stablishmentID;
+    private Long stablishmentID;
 
     @Column(name = "stabName")
     private String stabName;
