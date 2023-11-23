@@ -14,6 +14,8 @@ public class eventController {
 
     @Autowired
     private eventService eventService;
+
+    //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")
     public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) {
         //try{

@@ -44,6 +44,7 @@ public class eventService {
         }
 
         newEvent.setStablishmentID(stab);
+        newEvent.setTotalTickets(stab.getCapacity());
 
         if(newEvent.getInterestPoints() != null){
             
@@ -81,6 +82,7 @@ public class eventService {
         }
 
         newEvent.setStablishmentID(stab);
+        newEvent.setTotalTickets(stab.getCapacity());
         newEvent.setEventName(newEventDto.getEventName());
         newEvent.setEventDate(newEventDto.getEventDate());
         newEvent.setEventDescription(newEventDto.getEventDescription());

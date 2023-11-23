@@ -40,6 +40,9 @@ public class event {
     @Column(name = "eventTime")
     private String eventTime;
 
+    @Column(name = "totalTickets")
+    private int totalTickets;
+
     @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<interestPoint> interestPoints;

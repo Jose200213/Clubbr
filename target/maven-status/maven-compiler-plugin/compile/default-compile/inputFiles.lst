@@ -3,6 +3,7 @@ C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\config\
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\interestPointRepo.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\eventService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\stablishmentService.java
+C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\eventController.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\userController.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Entity\ticket.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\config\exception\NotFoundException.java
@@ -23,7 +24,6 @@ C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Reposit
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\workerRepo.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\ticketService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\userService.java
-C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\dto\interestPointDto.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\ticketRepo.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\interestPointService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Entity\user.java
