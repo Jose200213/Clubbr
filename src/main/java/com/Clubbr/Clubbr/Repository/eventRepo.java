@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface eventRepo extends JpaRepository<event, eventID> {
 
-    List<event> findAllByStablishmentID(stablishment stablishment);
+    List<event> findAllByStablishmentIDOrderByEventDateAsc(stablishment stablishment);
 
     event findByStablishmentIDAndEventNameAndEventDate(@Param("stablishmentID") stablishment stabID, @Param("eventName") String name, @Param("eventDate") LocalDate date);
 }

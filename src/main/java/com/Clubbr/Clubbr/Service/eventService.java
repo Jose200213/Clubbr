@@ -6,6 +6,7 @@ import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
+import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class eventService {
         
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
+        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventFlag != null){
             
@@ -73,7 +74,7 @@ public class eventService {
         event newEvent = new event();
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
+        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventFlag != null){
 
@@ -99,6 +100,64 @@ public class eventService {
 
         }while(i < newEventDto.getRepeticiones());
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
+
+    }
+
+    @Transactional(readOnly = true)
+    public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
+    }
+
+    @Transactional
+    public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent) {
+
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+
+        if (existingEvent == null) {
+            throw new NotFoundException("Event to update not found");
+        }
+
+        event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
+
+        if(eventFlag != null){
+            throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
+        }
+
+        // Crea un nuevo evento con los datos actualizados
+        event newEvent = new event();
+        newEvent.setEventName(targetEvent.getEventName());
+        newEvent.setEventDate(targetEvent.getEventDate());
+        newEvent.setEventFinishDate(targetEvent.getEventFinishDate());
+        newEvent.setEventDescription(targetEvent.getEventDescription());
+        newEvent.setEventTime(targetEvent.getEventTime());
+        newEvent.setTotalTickets(stab.getCapacity());
+        newEvent.setStablishmentID(stab);
+
+        // Guarda el nuevo evento
+        eventRepo.save(newEvent);
+
+        // Elimina el evento existente
+        eventRepo.delete(existingEvent);
+    }
+
+    @Transactional
+    public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+
+        if (existingEvent == null) {
+            throw new NotFoundException("Event to delete not found");
+        }
+
+        eventRepo.delete(existingEvent);
     }
 
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
@@ -153,12 +212,4 @@ public class eventService {
     }*/
     ////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
 
-    public List<event> getAllEvents(stablishment stablishment) {
-        return eventRepo.findAllByStablishmentID(stablishment);
-
-    }
-
-    public event getEventByStabNameDate(stablishment stabID, String name, LocalDate date) {
-        return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stabID, name, date);
-    }
 }
