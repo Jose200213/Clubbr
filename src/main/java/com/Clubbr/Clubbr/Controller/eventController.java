@@ -41,7 +41,7 @@ public class eventController {
     @PutMapping("/event/update/{eventName}/{eventDate}")
     public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent) {
 
-            eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent);
+        eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent);
 
     }
 
@@ -58,27 +58,24 @@ public class eventController {
     //////////////////////////////////////////// CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
     // Recibe en el json los parametros del evento y ademas el numero de repeticiones (veces que se añadira a DB) y la frecuencia (en dias)
     // Para ello emplea como receptor del json el dto eventWithPersistenceDto.
-    @PostMapping("/event/addPersistent")
+    /*@PostMapping("/event/addPersistent")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody eventWithPersistenceDto newEventDto) {
 
         eventService.addPersistentEventToStab(stabID, newEventDto);
 
-    }
+    }*/
     //////////////////////////////////////////// FIN CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
 
     //////////////////////////////////////////// CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
     // Asume que la frecuencia es siempre 7 dias. El evento se repetirá cada 7 dias (una semana) tantas veces como repeticiones se indiquen en el path.
-    /*@PostMapping("/event/addPersistent/{repeticiones}")
+    @PostMapping("/event/addPersistent/{repeticiones}")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent) {
-        //try{
-        eventService.addPersistentEventToStab(stabID, repeticiones, newEvent);
-        //return ResponseEntity.ok("Event added successfully");
-        //}catch (Exception e){
-        //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
-        //}
 
-    }*/
+        eventService.addPersistentEventToStab(stabID, repeticiones, newEvent);
+
+    }
     //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
 
 
 }
+

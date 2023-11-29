@@ -24,7 +24,7 @@ public class eventService {
 
     @Autowired
     private stablishmentRepo stabRepo;
-    
+
     //Esta version añade un evento a un local y añade interest points especificos al evento si y solo si los hay en el body.
     //La funcion debe tener manejada si o si la excepcion de eventos con el mismo nombre y fecha pues de no ser asi,
     //jpa no detecta que haya error y al insertar el evento con el mismo nombre y fecha que otro, lo trata como un update
@@ -33,43 +33,44 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
     @Transactional
     public void addEventToStab(Long stabID, event newEvent) {
-        
+
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventFlag != null){
-            
-                throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-        
+
+            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+
         }
 
         newEvent.setStablishmentID(stab);
         newEvent.setTotalTickets(stab.getCapacity());
 
         if(newEvent.getInterestPoints() != null){
-            
+
             List<interestPoint> iPsToStore = new ArrayList<>();
 
             for(interestPoint ip : newEvent.getInterestPoints()){
-                
+
                 interestPoint interestPointAux = new interestPoint();
                 interestPointAux.setStablishmentID(stab);
-                interestPointAux.setEventName(newEvent);  
+                interestPointAux.setEventName(newEvent);
                 interestPointAux.setXCoordinate(ip.getXCoordinate());
                 interestPointAux.setYCoordinate(ip.getYCoordinate());
                 interestPointAux.setDescription(ip.getDescription());
                 iPsToStore.add(interestPointAux);
-               
+
             }
             newEvent.setInterestPoints(iPsToStore);
         }
-        
+
         eventRepo.save(newEvent);
 
     }
 
-    @Transactional
+    //Añade eventos persistentes con una frecuencia y un numero de repeticiones recibidos en el body y recuperados en el dto eventWithPersistenceDto.
+    /*@Transactional
     public void addPersistentEventToStab(Long stabID, eventWithPersistenceDto newEventDto) {
         event newEvent = new event();
         stablishment stab = stabRepo.findById(stabID).orElse(null);
@@ -87,7 +88,7 @@ public class eventService {
         newEvent.setEventName(newEventDto.getEventName());
         newEvent.setEventDate(newEventDto.getEventDate());
         newEvent.setEventDescription(newEventDto.getEventDescription());
-        newEvent.setEventTime(newEventDto.getEventTime());
+        newEvent.setEventTime(stab.getOpenTime().toString());
         newEvent.setEventFinishDate(newEventDto.getEventFinishDate());
 
         int i = 0;
@@ -96,11 +97,12 @@ public class eventService {
 
             eventRepo.save(newEvent);
             newEvent.setEventDate(newEvent.getEventDate().plusDays(newEventDto.getFrecuencia()));
+            newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(newEventDto.getFrecuencia()));
             i++;
 
         }while(i < newEventDto.getRepeticiones());
 
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
@@ -161,12 +163,12 @@ public class eventService {
     }
 
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
-    /*@Transactional
+    @Transactional
     public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent) {
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stab, newEvent.getEventName(), newEvent.getEventDate());
+        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventFlag != null){
 
@@ -175,6 +177,8 @@ public class eventService {
         }
 
         newEvent.setStablishmentID(stab);
+        newEvent.setTotalTickets(stab.getCapacity());
+        newEvent.setEventTime(stab.getOpenTime().toString());
 
         int i = 0;
 
@@ -182,33 +186,34 @@ public class eventService {
 
             eventRepo.save(newEvent);
             newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
+            newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(7));
             i++;
 
-        }while(i < persistence);
+        }while(i < repeticiones);
 
-    }*/
+    }
 
     //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
-    
+
     //Esta version solo añade un evento a un local, no debe recibir interest points en el body ni los contempla.
     ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
     /*@Transactional
     public void addEventToStab(Long stabID, event newEvent) {
-        
+
         stablishment stab = stabRepo.findById(stabID).orElse(null);
-        
+
         event eventAux = new event();
-        
+
         eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventAux != null){
             throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
         }
-        
+
         newEvent.setStablishmentID(stab);
-        
+
         eventRepo.save(newEvent);
-        
+
     }*/
     ////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
 
