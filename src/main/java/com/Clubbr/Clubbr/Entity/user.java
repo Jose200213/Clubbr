@@ -1,10 +1,15 @@
 package com.Clubbr.Clubbr.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.Clubbr.Clubbr.utils.role;
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 //TODO crear login y manejo de JWT
@@ -15,7 +20,7 @@ import lombok.*;
 @Table(name = "userRepository")
 @NoArgsConstructor
 @AllArgsConstructor
-public class user {
+public class user implements UserDetails {
 
     @Id
     @Column (name = "userID")
@@ -24,8 +29,9 @@ public class user {
     @Column (name = "password")
     private String password;
 
-    @Column (name = "role")
-    private int role;
+    @Column (name = "userRole")
+    @Enumerated(EnumType.STRING)
+    private role userRole;
 
     @Column (name = "name")
     private String name;
@@ -41,6 +47,41 @@ public class user {
 
     @Column (name = "email")
     private String email;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = userRole.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .collect(Collectors.toList());
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return userID;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
 
 

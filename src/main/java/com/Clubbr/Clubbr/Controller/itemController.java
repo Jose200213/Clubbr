@@ -19,6 +19,7 @@ public class itemController {
         itemService.addItemToStablishment(stablishmentID, newItem);
     }
 
+
     @GetMapping("item/all")
     public List<item> getItemsFromStablishment(@PathVariable("stablishmentID") Long stablishmentID){
         return itemService.getItemsFromStablishment(stablishmentID);
