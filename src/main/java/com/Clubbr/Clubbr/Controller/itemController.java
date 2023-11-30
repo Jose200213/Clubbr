@@ -3,6 +3,7 @@ package com.Clubbr.Clubbr.Controller;
 import com.Clubbr.Clubbr.Entity.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Service.itemService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

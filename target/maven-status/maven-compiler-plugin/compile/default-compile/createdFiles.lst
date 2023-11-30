@@ -17,3 +17,4 @@ com\Clubbr\Clubbr\Repository\interestPointRepo.class
 com\Clubbr\Clubbr\utils\permission.class
 com\Clubbr\Clubbr\config\security\httpSecurityConfig.class
 com\Clubbr\Clubbr\Controller\authenticationController.class
+com\Clubbr\Clubbr\Dto\authenticationResponse$authenticationResponseBuilder.class

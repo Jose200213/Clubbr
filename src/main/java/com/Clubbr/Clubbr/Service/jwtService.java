@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.user;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,5 +40,14 @@ public class jwtService {
     private Key generateKey() {
         byte[] secretAsBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(secretAsBytes);
+    }
+
+    public String extractUserID(String jwt) {
+        return extractAllClaims(jwt).getSubject();
+    }
+
+    private Claims extractAllClaims(String jwt) {
+        return Jwts.parserBuilder().setSigningKey(generateKey()).build()
+                .parseClaimsJws(jwt).getBody();
     }
 }

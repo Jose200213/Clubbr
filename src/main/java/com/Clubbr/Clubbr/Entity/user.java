@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "userRepository")
 @NoArgsConstructor

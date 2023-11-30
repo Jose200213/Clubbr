@@ -13,6 +13,8 @@ C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\stablishm
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\jwtService.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\stablishmentRepo.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\interestPoint.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\config\security\filter\jwtAuthenticationFilter.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\registerRequest.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\user.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\itemController.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\stablishmentService.java
