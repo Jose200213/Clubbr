@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.Clubbr.Clubbr.utils.role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +49,10 @@ public class user implements UserDetails {
 
     @Column (name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ticket> tickets;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

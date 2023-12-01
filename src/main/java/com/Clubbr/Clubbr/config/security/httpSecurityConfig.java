@@ -43,10 +43,8 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.GET, "/authentication/public-access").permitAll();
             authConfig.requestMatchers("/error").permitAll();
 
-            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/add").hasAuthority(permission.WRITE_ALL.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/all").hasAuthority(permission.READ_STABLISHMENTS.name());
-            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/item/all").hasAuthority(permission.READ_ALL.name());
-            authConfig.anyRequest().denyAll();
+            authConfig.anyRequest().permitAll();
         };
     }
 }

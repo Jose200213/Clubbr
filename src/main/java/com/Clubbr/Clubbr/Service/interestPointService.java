@@ -53,7 +53,7 @@ public class interestPointService {
     }
 
     @Transactional(readOnly = true)
-    public interestPoint getInterestPointsByEventName(Long stablishmentID, String eventName, Long interestPointID){
+    public interestPoint getInterestPointByEventName(Long stablishmentID, String eventName, Long interestPointID){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
         interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
