@@ -46,6 +46,11 @@ public class jwtService {
         return extractAllClaims(jwt).getSubject();
     }
 
+    public String extractUserIDFromToken(String token) {
+        String jwtToken = token.substring(7);
+        return extractUserID(jwtToken);
+    }
+
     private Claims extractAllClaims(String jwt) {
         return Jwts.parserBuilder().setSigningKey(generateKey()).build()
                 .parseClaimsJws(jwt).getBody();

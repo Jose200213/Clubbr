@@ -39,9 +39,7 @@ public class ticketService {
     public void addTicketToEvent(Long stablishmentID, String eventName, String token){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-        String jwtToken = token.substring(7);
-        String user = jwtService.extractUserID(jwtToken);
-        user userId = userRepo.findById(user).orElse(null);
+        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
 
         if (event != null && stablishment != null && userId != null){
             ticket newTicket = new ticket();
@@ -56,9 +54,7 @@ public class ticketService {
     }
 
     public ticket getTicketFromUser(String token, Long ticketID){
-        String jwtToken = token.substring(7);
-        String user = jwtService.extractUserID(jwtToken);
-        user userId = userRepo.findById(user).orElse(null);
+        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
 
         ticket userTicket = ticketRepo.findById(ticketID).orElse(null);
         if (userId != null && userTicket != null && userTicket.getUserID() == userId){
@@ -68,9 +64,7 @@ public class ticketService {
     }
 
     public List<ticket> getAllTicketsFromUser(String token){
-        String jwtToken = token.substring(7);
-        String user = jwtService.extractUserID(jwtToken);
-        user userId = userRepo.findById(user).orElse(null);
+        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
 
         if (userId != null){
             return ticketRepo.findByUserID(userId);

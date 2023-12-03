@@ -21,8 +21,6 @@ public class stablishmentController {
     @Autowired
     private eventService eventService;
 
-    @Autowired
-    private ticketService ticketService;
 
     @GetMapping("/all")
     public List<stablishment> getAllStab() {
@@ -32,17 +30,29 @@ public class stablishmentController {
     @GetMapping("/{stablishmentID}")
     public stablishment getStab(@PathVariable Long stablishmentID) { return stabService.getStab(stablishmentID);}
 
+    @GetMapping("/manager/all")
+    public List<stablishment> getMyManagerStab(@RequestHeader("Authorization") String token) {
+        return stabService.getMyManagerStab(token);
+    }
+
+    @PostMapping("/{stablishmentID}/worker/{userID}/add")
+    public void addWorkerToStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID){
+        stabService.addWorkerToStab(stablishmentID, userID);
+    }
+
     @PostMapping("/add")
-    public void addStab(@RequestBody stablishment newStab) { stabService.addStablishment(newStab); }
+    public void addStab(@RequestBody stablishment newStab, @RequestHeader("Authorization") String token) {
+        stabService.addStablishment(newStab, token);
+    }
 
     @PutMapping("/update/{stablishmentID}")
-    public void updateStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody stablishment targetStab) {
-        stabService.updateStab(stablishmentID, targetStab);
+    public void updateStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody stablishment targetStab, @RequestHeader("Authorization") String token) {
+        stabService.updateStab(stablishmentID, targetStab, token);
     }
 
     @DeleteMapping("/delete/{stablishmentID}")
-    public void deleteStab(@PathVariable("stablishmentID") Long stablishmentID) {
-        stabService.deleteStab(stablishmentID);
+    public void deleteStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
+        stabService.deleteStab(stablishmentID, token);
     }
 
 

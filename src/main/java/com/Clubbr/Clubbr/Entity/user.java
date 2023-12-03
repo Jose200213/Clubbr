@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-//TODO crear login y manejo de JWT
 
 @Getter
 @Setter

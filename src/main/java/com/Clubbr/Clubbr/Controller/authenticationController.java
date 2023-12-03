@@ -33,11 +33,4 @@ public class authenticationController {
 
         return ResponseEntity.ok(jwtDto);
     }
-
-    //TEST
-    @GetMapping("/public-access")
-    public String publicAccessEndpoint() {
-        return "Endpoint de acesso público";
-    }
-
 }

@@ -40,11 +40,44 @@ public class httpSecurityConfig {
         return authConfig -> {
             authConfig.requestMatchers(HttpMethod.POST, "/authentication/login").permitAll();
             authConfig.requestMatchers(HttpMethod.POST, "/authentication/register").permitAll();
-            authConfig.requestMatchers(HttpMethod.GET, "/authentication/public-access").permitAll();
             authConfig.requestMatchers("/error").permitAll();
 
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/add").hasAuthority(permission.CREATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/{eventName}/interestPoint/add").hasAuthority(permission.CREATE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/{eventName}/ticket/add").hasAuthority(permission.CREATE_TICKETS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/interestPoint/add").hasAuthority(permission.CREATE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/add").hasAuthority(permission.CREATE_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/user/manager/{userID}").hasAuthority(permission.CREATE_MANAGERS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/1/worker/3/add").hasAuthority(permission.CREATE_WORKERS.name());
+
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/all").hasAuthority(permission.READ_STABLISHMENTS.name());
-            authConfig.anyRequest().permitAll();
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}").hasAuthority(permission.READ_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}").hasAuthority(permission.READ_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/interestPoint/{interestPointID}").hasAuthority(permission.READ_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/interestPoint/all").hasAuthority(permission.READ_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/interestPoint/{interestPointID}").hasAuthority(permission.READ_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/interestPoint/all").hasAuthority(permission.READ_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/manager/all").hasAuthority(permission.READ_MANAGER_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/ticket/{ticketID}").hasAuthority(permission.READ_TICKETS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/ticket/all").hasAuthority(permission.READ_TICKETS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/user/{userID}").hasAuthority(permission.READ_USERS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/user/all").hasAuthority(permission.READ_USERS.name());
+
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}").hasAuthority(permission.UPDATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/interestPoint/{interestPointID}").hasAuthority(permission.UPDATE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/interestPoint/{interestPointID}").hasAuthority(permission.UPDATE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/update/{stablishmentID}").hasAuthority(permission.UPDATE_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/user/{userID}").hasAuthority(permission.UPDATE_USERS.name());
+
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/{eventName}").hasAuthority(permission.DELETE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/{eventName}/interestPoint/{interestPointID}").hasAuthority(permission.DELETE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/interestPoint/{interestPointID}").hasAuthority(permission.DELETE_INTEREST_POINTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}").hasAuthority(permission.DELETE_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/user/{userID}").hasAuthority(permission.DELETE_USERS.name());
+
+            authConfig.anyRequest().denyAll();
+
+            //authConfig.anyRequest().permitAll();
         };
     }
 }

@@ -39,5 +39,8 @@ public class userController {
         userService.deleteUser(id);
     }
 
-
+    @PostMapping("/manager/{userID}")
+    public void addManager(@PathVariable String userID) {
+        userService.addManager(userID);
+    }
 }
