@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.config;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,19 @@ public class MqttConfig {
     @Value("${mqtt.broker}")
     private String broker;
 
+    //@Autowired
+    //private MqttReceiver mqttReceiver;
+
+
     @Bean
     public MqttClient mqttClient() throws MqttException {
         MqttClient client = new MqttClient(broker, MqttClient.generateClientId());
-        client.connect();
+        //client.setCallback(mqttReceiver);
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        client.connect(options);
+        //client.subscribe("Clubbr/ConfirmAttendance");
         return client;
     }
 }

@@ -107,4 +107,16 @@ public class workerService {
         public void updateWorker(worker targetWorker) {workerRepo.save(targetWorker);
         }
 
+
+        public void updateAttendance(String telegramID, boolean attendance) {
+                // Aquí obtienes el worker que quieres actualizar desde la base de datos
+                worker worker = workerRepo.findByTelegramID(Integer.parseInt(telegramID));
+
+                // Actualizas el valor del campo attendance
+                worker.setAttendance(attendance);
+
+                // Guardas el worker actualizado en la base de datos
+                workerRepo.save(worker);
+        }
+
 }
