@@ -31,9 +31,15 @@
 			<version>2.2</version>
 		</dependency>
 
-		<dependency>
+		<dependency>  <!-- Dependencia para manejar localDate en test de integracion -->
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		<dependency>  <!-- Dependencia para manejar mqtt -->
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.2.5</version>
 		</dependency>
 
 		<dependency>

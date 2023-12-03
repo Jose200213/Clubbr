@@ -27,4 +27,10 @@ public class worker {
     @JoinColumn (name = "InterestPointID", referencedColumnName = "InterestPointID")
     private interestPoint interestPointID;
 
+    @Column(name = "Attendance")
+    private boolean attendance;
+
+    @Column(name = "TelegramID", unique = true)
+    private int telegramID;
+
 }

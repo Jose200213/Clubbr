@@ -1,3 +1,4 @@
+com\Clubbr\Clubbr\Controller\interestPointController.class
 com\Clubbr\Clubbr\Entity\eventID.class
 com\Clubbr\Clubbr\config\ExceptionConfig.class
 com\Clubbr\Clubbr\Entity\event.class
@@ -9,7 +10,9 @@ com\Clubbr\Clubbr\Repository\eventRepo.class
 com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\Service\stablishmentService.class
 com\Clubbr\Clubbr\Entity\ticket.class
+com\Clubbr\Clubbr\config\MqttConfig.class
 com\Clubbr\Clubbr\Entity\interestPoint.class
+com\Clubbr\Clubbr\dto\workerDto.class
 com\Clubbr\Clubbr\Controller\ticketController.class
 com\Clubbr\Clubbr\ClubbrApplication.class
 com\Clubbr\Clubbr\config\exception\NotFoundException.class

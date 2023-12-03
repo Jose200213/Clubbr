@@ -2,6 +2,7 @@ package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class eventController {
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) {
+    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) throws MqttException {
 
         eventService.addEventToStab(stabID, newEvent);
 

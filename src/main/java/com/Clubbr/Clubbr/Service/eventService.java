@@ -8,6 +8,9 @@ import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ public class eventService {
     @Autowired
     private stablishmentRepo stabRepo;
 
+
     //Esta version añade un evento a un local y añade interest points especificos al evento si y solo si los hay en el body.
     //La funcion debe tener manejada si o si la excepcion de eventos con el mismo nombre y fecha pues de no ser asi,
     //jpa no detecta que haya error y al insertar el evento con el mismo nombre y fecha que otro, lo trata como un update
@@ -33,6 +37,8 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
     @Transactional
     public void addEventToStab(Long stabID, event newEvent) {
+
+
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         //event eventAux = new event();
@@ -48,6 +54,7 @@ public class eventService {
         newEvent.setTotalTickets(stab.getCapacity());
 
         if(newEvent.getInterestPoints() != null){
+
 
             List<interestPoint> iPsToStore = new ArrayList<>();
 

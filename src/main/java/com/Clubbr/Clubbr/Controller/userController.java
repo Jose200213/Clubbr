@@ -1,9 +1,12 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.Entity.worker;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Service.userService;
+import com.Clubbr.Clubbr.Service.workerService;
 import java.util.List;
 
 
@@ -13,6 +16,7 @@ public class userController {
 
     @Autowired
     private userService userService;
+
 
     @GetMapping("/all")
     public List<user> getAllUsers() {
@@ -28,6 +32,7 @@ public class userController {
     public void addUser(@RequestBody user newUser) {
         userService.addUser(newUser);
     }
+
 
     @PutMapping("/update")
     public void updateUser(@RequestBody user targetUser) {
