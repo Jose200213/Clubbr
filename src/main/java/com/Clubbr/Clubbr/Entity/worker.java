@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -28,5 +29,12 @@ public class worker {
     @ManyToOne
     @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")
     private interestPoint interestPointID;
+
+    @Column (name = "workingHours")
+    private Long workingHours;
+
+    @Column (name = "salary")
+    @JsonProperty("salary")
+    private float salary;
 
 }

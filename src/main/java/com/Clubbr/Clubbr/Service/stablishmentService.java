@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.managerRepo;
 import com.Clubbr.Clubbr.Repository.userRepo;
 import com.Clubbr.Clubbr.Repository.workerRepo;
+import com.Clubbr.Clubbr.Repository.interestPointRepo;
+import com.Clubbr.Clubbr.Repository.eventRepo;
 
 
 @Service
@@ -32,18 +34,32 @@ public class stablishmentService {
     @Autowired
     private userRepo userRepo;
 
+    @Autowired
+    private interestPointRepo interestPointRepo;
+
+    @Autowired
+    private eventRepo eventRepo;
+
     @Transactional(readOnly = true)
     public List<stablishment> getAllStab() { return stabRepo.findAll(); }
 
     public stablishment getStab(Long stabID) { return stabRepo.findById(stabID).orElse(null);}
 
-    public List<stablishment> getMyManagerStab(String token) {
+    public List<stablishment> getAllStablishmentFromManager(String token) {
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
         manager stabManager = managerRepo.findByUserID(user);
         return stabRepo.findByManagerID(stabManager);
     }
 
-    public void deleteStab(Long stabID, String token) { stabRepo.deleteById(stabID);}
+    public void deleteStab(Long stabID, String token) {
+        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager stabManager = managerRepo.findByUserID(user);
+        stablishment targetStab = stabRepo.findById(stabID).orElse(null);
+
+        if (targetStab != null && targetStab.getManagerID() == stabManager) {
+            stabRepo.deleteById(stabID);
+        }
+    }
 
     public void addStablishment(stablishment newStab, String token) {
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
@@ -55,22 +71,65 @@ public class stablishmentService {
             managerRepo.save(stabManager);
             stabRepo.save(newStab);
         }
-
     }
 
-    public void addWorkerToStab(Long stablishmentID, String userID){
+    public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
+        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
+        user targetUser = userRepo.findById(targetWorker.getUserID().getUserID()).orElse(null);
+
+        if (targetStab != null && targetUser != null && targetStab.getManagerID() == stabManager) {
+            targetUser.setUserRole(role.WORKER);
+            targetWorker.setStablishmentID(targetStab);
+            targetWorker.setWorkingHours(160L);
+            targetStab.getWorkers().add(targetWorker);
+            stabRepo.save(targetStab);
+            workerRepo.save(targetWorker);
+            userRepo.save(targetUser);
+        }
+    }
+
+    public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){
         stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
         user targetUser = userRepo.findById(userID).orElse(null);
-        worker newWorker = new worker();
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
 
-        if (targetStab != null && targetUser != null){
-            targetUser.setUserRole(role.WORKER);
-            newWorker.setUserID(targetUser);
-            newWorker.setStablishmentID(targetStab);
-            targetStab.getWorkers().add(newWorker);
+        if (worker != null && targetStab.getManagerID() == stabManager && interestPoint.getStablishmentID() == targetStab) {
+            worker.setInterestPointID(interestPoint);
+            interestPoint.getWorkers().add(worker);
+            interestPointRepo.save(interestPoint);
+            workerRepo.save(worker);
+        }
+    }
+
+    public void addWorkerToEventInterestPoint(Long stablishmentID, String eventName, String userID, Long interestPointID, String token){
+        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
+        user targetUser = userRepo.findById(userID).orElse(null);
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
+        event event = eventRepo.findByEventNameAndStablishmentID(eventName, targetStab);
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+
+        if (worker != null && targetStab.getManagerID() == stabManager && interestPoint.getEventName() == event && event != null) {
+            worker.setInterestPointID(interestPoint);
+            interestPoint.getWorkers().add(worker);
+            interestPointRepo.save(interestPoint);
+            workerRepo.save(worker);
+        }
+    }
+
+    public void deleteWorkerFromStab(Long stablishmentID, String userID, String token){
+        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
+        user targetUser = userRepo.findById(userID).orElse(null);
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
+
+        if (worker != null && targetStab.getManagerID() == stabManager) {
+            targetStab.getWorkers().remove(worker);
             stabRepo.save(targetStab);
-            workerRepo.save(newWorker);
-            userRepo.save(targetUser);
+            workerRepo.delete(worker);
         }
     }
 

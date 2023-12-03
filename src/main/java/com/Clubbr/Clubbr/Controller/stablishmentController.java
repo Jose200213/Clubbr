@@ -1,11 +1,9 @@
 package com.Clubbr.Clubbr.Controller;
 
-import com.Clubbr.Clubbr.Entity.event;
-import com.Clubbr.Clubbr.Entity.item;
-import com.Clubbr.Clubbr.Entity.user;
+import com.Clubbr.Clubbr.Entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.Clubbr.Clubbr.Entity.stablishment;
+
 import java.util.List;
 import com.Clubbr.Clubbr.Service.stablishmentService;
 import com.Clubbr.Clubbr.Service.ticketService;
@@ -31,13 +29,23 @@ public class stablishmentController {
     public stablishment getStab(@PathVariable Long stablishmentID) { return stabService.getStab(stablishmentID);}
 
     @GetMapping("/manager/all")
-    public List<stablishment> getMyManagerStab(@RequestHeader("Authorization") String token) {
-        return stabService.getMyManagerStab(token);
+    public List<stablishment> getAllStablishmentFromManager(@RequestHeader("Authorization") String token) {
+        return stabService.getAllStablishmentFromManager(token);
     }
 
-    @PostMapping("/{stablishmentID}/worker/{userID}/add")
-    public void addWorkerToStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID){
-        stabService.addWorkerToStab(stablishmentID, userID);
+    @PostMapping("/{stablishmentID}/worker/add")
+    public void addWorkerToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody worker targetWorker, @RequestHeader("Authorization") String token){
+        stabService.addWorkerToStab(stablishmentID, targetWorker, token);
+    }
+
+    @PutMapping("/{stablishmentID}/worker/{userID}/interestPoint/{interestPointID}/update")
+    public void addWorkerToStabInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
+        stabService.addWorkerToStabInterestPoint(stablishmentID, userID, interestPointID, token);
+    }
+
+    @PutMapping("/{stablishmentID}/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update")
+    public void addWorkerToEventInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
+        stabService.addWorkerToEventInterestPoint(stablishmentID, eventName, userID, interestPointID, token);
     }
 
     @PostMapping("/add")
@@ -48,6 +56,11 @@ public class stablishmentController {
     @PutMapping("/update/{stablishmentID}")
     public void updateStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody stablishment targetStab, @RequestHeader("Authorization") String token) {
         stabService.updateStab(stablishmentID, targetStab, token);
+    }
+
+    @DeleteMapping("/{stablishmentID}/worker/{userID}/delete")
+    public void deleteWorkerFromStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
+        stabService.deleteWorkerFromStab(stablishmentID, userID, token);
     }
 
     @DeleteMapping("/delete/{stablishmentID}")
