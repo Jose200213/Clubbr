@@ -16,8 +16,9 @@ import java.util.List;
 public class worker {
 
     @Id
-    @OneToOne
+    @ManyToOne
     @JoinColumn (name = "userID")
+    @JsonProperty("userID")
     private user userID;
 
     @Id

@@ -2,6 +2,7 @@ package com.Clubbr.Clubbr.Entity;
 
 import com.Clubbr.Clubbr.utils.role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +26,7 @@ public class user implements UserDetails {
 
     @Id
     @Column (name = "userID")
+    @JsonProperty("userID")
     private String userID;
 
     @Column (name = "password")

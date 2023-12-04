@@ -21,6 +21,7 @@ public enum role {
     MANAGER(Arrays.asList(permission.READ_STABLISHMENTS, permission.CREATE_EVENTS,
             permission.CREATE_INTEREST_POINTS, permission.CREATE_STABLISHMENTS,
             permission.READ_MANAGER_STABLISHMENTS, permission.CREATE_WORKERS,
+            permission.UPDATE_WORKERS,
             permission.CREATE_TICKETS, permission.READ_EVENTS, permission.READ_INTEREST_POINTS,
             permission.READ_TICKETS, permission.READ_USERS, permission.UPDATE_USERS,
             permission.DELETE_USERS, permission.UPDATE_STABLISHMENTS, permission.DELETE_STABLISHMENTS,
