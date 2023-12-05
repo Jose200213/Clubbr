@@ -40,10 +40,10 @@ public class stablishment {
     @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;
 
-    @ManyToOne
+    @ManyToMany
     @JoinColumn (name = "managerID")
     @JsonBackReference(value = "stablishmentManager")
-    private manager managerID;
+    private List<manager> managerID;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentInterestPoints")

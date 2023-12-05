@@ -25,7 +25,7 @@ public class manager {
     @JoinColumn(name = "userID")
     private user userID;
 
-    @OneToMany(mappedBy = "managerID", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "managerID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentManager")
     private List<stablishment> stablishmentID;
 }
