@@ -51,53 +51,6 @@ public class workerService {
                 workerRepo.deleteByUserIDAndStablishmentID(user, stablishment);
         }
 
-        @Transactional
-        public void addWorkerToStab(workerDto newWorkerDto) throws MqttException, JsonProcessingException {
-                ObjectMapper objectMapper = new ObjectMapper();
-                worker newWorker = new worker();
-                stablishment stab = stabRepo.findById(newWorkerDto.getStablishmentID()).orElse(null);
-                user usr = userRepo.findById(newWorkerDto.getUserID()).orElse(null);
-                if(newWorkerDto.getInterestPointID() != null){
-                        interestPoint intpoint = interestPointRepo.findById(newWorkerDto.getInterestPointID()).orElse(null);
-                        newWorker.setInterestPointID(intpoint);
-                        newWorker.setStablishmentID(stab);
-                        newWorker.setUserID(usr);
-                        newWorker.setAttendance(false);
-
-                        workerRepo.save(newWorker);
-
-                        if(intpoint.getEventName() != null){
-
-                                ObjectNode json = objectMapper.createObjectNode();
-                                json.put("userID", newWorkerDto.getUserID());
-                                json.put("stablishmentID", newWorkerDto.getStablishmentID());
-                                json.put("eventName", intpoint.getEventName().getEventName());
-                                json.put("eventDate", intpoint.getEventName().getEventDate().toString());
-                                String jsonString = objectMapper.writeValueAsString(json);
-                                byte[] payload = jsonString.getBytes();
-
-                                MqttMessage mqttMessage = new MqttMessage(payload);
-                                mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
-                        }
-
-                }
-
-                newWorker.setUserID(usr);
-                newWorker.setStablishmentID(stab);
-                newWorker.setAttendance(false);
-                workerRepo.save(newWorker);
-
-                /*ObjectNode json = objectMapper.createObjectNode();
-                json.put("userID", newWorkerDto.getUserID());
-                json.put("stablishmentID", newWorkerDto.getStablishmentID());
-                json.put("", intpoint.getEventName().getEventName());
-                String jsonString = objectMapper.writeValueAsString(json);
-                byte[] payload = jsonString.getBytes();
-
-                MqttMessage mqttMessage = new MqttMessage(payload);
-                mqttClient.publish("Clubbr/AssistControl", mqttMessage);*/
-
-        }
 
         @Transactional
         public void addWorker(worker newWorker) {
@@ -109,8 +62,9 @@ public class workerService {
 
 
         public void updateAttendance(String telegramID, boolean attendance) {
-                // Aquí obtienes el worker que quieres actualizar desde la base de datos
-                worker worker = workerRepo.findByTelegramID(Integer.parseInt(telegramID));
+                // Buscas el usuario con el telegramID que recibiste
+                user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
+                worker worker = workerRepo.findByUserID(targetUser);
 
                 // Actualizas el valor del campo attendance
                 worker.setAttendance(attendance);

@@ -2,6 +2,7 @@ com\Clubbr\Clubbr\Controller\interestPointController.class
 com\Clubbr\Clubbr\Entity\eventID.class
 com\Clubbr\Clubbr\config\ExceptionConfig.class
 com\Clubbr\Clubbr\Entity\event.class
+com\Clubbr\Clubbr\config\MqttReceiver.class
 com\Clubbr\Clubbr\Entity\user.class
 com\Clubbr\Clubbr\Controller\stablishmentController.class
 com\Clubbr\Clubbr\Service\workerService.class

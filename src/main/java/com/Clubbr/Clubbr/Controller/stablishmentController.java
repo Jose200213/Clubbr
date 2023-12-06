@@ -30,21 +30,6 @@ public class stablishmentController {
     @Autowired
     private workerService workerService;
 
-    @PostMapping("/addWorker")
-    public ResponseEntity<String> addWorkerToStab(@RequestBody workerDto newWorkerDto) throws MqttException {
-        try {
-            workerService.addWorkerToStab(newWorkerDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Worker added to stablishment");
-        } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-        }
-
-    }
-
-    @PostMapping("/{stablishmentID}/attendanceControl")
-    public void attendanceControlPWorker(@PathVariable("stablishmentID") Long stabID) throws MqttException, JsonProcessingException {
-        stabService.attendanceControlPWorker(stabID);
-    }
 
     @GetMapping("/all")
     public List<stablishment> getAllStab() {

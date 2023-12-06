@@ -15,5 +15,5 @@ public interface workerRepo extends JpaRepository<worker, Long>{
     worker findByUserIDAndStablishmentID(user user, stablishment stablishment);
     void deleteByUserIDAndStablishmentID(user  user, stablishment stablishment);
 
-    worker findByTelegramID(@Param("TelegramID") int telegramID);
+    worker findByUserID(user targetUser);
 }

@@ -35,7 +35,8 @@ public class stablishment {
     @Column(name = "capacity")
     private int capacity;
 
-    @OneToMany(mappedBy = "stablishmentID")
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)

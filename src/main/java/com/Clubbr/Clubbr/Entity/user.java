@@ -41,6 +41,10 @@ public class user {
 
     @Column (name = "Email")
     private String email;
+
+    @Column(name = "TelegramID", unique = true)
+    private Long telegramID;
+
 }
 
 

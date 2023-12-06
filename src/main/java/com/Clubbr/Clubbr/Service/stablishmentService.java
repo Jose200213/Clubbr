@@ -24,11 +24,6 @@ public class stablishmentService {
     @Autowired
     private stablishmentRepo stabRepo;
 
-    @Autowired
-    private workerService workerService;
-
-    @Autowired
-    private MqttClient mqttClient;
 
 
     public List<stablishment> getAllStab() {
@@ -54,29 +49,7 @@ public class stablishmentService {
         stabRepo.save(targetStab);
     }
 
-    public void attendanceControlPWorker(Long stabID) throws JsonProcessingException, MqttException {
-        List<worker> workers = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
 
-        workers = workerService.getAllWorkers(stab);
-
-        for(worker worker : workers){
-            if(worker.getInterestPointID().getEventName() == null){  //Solo envia notificacion al trabajador asignado a un interest point generico (sin evento).
-                ObjectNode json = objectMapper.createObjectNode();
-                json.put("Fecha", LocalDate.now().toString());
-                json.put("Hora", stab.getOpenTime().toString());
-                json.put("StabName", stab.getStabName());
-                json.put("TelegramID", worker.getTelegramID());
-                String jsonString = objectMapper.writeValueAsString(json);
-                byte[] payload = jsonString.getBytes();
-
-                MqttMessage mqttMessage = new MqttMessage(payload);
-                mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
-            }
-        }
-
-    }
 
 
 }

@@ -2,6 +2,7 @@ package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -77,6 +78,9 @@ public class eventController {
     }
     //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
 
-
+    @PostMapping("/event/{eventName}/{eventDate}/attendanceControl")
+    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
+        eventService.attendanceControlWorkers(stabID, eventName, eventDate);
+    }
 }
 
