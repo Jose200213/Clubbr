@@ -17,10 +17,20 @@ public class MqttReceiver implements MqttCallback {
     @Autowired
     private MqttClient mqttClient;
 
-    @PostConstruct
+    /*@PostConstruct
     public void init() throws MqttException{
         mqttClient.setCallback(this);
         mqttClient.subscribe("Clubbr/ConfirmAttendance");
+    }*/
+
+    @PostConstruct
+    public void init() {
+        try {
+            mqttClient.setCallback(this);
+            mqttClient.subscribe("Clubbr/ConfirmAttendance");
+        } catch (MqttException e) {
+            System.err.println("Error al configurar el cliente MQTT: " + e.getMessage());
+        }
     }
 
     @Override
@@ -28,6 +38,7 @@ public class MqttReceiver implements MqttCallback {
         // Aquí puedes manejar lo que sucede cuando se pierde la conexión con el servidor MQTT
     }
 
+    //String topic puede varias segun los topicos a los que te suscribas. Puedo hacer una accion dependiendo del topico que llegue.
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         // Cuando se recibe un mensaje, actualizas el valor del campo attendance en la base de datos

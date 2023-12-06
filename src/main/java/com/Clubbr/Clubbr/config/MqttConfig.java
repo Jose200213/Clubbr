@@ -18,7 +18,7 @@ public class MqttConfig {
     //private MqttReceiver mqttReceiver;
 
 
-    @Bean
+    /*@Bean
     public MqttClient mqttClient() throws MqttException {
         MqttClient client = new MqttClient(broker, MqttClient.generateClientId());
         //client.setCallback(mqttReceiver);
@@ -27,6 +27,20 @@ public class MqttConfig {
         options.setCleanSession(true);
         client.connect(options);
         //client.subscribe("Clubbr/ConfirmAttendance");
+        return client;
+    }*/
+    @Bean
+    public MqttClient mqttClient() {
+        MqttClient client = null;
+        try {
+            client = new MqttClient(broker, MqttClient.generateClientId());
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setAutomaticReconnect(true);
+            options.setCleanSession(true);
+            client.connect(options);
+        } catch (MqttException e) {
+            System.err.println("Error al conectar con el servidor MQTT: " + e.getMessage());
+        }
         return client;
     }
 }

@@ -248,7 +248,13 @@ public class eventService {
         // Publicar la cadena de texto JSON como un mensaje MQTT
         byte[] payload = jsonString.getBytes();
         MqttMessage mqttMessage = new MqttMessage(payload);
-        mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        if (mqttClient != null) {
+            mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        } else {
+            // Manejar la situación en la que mqttClient es null
+            System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
+        }
     }
 
 
