@@ -1,6 +1,5 @@
 package com.Clubbr.Clubbr.Entity;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

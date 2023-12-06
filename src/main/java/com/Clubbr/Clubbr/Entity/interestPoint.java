@@ -22,7 +22,7 @@ public class interestPoint {
 
 
     @ManyToOne
-    @JoinColumn(name = "stablishmentID")
+    @JoinColumn (name = "stablishmentID")
     @JsonBackReference(value = "stablishmentInterestPoints")
     private stablishment stablishmentID;
 

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class workerID implements java.io.Serializable {
     private String userID;
-    private Long stablishmentID;
+    private Long stablishmentID; //private stablishment stablishmentID; (No estoy seguro de cual es cual ni el porque)
 }
