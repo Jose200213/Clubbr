@@ -33,14 +33,14 @@ public class interestPointController {
 
 
     // GET ONE BY EVENT
-    @GetMapping("/events/{eventName}/interestPoint/{interestPointID}")
+    @GetMapping("/event/{eventName}/interestPoint/{interestPointID}")
     public interestPoint getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
         return interestPointService.getInterestPointByEventName(stablishmentID, eventName, interestPointID);
     }
 
 
     // GET LIST BY EVENT
-    @GetMapping("/events/{eventName}/interestPoint/all")
+    @GetMapping("/event/{eventName}/interestPoint/all")
     public List<interestPoint> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
         return interestPointService.getInterestPointsByEventName(eventName, stablishmentID);
     }
@@ -57,7 +57,7 @@ public class interestPointController {
 
 
     // POST TO EVENT
-    @PostMapping("/events/{eventName}/interestPoint/add")
+    @PostMapping("/event/{eventName}/interestPoint/add")
     public void addInterestPointToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestBody interestPoint newInterestPoint){
         interestPointService.addInterestPointToEvent(stablishmentID, eventName, newInterestPoint);
     }
@@ -74,7 +74,7 @@ public class interestPointController {
 
 
     // UPDATE FROM EVENT
-    @PutMapping("/events/{eventName}/interestPoint/update/{interestPointID}")
+    @PutMapping("/event/{eventName}/interestPoint/update/{interestPointID}")
     public void updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID, @RequestBody interestPoint targetInterestPoint){
         interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, interestPointID, targetInterestPoint);
     }
@@ -91,7 +91,7 @@ public class interestPointController {
 
 
     // DELETE FROM EVENT
-    @DeleteMapping("/events/{eventName}/interestPoint/delete/{interestPointID}")
+    @DeleteMapping("/event/{eventName}/interestPoint/delete/{interestPointID}")
     public void deleteInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
         interestPointService.deleteInterestPointFromEvent(stablishmentID, eventName, interestPointID);
     }

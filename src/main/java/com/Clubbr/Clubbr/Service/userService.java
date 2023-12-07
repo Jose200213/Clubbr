@@ -32,7 +32,7 @@ public class userService {
 
     public void addManager(String userID) {
         user targetUser = userRepo.findById(userID).orElse(null);
-        manager targetManager = managerRepo.findByUserID(targetUser);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
         if (targetUser != null && targetManager == null){
             manager newManager = new manager();
             targetUser.setUserRole(role.MANAGER);

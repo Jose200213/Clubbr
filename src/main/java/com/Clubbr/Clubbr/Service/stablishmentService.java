@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.Clubbr.Clubbr.Entity.*;
@@ -16,7 +17,9 @@ import com.Clubbr.Clubbr.Repository.workerRepo;
 import com.Clubbr.Clubbr.Repository.interestPointRepo;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 
-
+/**
+ * Servicio para gestionar los establecimientos.
+ */
 @Service
 public class stablishmentService {
 
@@ -41,62 +44,73 @@ public class stablishmentService {
     @Autowired
     private eventRepo eventRepo;
 
+    /**
+     * Obtiene todos los establecimientos.
+     * @return una lista de todos los establecimientos.
+     */
     @Transactional(readOnly = true)
     public List<stablishment> getAllStab() {
-        List<stablishment> stablishments = stabRepo.findAll();
-
-        if (stablishments.isEmpty()) {
-            throw new StablishmentNotFoundException("No se han encontrado establecimientos");
-        }
-        return stablishments;
+        return stabRepo.findAll();
     }
 
-
+    /**
+     * Obtiene un establecimiento por su ID.
+     * @param stabID el ID del establecimiento.
+     * @return el establecimiento con el ID proporcionado.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     */
     public stablishment getStab(Long stabID) {
-        stablishment stablishment = stabRepo.findById(stabID).orElse(null);
-
-        if (stablishment == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stabID);
-        }
-        return stablishment;
+        return stabRepo.findById(stabID)
+                .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stabID));
     }
 
+    /**
+     * Obtiene todos los establecimientos de un manager.
+     * @param token el token del manager.
+     * @return una lista de todos los establecimientos del manager.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws StablishmentNotFoundException si no se encuentran establecimientos.
+     */
     public List<stablishment> getAllStablishmentFromManager(String token) {
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        if (user == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + jwtService.extractUserIDFromToken(token));
-        }
-        manager stabManager = managerRepo.findByUserID(user);
+        user user = userRepo.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
 
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        manager stabManager = managerRepo.findByUserID(user)
+                .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
         List<stablishment> stablishments = stabRepo.findByManagerID(stabManager);
         if (stablishments.isEmpty()) {
-            throw new StablishmentNotFoundException("No se han encontrado establecimientos asociados al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new StablishmentNotFoundException("No se han encontrado establecimientos asociados al manager con el ID " + userId);
         }
         return stablishments;
     }
 
+    /**
+     * Elimina un establecimiento.
+     * @param stabID el ID del establecimiento.
+     * @param token el token del manager.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     */
     public void deleteStab(Long stabID, String token) {
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        if (user == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        manager stabManager = managerRepo.findByUserID(user);
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user user = userRepo.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
 
-        stablishment targetStab = stabRepo.findById(stabID).orElse(null);
+        manager stabManager = managerRepo.findByUserID(user)
+                .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stabID);
-        }else if (!isManagerInStab(targetStab, stabManager)) {
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stabID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+        stablishment targetStab = stabRepo.findById(stabID)
+                .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stabID));
+
+        if (!isManagerInStab(targetStab, stabManager)) {
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stabID + " no pertenece al manager con el ID " + userId);
         }
 
         stabManager.getStablishmentID().remove(targetStab);
@@ -104,47 +118,57 @@ public class stablishmentService {
         stabRepo.deleteById(stabID);
     }
 
+    /**
+     * Añade un establecimiento.
+     * @param newStab el nuevo establecimiento.
+     * @param token el token del manager.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws ManagerNotOwnerException si el manager no es el propietario.
+     */
     public void addStablishment(stablishment newStab, String token) {
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        if (user == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        manager stabManager = managerRepo.findByUserID(user);
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user user = userRepo.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
+
+        manager stabManager = managerRepo.findByUserID(user)
+                .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
         if (!stabManager.isOwner()) {
-            throw new ManagerNotOwnerException("El manager con el ID " + jwtService.extractUserIDFromToken(token) + " no puede crear un establecimiento");
+            throw new ManagerNotOwnerException("El manager con el ID " + userId + " no puede crear un establecimiento");
         }
-        List<manager> managerList = new ArrayList<>();
-        managerList.add(stabManager);
 
         stabManager.getStablishmentID().add(newStab);
-        newStab.setManagerID(managerList);
+        newStab.setManagerID(Collections.singletonList(stabManager));
         managerRepo.save(stabManager);
         stabRepo.save(newStab);
     }
 
+    /**
+     * Añade un trabajador a un establecimiento.
+     * @param stablishmentID el ID del establecimiento.
+     * @param targetWorker el trabajador a añadir.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     */
     public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
-        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
-        user targetUser = userRepo.findById(targetWorker.getUserID().getUserID()).orElse(null);
-        if (targetUser == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + targetWorker.getUserID().getUserID());
-        }
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(userId).orElse(null))
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
+
+        user targetUser = userRepo.findById(targetWorker.getUserID().getUserID())
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + targetWorker.getUserID().getUserID()));
 
         if (!isManagerInStab(targetStab, stabManager)){
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + userId);
         }
 
         targetUser.setUserRole(role.WORKER);
@@ -154,37 +178,43 @@ public class stablishmentService {
         stabRepo.save(targetStab);
         workerRepo.save(targetWorker);
         userRepo.save(targetUser);
-
     }
 
+    /**
+     * Añade un trabajador a un punto de interés de un establecimiento.
+     * @param stablishmentID el ID del establecimiento.
+     * @param userID el ID del usuario que se va a añadir como trabajador.
+     * @param interestPointID el ID del punto de interés al que se va a añadir el trabajador.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws WorkerNotFoundException si no se encuentra el trabajador.
+     * @throws InterestPointNotFoundException si no se encuentra el punto de interés.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     * @throws InterestPointNotFromStablishmentException si el punto de interés no pertenece al establecimiento.
+     * @throws WorkerNotFromStablishmentException si el trabajador no pertenece al establecimiento.
+     */
     public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){
-        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        user targetUser = userRepo.findById(userID).orElse(null);
-        if (targetUser == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID);
-        }
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
-        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user targetUser = userRepo.findById(userID)
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID));
 
-        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
-        if (worker == null) {
-            throw new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID);
-        }
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(userId).orElse(null))
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
-        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
-        if (interestPoint == null) {
-            throw new InterestPointNotFoundException("No se ha encontrado el punto de interés con el ID " + interestPointID);
-        }
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab)
+            .orElseThrow(() -> new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID));
+
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID)
+            .orElseThrow(() -> new InterestPointNotFoundException("No se ha encontrado el punto de interés con el ID " + interestPointID));
 
         if (!isManagerInStab(targetStab, stabManager)){
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + userId);
         }
 
         if (interestPoint.getStablishmentID() != targetStab){
@@ -201,43 +231,52 @@ public class stablishmentService {
         workerRepo.save(worker);
     }
 
+    /**
+     * Añade un trabajador a un punto de interés de un evento en un establecimiento.
+     * @param stablishmentID el ID del establecimiento.
+     * @param eventName el nombre del evento.
+     * @param userID el ID del usuario que se va a añadir como trabajador.
+     * @param interestPointID el ID del punto de interés al que se va a añadir el trabajador.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws WorkerNotFoundException si no se encuentra el trabajador.
+     * @throws EventNotFoundException si no se encuentra el evento.
+     * @throws InterestPointNotFoundException si no se encuentra el punto de interés.
+     * @throws WorkerNotFromStablishmentException si el trabajador no pertenece al establecimiento.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     * @throws InterestPointNotFromEventException si el punto de interés no pertenece al evento.
+     */
     public void addWorkerToEventInterestPoint(Long stablishmentID, String eventName, String userID, Long interestPointID, String token){
-        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        user targetUser = userRepo.findById(userID).orElse(null);
-        if (targetUser == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID);
-        }
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
-        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user targetUser = userRepo.findById(userID)
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID));
 
-        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
-        if (worker == null) {
-            throw new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID);
-        }
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(userId).orElse(null))
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
+
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab)
+            .orElseThrow(() -> new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID));
 
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, targetStab);
         if (event == null) {
             throw new EventNotFoundException("No se ha encontrado el evento con el nombre " + eventName + " en el establecimiento con el ID " + stablishmentID);
         }
 
-        interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
-        if (interestPoint == null) {
-            throw new InterestPointNotFoundException("No se ha encontrado el punto de interés con el ID " + interestPointID);
-        }
+        interestPoint interestPoint = interestPointRepo.findById(interestPointID)
+            .orElseThrow(() -> new InterestPointNotFoundException("No se ha encontrado el punto de interés con el ID " + interestPointID));
 
         if (worker.getStablishmentID() != targetStab){
             throw new WorkerNotFromStablishmentException("El trabajador con el ID " + userID + " no pertenece al establecimiento con el ID " + stablishmentID);
         }
 
         if (!isManagerInStab(targetStab, stabManager)){
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + userId);
         }
 
         if (interestPoint.getEventName() != event) {
@@ -250,34 +289,42 @@ public class stablishmentService {
         workerRepo.save(worker);
     }
 
+    /**
+     * Elimina un trabajador de un establecimiento.
+     * @param stablishmentID el ID del establecimiento.
+     * @param userID el ID del usuario que se va a eliminar como trabajador.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws WorkerNotFoundException si no se encuentra el trabajador.
+     * @throws WorkerNotFromStablishmentException si el trabajador no pertenece al establecimiento.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     */
     public void deleteWorkerFromStab(Long stablishmentID, String userID, String token){
-        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        user targetUser = userRepo.findById(userID).orElse(null);
-        if (targetUser == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID);
-        }
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
-        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user targetUser = userRepo.findById(userID)
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID));
 
-        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab);
-        if (worker == null) {
-            throw new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID);
-        }
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(userId).orElse(null))
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
+
+        worker worker = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab)
+            .orElseThrow(() -> new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID + " en el establecimiento con el ID " + stablishmentID));
+
 
         if (worker.getStablishmentID() != targetStab){
             throw new WorkerNotFromStablishmentException("El trabajador con el ID " + userID + " no pertenece al establecimiento con el ID " + stablishmentID);
         }
 
-        if (!isManagerInStab(targetStab, stabManager)) {
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+        if (!isManagerInStab(targetStab, stabManager)){
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stablishmentID + " no pertenece al manager con el ID " + userId);
         }
+
         targetUser.setUserRole(role.USER);
         targetStab.getWorkers().remove(worker);
         userRepo.save(targetUser);
@@ -285,25 +332,31 @@ public class stablishmentService {
         workerRepo.delete(worker);
     }
 
+    /**
+     * Actualiza un establecimiento.
+     * @param targetStab el establecimiento que se va a actualizar.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     */
     public void updateStab(stablishment targetStab, String token) {
-        stablishment stablishment = stabRepo.findById(targetStab.getStablishmentID()).orElse(null);
-        if (stablishment == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + targetStab.getStablishmentID());
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        if (user == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        stablishment stablishment = stabRepo.findById(targetStab.getStablishmentID())
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + targetStab.getStablishmentID()));
 
-        manager stabManager = managerRepo.findByUserID(user);
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user user = userRepo.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
+
+        manager stabManager = managerRepo.findByUserID(user)
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
         if (!isManagerInStab(targetStab, stabManager)) {
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + userId);
         }
+
         stablishment.setCapacity(targetStab.getCapacity());
         stablishment.setStabAddress(targetStab.getStabAddress());
         stablishment.setCloseTime(targetStab.getCloseTime());
@@ -312,24 +365,30 @@ public class stablishmentService {
         stabRepo.save(stablishment);
     }
 
+    /**
+     * Añade un manager a un establecimiento.
+     * @param stablishmentID el ID del establecimiento.
+     * @param userID el ID del usuario que se va a añadir como manager.
+     * @param token el token del manager.
+     * @throws StablishmentNotFoundException si no se encuentra el establecimiento.
+     * @throws UserNotFoundException si no se encuentra el usuario.
+     * @throws ManagerNotFoundException si no se encuentra el manager.
+     * @throws ManagerNotFromStablishmentException si el manager no pertenece al establecimiento.
+     */
     public void addManagerToStab(Long stablishmentID, String userID, String token){
-        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
-        if (targetStab == null) {
-            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
-        }
+        String userId = jwtService.extractUserIDFromToken(token);
 
-        user targetUser = userRepo.findById(userID).orElse(null);
-        if (targetUser == null) {
-            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID);
-        }
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+            .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
-        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
-        if (stabManager == null) {
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
-        }
+        user targetUser = userRepo.findById(userID)
+            .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID));
+
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(userId).orElse(null))
+            .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
 
         if (!isManagerInStab(targetStab, stabManager)) {
-            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + userId);
         }
 
         manager newManager = new manager();
@@ -342,12 +401,13 @@ public class stablishmentService {
         managerRepo.save(newManager);
     }
 
+    /**
+     * Comprueba si un manager pertenece a un establecimiento.
+     * @param targetStab el establecimiento.
+     * @param stabManager el manager.
+     * @return true si el manager pertenece al establecimiento, false en caso contrario.
+     */
     private boolean isManagerInStab(stablishment targetStab, manager stabManager) {
-        for (manager manager : targetStab.getManagerID()) {
-            if (manager == stabManager) {
-                return true;
-            }
-        }
-        return false;
+        return targetStab.getManagerID().contains(stabManager);
     }
 }

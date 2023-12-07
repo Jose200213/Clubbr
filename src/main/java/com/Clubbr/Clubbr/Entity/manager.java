@@ -2,15 +2,13 @@ package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @Setter
 @Table(name = "managerRepository")
 @NoArgsConstructor
@@ -30,4 +28,5 @@ public class manager {
 
     @ManyToMany(mappedBy = "managerID", cascade = CascadeType.ALL)
     private List<stablishment> stablishmentID;
+    
 }

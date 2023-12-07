@@ -19,7 +19,7 @@ public class workerService {
                 return workerRepo.findAllByStablishmentID(stablishment);
         }
         public worker getWorker(user user, stablishment stablishment) {
-                return workerRepo.findByUserIDAndStablishmentID(user, stablishment);
+                return workerRepo.findByUserIDAndStablishmentID(user, stablishment).orElse(null);
         }
         public void deleteWorker(user user, stablishment stablishment) {
                 workerRepo.deleteByUserIDAndStablishmentID(user, stablishment);

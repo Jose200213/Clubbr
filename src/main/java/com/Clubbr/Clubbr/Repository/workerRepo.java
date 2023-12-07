@@ -7,9 +7,10 @@ import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Entity.stablishment;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface workerRepo extends JpaRepository<worker, workerID>{
     List<worker> findAllByStablishmentID(stablishment stablishment);
-    worker findByUserIDAndStablishmentID(user user, stablishment stablishment);
+    Optional<worker> findByUserIDAndStablishmentID(user user, stablishment stablishment);
     void deleteByUserIDAndStablishmentID(user  user, stablishment stablishment);
 }
