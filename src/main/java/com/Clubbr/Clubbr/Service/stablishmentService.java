@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.Clubbr.Clubbr.Entity.*;
@@ -98,11 +99,6 @@ public class stablishmentService {
             throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stabID + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
         }
 
-        //TODO: Delete all workers from the stablishment
-        //TODO: Delete all interest points from the stablishment
-        //TODO: Delete all events from the stablishment
-        //TODO: Delete all items from the stablishment
-        //TODO: Delete all managers from the stablishment
         stabManager.getStablishmentID().remove(targetStab);
         managerRepo.save(stabManager);
         stabRepo.deleteById(stabID);
@@ -119,8 +115,14 @@ public class stablishmentService {
             throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
         }
 
-        newStab.getManagerID().add(stabManager);
+        if (!stabManager.isOwner()) {
+            throw new ManagerNotOwnerException("El manager con el ID " + jwtService.extractUserIDFromToken(token) + " no puede crear un establecimiento");
+        }
+        List<manager> managerList = new ArrayList<>();
+        managerList.add(stabManager);
+
         stabManager.getStablishmentID().add(newStab);
+        newStab.setManagerID(managerList);
         managerRepo.save(stabManager);
         stabRepo.save(newStab);
     }
@@ -308,6 +310,36 @@ public class stablishmentService {
         stablishment.setOpenTime(targetStab.getOpenTime());
         stablishment.setStabName(targetStab.getStabName());
         stabRepo.save(stablishment);
+    }
+
+    public void addManagerToStab(Long stablishmentID, String userID, String token){
+        stablishment targetStab = stabRepo.findById(stablishmentID).orElse(null);
+        if (targetStab == null) {
+            throw new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID);
+        }
+
+        user targetUser = userRepo.findById(userID).orElse(null);
+        if (targetUser == null) {
+            throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID);
+        }
+
+        manager stabManager = managerRepo.findByUserID(userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null));
+        if (stabManager == null) {
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + jwtService.extractUserIDFromToken(token));
+        }
+
+        if (!isManagerInStab(targetStab, stabManager)) {
+            throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + jwtService.extractUserIDFromToken(token));
+        }
+
+        manager newManager = new manager();
+        newManager.setUserID(targetUser);
+        newManager.setOwner(false);
+        newManager.getStablishmentID().add(targetStab);
+
+        targetStab.getManagerID().add(newManager);
+        stabRepo.save(targetStab);
+        managerRepo.save(newManager);
     }
 
     private boolean isManagerInStab(stablishment targetStab, manager stabManager) {

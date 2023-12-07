@@ -1,15 +1,18 @@
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\interestPointController.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\itemRepo.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\config\exception\BadRequestException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\workerID.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\itemService.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\jwtService.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\stablishmentRepo.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\ticketController.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\eventController.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\InterestPointNotFoundException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\registerRequest.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\user.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\ManagerNotFoundException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\stablishmentService.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\ManagerNotOwnerException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\ticketService.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\EventNotFoundException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\ItemNotFoundException.java
@@ -24,6 +27,8 @@ C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\item.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\worker.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\advice\InterestPointNotFromEventException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\managerRepo.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\config\ExceptionConfig.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\config\exception\NotFoundException.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\userController.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\ticketRepo.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\config\security\securityBeansInjector.java
@@ -43,6 +48,7 @@ C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\workerSe
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\authenticationRequest.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\workerRepo.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\manager.java
+C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\eventWithPersistenceDto.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\userService.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\stablishmentController.java
 C:\Users\jaime\Documents\Clubbr\src\main\java\com\Clubbr\Clubbr\utils\role.java

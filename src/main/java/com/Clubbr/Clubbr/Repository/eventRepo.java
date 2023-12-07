@@ -15,4 +15,6 @@ public interface eventRepo extends JpaRepository<event, eventID> {
     List<event> findAllByStablishmentIDOrderByEventDateAsc(stablishment stablishment);
 
     event findByStablishmentIDAndEventNameAndEventDate(@Param("stablishmentID") stablishment stabID, @Param("eventName") String name, @Param("eventDate") LocalDate date);
+
+    event findByEventNameAndStablishmentID(String eventName, stablishment stablishmentID);
 }

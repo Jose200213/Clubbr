@@ -34,12 +34,13 @@ public class userService {
         user targetUser = userRepo.findById(userID).orElse(null);
         manager targetManager = managerRepo.findByUserID(targetUser);
         if (targetUser != null && targetManager == null){
-           manager newManager = new manager();
-           targetUser.setUserRole(role.MANAGER);
-           newManager.setUserID(targetUser);
+            manager newManager = new manager();
+            targetUser.setUserRole(role.MANAGER);
+            newManager.setUserID(targetUser);
+            newManager.setOwner(true);
 
-           managerRepo.save(newManager);
-           userRepo.save(targetUser);
+            managerRepo.save(newManager);
+            userRepo.save(targetUser);
         }
     }
 }

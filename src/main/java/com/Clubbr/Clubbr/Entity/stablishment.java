@@ -41,8 +41,11 @@ public class stablishment {
     private List<worker> workers;
 
     @ManyToMany
-    @JoinColumn (name = "managerID")
-    @JsonBackReference(value = "stablishmentManager")
+    @JoinTable(
+            name = "manager_stablishmentRepository",
+            joinColumns = @JoinColumn(name = "stablishmentID"),
+            inverseJoinColumns = @JoinColumn(name = "managerID")
+    )
     private List<manager> managerID;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)

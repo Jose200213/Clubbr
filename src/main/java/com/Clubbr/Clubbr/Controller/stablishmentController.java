@@ -109,6 +109,8 @@ public class stablishmentController {
             return ResponseEntity.ok("Se agregó el establecimiento correctamente");
         } catch (UserNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ManagerNotOwnerException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el establecimiento");
         }
@@ -144,7 +146,7 @@ public class stablishmentController {
 
     @DeleteMapping("/delete/{stablishmentID}")
     public ResponseEntity<String> deleteStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
-       try {
+        try {
             stabService.deleteStab(stablishmentID, token);
             return ResponseEntity.ok("Se eliminó el establecimiento correctamente");
         } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
@@ -156,12 +158,20 @@ public class stablishmentController {
         }
     }
 
-
-    @PostMapping("/{stablishmentID}/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody event newEvent){
-        eventService.addEventToStab(stablishmentID, newEvent);
+    @PostMapping("/{stablishmentID}/manager/{userID}/add")
+    public ResponseEntity<String> addManagerToStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String userID, @RequestHeader("Authorization") String token){
+        try{
+            stabService.addManagerToStab(stablishmentID, userID, token);
+            return ResponseEntity.ok("Se agregó el manager correctamente");
+        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ManagerNotFromStablishmentException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el manager");
+        }
     }
-
 }
+
 
 

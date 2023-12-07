@@ -9,6 +9,7 @@ com\Clubbr\Clubbr\Dto\authenticationResponse.class
 com\Clubbr\Clubbr\advice\InterestPointNotFromEventException.class
 com\Clubbr\Clubbr\advice\ItemNotFoundException.class
 com\Clubbr\Clubbr\Service\ticketService.class
+com\Clubbr\Clubbr\Controller\userController.class
 com\Clubbr\Clubbr\Controller\itemController.class
 com\Clubbr\Clubbr\Entity\item.class
 com\Clubbr\Clubbr\Repository\interestPointRepo.class
@@ -20,12 +21,15 @@ com\Clubbr\Clubbr\Dto\authenticationResponse$authenticationResponseBuilder.class
 com\Clubbr\Clubbr\Controller\interestPointController.class
 com\Clubbr\Clubbr\advice\EventNotFoundException.class
 com\Clubbr\Clubbr\Dto\authenticationRequest.class
+com\Clubbr\Clubbr\Service\workerService.class
 com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\config\security\securityBeansInjector.class
 com\Clubbr\Clubbr\advice\InterestPointNotFoundException.class
 com\Clubbr\Clubbr\advice\StablishmentNotFoundException.class
 com\Clubbr\Clubbr\advice\UserNotFoundException.class
+com\Clubbr\Clubbr\Dto\eventWithPersistenceDto.class
 com\Clubbr\Clubbr\Service\interestPointService.class
+com\Clubbr\Clubbr\Service\userService.class
 com\Clubbr\Clubbr\Repository\itemRepo.class
 com\Clubbr\Clubbr\utils\role.class
 com\Clubbr\Clubbr\Service\itemService.class

@@ -139,6 +139,7 @@ public class eventService {
         newEvent.setEventDate(targetEvent.getEventDate());
         newEvent.setEventFinishDate(targetEvent.getEventFinishDate());
         newEvent.setEventDescription(targetEvent.getEventDescription());
+        newEvent.setEventPrice(targetEvent.getEventPrice());
         newEvent.setEventTime(targetEvent.getEventTime());
         newEvent.setTotalTickets(stab.getCapacity());
         newEvent.setStablishmentID(stab);
