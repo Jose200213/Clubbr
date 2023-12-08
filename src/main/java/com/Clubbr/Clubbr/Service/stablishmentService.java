@@ -407,7 +407,7 @@ public class stablishmentService {
      * @param stabManager el manager.
      * @return true si el manager pertenece al establecimiento, false en caso contrario.
      */
-    private boolean isManagerInStab(stablishment targetStab, manager stabManager) {
+    public boolean isManagerInStab(stablishment targetStab, manager stabManager) {
         return targetStab.getManagerID().contains(stabManager);
     }
 }

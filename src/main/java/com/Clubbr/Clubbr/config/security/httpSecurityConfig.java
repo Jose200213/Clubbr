@@ -113,6 +113,12 @@ public class httpSecurityConfig {
 
             authConfig.requestMatchers(HttpMethod.DELETE, "/user/{userID}").hasAuthority(permission.DELETE_USERS.name());
             //endregion
+            //region WORKER CONTROLLER
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/all").hasAuthority(permission.READ_STAB_WORKERS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.READ_WORKERS.name());
+
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
+            //endregion
 
             authConfig.anyRequest().denyAll();
 
