@@ -1,13 +1,16 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
+import com.Clubbr.Clubbr.Entity.panicAlert;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.eventService;
+import com.Clubbr.Clubbr.Service.panicAlertService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +21,10 @@ public class eventController {
 
     @Autowired
     private eventService eventService;
+
+    @Autowired
+    private panicAlertService panicAlertService;
+
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")
@@ -78,9 +85,21 @@ public class eventController {
     }
     //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
 
-    @PostMapping("/event/{eventName}/{eventDate}/attendanceControl")
-    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
-        eventService.attendanceControlWorkers(stabID, eventName, eventDate);
+
+    @DeleteMapping("event/panicAlert/{panicAlertId}")
+    public ResponseEntity<String> deletePanicAlertById(@PathVariable("panicAlertId") Long panicAlertId) {
+        try {
+            panicAlertService.deletePanicAlertById(panicAlertId);
+            return ResponseEntity.ok("Alerta de pánico eliminada con éxito");
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la alerta de pánico: " + e.getMessage());
+        }
     }
+
+    @GetMapping("/event/panicAlerts")
+    public List<panicAlert> getPanicAlertsByStab(@PathVariable("stablishmentID") Long stabID) {
+        return panicAlertService.getPanicAlertsByStab(stabID);
+    }
+
 }
 

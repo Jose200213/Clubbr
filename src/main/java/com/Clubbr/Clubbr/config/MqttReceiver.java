@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import jakarta.annotation.PostConstruct;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +8,18 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.Clubbr.Clubbr.Service.workerService;
+import com.Clubbr.Clubbr.Service.attendanceService;
+
+import java.time.LocalDate;
 
 @Component
 public class MqttReceiver implements MqttCallback {
 
     @Autowired
     private workerService workerService;
+
+    @Autowired
+    private attendanceService attendanceService;
 
     @Autowired
     private MqttClient mqttClient;
@@ -46,8 +53,15 @@ public class MqttReceiver implements MqttCallback {
         ObjectNode json = objectMapper.readValue(message.getPayload(), ObjectNode.class);
         String respuesta = json.get("Respuesta").asText();
         String tgID = json.get("TgID").asText();
+        String eventName = json.get("EventName").asText();
+        LocalDate eventDate = LocalDate.parse(json.get("EventDate").asText());
+        Long stabID = Long.parseLong(json.get("StabID").asText());
         boolean attendance = respuesta.equals("asistire");
-        workerService.updateAttendance(tgID, attendance);
+        if(LocalDate.now().isBefore(eventDate)){
+
+            attendanceService.updateAttendance(tgID, attendance, eventName, eventDate, stabID);
+        }
+
     }
 
     @Override

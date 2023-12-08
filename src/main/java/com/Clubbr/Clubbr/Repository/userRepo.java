@@ -7,4 +7,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface userRepo extends JpaRepository<user, String> {
     user findByTelegramID(@Param("TelegramID") Long telegramID);
+    user findByUserID(@Param("userID") String userId);
 }

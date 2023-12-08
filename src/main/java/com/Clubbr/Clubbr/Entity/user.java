@@ -1,10 +1,10 @@
 package com.Clubbr.Clubbr.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 
 //TODO crear login y manejo de JWT
@@ -44,6 +44,14 @@ public class user {
 
     @Column(name = "TelegramID", unique = true)
     private Long telegramID;
+
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "userPanicAlerts")
+    private List<panicAlert> panicAlerts;
+
+    @OneToMany(mappedBy = "userID")
+    @JsonManagedReference(value = "userAttendance")
+    private List<attendance> attendances;
 
 }
 

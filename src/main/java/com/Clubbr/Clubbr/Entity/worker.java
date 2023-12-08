@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -29,15 +30,12 @@ public class worker {
     @JoinColumn (name = "InterestPointID", referencedColumnName = "InterestPointID")
     private interestPoint interestPointID;
 
-    @Column(name = "Attendance")
-    private boolean attendance;
-
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
             @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
-    @JsonBackReference
+    @JsonBackReference(value = "eventWorkers")
     private event eventName;
 
 

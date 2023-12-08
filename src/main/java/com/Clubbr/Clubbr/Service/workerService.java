@@ -61,16 +61,4 @@ public class workerService {
         }
 
 
-        public void updateAttendance(String telegramID, boolean attendance) {
-                // Buscas el usuario con el telegramID que recibiste
-                user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
-                worker worker = workerRepo.findByUserID(targetUser);
-
-                // Actualizas el valor del campo attendance
-                worker.setAttendance(attendance);
-
-                // Guardas el worker actualizado en la base de datos
-                workerRepo.save(worker);
-        }
-
 }
