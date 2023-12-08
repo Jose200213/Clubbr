@@ -3,12 +3,10 @@ package com.Clubbr.Clubbr.Entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
-
 
 @Entity
 @Getter
@@ -42,15 +40,13 @@ public class event {
     @Column(name = "eventTime")
     private String eventTime;
 
-    @Column(name = "eventPrice")
-    @JsonProperty("eventPrice")
-    private float eventPrice;
-
     @Column(name = "totalTickets")
     private int totalTickets;
 
     @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<interestPoint> interestPoints;
+
+
 
 }

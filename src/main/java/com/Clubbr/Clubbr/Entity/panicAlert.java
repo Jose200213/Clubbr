@@ -1,49 +1,46 @@
 package com.Clubbr.Clubbr.Entity;
 
+
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
+
 @Getter
 @Setter
-@Table(name = "ticketRepository")
+@Entity
+@Table(name = "panicRepository")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ticket {
+public class panicAlert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ticketID")
-    private int ticketID;
+    private Long panicAlertId;
 
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
             @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
+            @JoinColumn(name = "stablishmentID", referencedColumnName = "stablishmentID"),
+
     })
+    @JsonBackReference(value = "eventPanicAlert")
     private event eventName;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "userID", referencedColumnName = "userID")
+    @JsonBackReference(value = "userPanicAlert")
     private user userID;
 
-    @ManyToOne
-    @JoinColumn(name = "stablishmentID")
-    private stablishment stablishmentID;
+    @Column(name = "panicAlertDate")
+    private LocalDateTime panicAlertDateTime;
 
-    @Column(name = "ticketPrice")
-    private float ticketPrice;
-
-    @Column(name = "purchaseDateTime")
-    private LocalDateTime purchaseDateTime;
-
-    @Column(name = "validated")
-    private boolean validated;
 
 }

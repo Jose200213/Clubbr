@@ -16,7 +16,7 @@ import java.util.List;
 public class interestPoint {
 
     @Id
-    @Column (name = "interestPointID")
+    @Column (name = "InterestPointID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long interestPointID;
 
