@@ -1,4 +1,5 @@
 com\Clubbr\Clubbr\Controller\interestPointController.class
+com\Clubbr\Clubbr\dto\attendanceDto.class
 com\Clubbr\Clubbr\Entity\eventID.class
 com\Clubbr\Clubbr\config\ExceptionConfig.class
 com\Clubbr\Clubbr\Entity\event.class

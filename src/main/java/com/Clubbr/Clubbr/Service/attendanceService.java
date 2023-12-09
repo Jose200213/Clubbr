@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
+import com.Clubbr.Clubbr.dto.attendanceDto;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.attendanceRepo;
@@ -106,18 +107,34 @@ public class attendanceService {
     }
 
     @Transactional(readOnly = true)
-    public List<attendance> getWorkersAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate) {
+    public List<attendanceDto> getWorkersAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate) {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
-        return attendanceRepo.findAllByStablishmentIDAndEventName(stab, existingEvent);
+        List<attendance> attendances = attendanceRepo.findAllByStablishmentIDAndEventName(stab, existingEvent);
+        List<attendanceDto> attendanceDtos = attendances.stream().map(this::mapToAttendanceDto).toList();
+        return attendanceDtos;
     }
 
     @Transactional(readOnly = true)
-    public attendance getWorkerAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate, String userID) {
+    public attendanceDto getWorkerAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate, String userID) {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
         user targetUser = userRepo.findById(userID).orElse(null);
-        return attendanceRepo.findByUserIDAndEventNameAndStablishmentID(targetUser, existingEvent, stab);
+        attendance attendance = attendanceRepo.findByUserIDAndEventNameAndStablishmentID(targetUser, existingEvent, stab);
+        attendanceDto attendanceDto = mapToAttendanceDto(attendance);
+        return attendanceDto;
+    }
+
+    private attendanceDto mapToAttendanceDto(attendance attendance) {
+        attendanceDto attendanceDto = new attendanceDto();
+        attendanceDto.setAttendance(attendance.isAttendance());
+        attendanceDto.setUserID(attendance.getUserID().getUserID());
+        attendanceDto.setName(attendance.getUserID().getName());
+        attendanceDto.setSurname(attendance.getUserID().getSurname());
+        attendanceDto.setStabName(attendance.getStablishmentID().getStabName());
+        attendanceDto.setEventName(attendance.getEventName().getEventName());
+        attendanceDto.setEventDate(attendance.getEventName().getEventDate());
+        return attendanceDto;
     }
 
     @Transactional

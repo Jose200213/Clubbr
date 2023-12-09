@@ -2,6 +2,7 @@ package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.attendance;
 import com.Clubbr.Clubbr.Service.attendanceService;
+import com.Clubbr.Clubbr.dto.attendanceDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,12 @@ public class attendanceController {
     }
 
     @GetMapping("/event/{eventName}/{eventDate}/workers-attendance")
-    public List<attendance> getWorkersAttendanceByEvent(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
+    public List<attendanceDto> getWorkersAttendanceByEvent(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         return attendanceService.getWorkersAttendanceByEvent(stabID, eventName, eventDate);
     }
 
     @GetMapping("/event/{eventName}/{eventDate}/worker/{userID}/attendance")
-    public attendance getWorkerAttendanceByEvent(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("userID") String userID){
+    public attendanceDto getWorkerAttendanceByEvent(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("userID") String userID){
         return attendanceService.getWorkerAttendanceByEvent(stabID, eventName, eventDate, userID);
     }
 

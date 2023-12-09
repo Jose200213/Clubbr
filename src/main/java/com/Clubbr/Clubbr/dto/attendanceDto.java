@@ -17,5 +17,6 @@ public class attendanceDto {
     private String stabName;
     private String eventName;
     private LocalDate eventDate;
+    private Boolean attendance;
 
 }
