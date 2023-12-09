@@ -82,7 +82,6 @@ public class panicAlertService {
                 json.put("UserSurname", alertUser.getSurname());
                 json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
 
-                // Añadir el JSON a la lista
                 jsonList.add(json);
             }
         }

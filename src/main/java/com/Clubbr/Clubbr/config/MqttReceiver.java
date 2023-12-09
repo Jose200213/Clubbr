@@ -14,9 +14,7 @@ import java.time.LocalDate;
 
 @Component
 public class MqttReceiver implements MqttCallback {
-
-    @Autowired
-    private workerService workerService;
+    
 
     @Autowired
     private attendanceService attendanceService;

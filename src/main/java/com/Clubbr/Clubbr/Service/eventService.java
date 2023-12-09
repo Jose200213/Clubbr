@@ -91,40 +91,6 @@ public class eventService {
 
     }
 
-    //Añade eventos persistentes con una frecuencia y un numero de repeticiones recibidos en el body y recuperados en el dto eventWithPersistenceDto.
-    /*@Transactional
-    public void addPersistentEventToStab(Long stabID, eventWithPersistenceDto newEventDto) {
-        event newEvent = new event();
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
-
-        if(eventFlag != null){
-
-            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-
-        }
-
-        newEvent.setStablishmentID(stab);
-        newEvent.setTotalTickets(stab.getCapacity());
-        newEvent.setEventName(newEventDto.getEventName());
-        newEvent.setEventDate(newEventDto.getEventDate());
-        newEvent.setEventDescription(newEventDto.getEventDescription());
-        newEvent.setEventTime(stab.getOpenTime().toString());
-        newEvent.setEventFinishDate(newEventDto.getEventFinishDate());
-
-        int i = 0;
-
-        do{
-
-            eventRepo.save(newEvent);
-            newEvent.setEventDate(newEvent.getEventDate().plusDays(newEventDto.getFrecuencia()));
-            newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(newEventDto.getFrecuencia()));
-            i++;
-
-        }while(i < newEventDto.getRepeticiones());
-
-    }*/
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
@@ -215,31 +181,7 @@ public class eventService {
 
     }
 
-
-
-
     //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
 
-    //Esta version solo añade un evento a un local, no debe recibir interest points en el body ni los contempla.
-    ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
-    /*@Transactional
-    public void addEventToStab(Long stabID, event newEvent) {
-
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-
-        event eventAux = new event();
-
-        eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
-
-        if(eventAux != null){
-            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-        }
-
-        newEvent.setStablishmentID(stab);
-
-        eventRepo.save(newEvent);
-
-    }*/
-    ////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
 
 }

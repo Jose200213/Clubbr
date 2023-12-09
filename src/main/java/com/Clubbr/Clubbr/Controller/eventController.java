@@ -1,16 +1,11 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
-import com.Clubbr.Clubbr.Entity.panicAlert;
-import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.Clubbr.Clubbr.Service.panicAlertService;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +30,7 @@ public class eventController {
     }
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.
-    @GetMapping("/event/allordered")
+    @GetMapping("/event/all-ordered")
     public List<event> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
         return eventService.getAllEventsOrderedByDateInStab(stabID);
     }
@@ -47,59 +42,27 @@ public class eventController {
     }
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
-    @PutMapping("/event/update/{eventName}/{eventDate}")
+    @PutMapping("/event/{eventName}/{eventDate}/update")
     public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent) {
 
         eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent);
 
     }
 
-    @DeleteMapping("/event/delete/{eventName}/{eventDate}")
+    @DeleteMapping("/event/{eventName}/{eventDate}/delete")
     public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
 
         eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate);
 
     }
 
-
-
-
-    //////////////////////////////////////////// CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
-    // Recibe en el json los parametros del evento y ademas el numero de repeticiones (veces que se añadira a DB) y la frecuencia (en dias)
-    // Para ello emplea como receptor del json el dto eventWithPersistenceDto.
-    /*@PostMapping("/event/addPersistent")
-    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody eventWithPersistenceDto newEventDto) {
-
-        eventService.addPersistentEventToStab(stabID, newEventDto);
-
-    }*/
-    //////////////////////////////////////////// FIN CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
-
-    //////////////////////////////////////////// CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
-    // Asume que la frecuencia es siempre 7 dias. El evento se repetirá cada 7 dias (una semana) tantas veces como repeticiones se indiquen en el path.
-    @PostMapping("/event/addPersistent/{repeticiones}")
+    @PostMapping("/event/persistent/{repeticiones}")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent) {
 
         eventService.addPersistentEventToStab(stabID, repeticiones, newEvent);
 
     }
-    //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
 
-
-    @DeleteMapping("event/panicAlert/{panicAlertId}")
-    public ResponseEntity<String> deletePanicAlertById(@PathVariable("panicAlertId") Long panicAlertId) {
-        try {
-            panicAlertService.deletePanicAlertById(panicAlertId);
-            return ResponseEntity.ok("Alerta de pánico eliminada con éxito");
-        }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la alerta de pánico: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/event/panicAlerts")
-    public List<panicAlert> getPanicAlertsByStab(@PathVariable("stablishmentID") Long stabID) {
-        return panicAlertService.getPanicAlertsByStab(stabID);
-    }
 
 }
 

@@ -71,7 +71,7 @@ public class attendanceService {
                 attendance.setAttendance(false);
 
                 attendanceList.add(attendance);
-                // Añadir el JSON a la lista
+
                 jsonList.add(json);
             }
         }
@@ -103,5 +103,47 @@ public class attendanceService {
         attendanceToUpdate.setAttendance(attendance);
         attendanceRepo.save(attendanceToUpdate);
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<attendance> getWorkersAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        return attendanceRepo.findAllByStablishmentIDAndEventName(stab, existingEvent);
+    }
+
+    @Transactional(readOnly = true)
+    public attendance getWorkerAttendanceByEvent(Long stabID, String eventName, LocalDate eventDate, String userID) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        user targetUser = userRepo.findById(userID).orElse(null);
+        return attendanceRepo.findByUserIDAndEventNameAndStablishmentID(targetUser, existingEvent, stab);
+    }
+
+    @Transactional
+    public void updateAttendanceOfWorker(Long stabID, String eventName, LocalDate eventDate, String userID, attendance targetAttendance) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        user targetUser = userRepo.findById(userID).orElse(null);
+        attendance attendanceToUpdate = attendanceRepo.findByUserIDAndEventNameAndStablishmentID(targetUser, existingEvent, stab);
+        attendanceToUpdate.setAttendance(targetAttendance.isAttendance());
+        attendanceRepo.save(attendanceToUpdate);
+    }
+
+    @Transactional
+    public void deleteAttendancesOfWorker(Long stabID, String eventName, LocalDate eventDate, String userID) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        user targetUser = userRepo.findById(userID).orElse(null);
+        List<attendance> attendancesToDelete = attendanceRepo.findAllByUserIDAndEventNameAndStablishmentID(targetUser, existingEvent, stab);
+        attendanceRepo.deleteAll(attendancesToDelete);
+    }
+
+    @Transactional
+    public void deleteAttendancesOfEvent(Long stabID, String eventName, LocalDate eventDate) {
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        List<attendance> attendancesToDelete = attendanceRepo.findAllByStablishmentIDAndEventName(stab, existingEvent);
+        attendanceRepo.deleteAll(attendancesToDelete);
     }
 }

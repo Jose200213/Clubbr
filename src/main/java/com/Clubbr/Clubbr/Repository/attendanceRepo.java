@@ -5,8 +5,14 @@ import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.user;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface attendanceRepo extends JpaRepository<attendance, Long> {
 
     attendance findByUserIDAndEventNameAndStablishmentID(user targetUser, event existingEvent, stablishment stab);
+
+    List<attendance> findAllByStablishmentIDAndEventName(stablishment stab, event existingEvent);
+
+    List<attendance> findAllByUserIDAndEventNameAndStablishmentID(user targetUser, event existingEvent, stablishment stab);
 
 }
