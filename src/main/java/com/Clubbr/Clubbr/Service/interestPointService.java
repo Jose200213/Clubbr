@@ -1,14 +1,16 @@
 package com.Clubbr.Clubbr.Service;
 
-import com.Clubbr.Clubbr.Entity.event;
-import com.Clubbr.Clubbr.Entity.interestPoint;
-import com.Clubbr.Clubbr.Entity.stablishment;
+import com.Clubbr.Clubbr.Entity.*;
+import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
+import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.interestPointRepo;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.Repository.userRepo;
+import com.Clubbr.Clubbr.Repository.managerRepo;
 
 import java.util.List;
 
@@ -24,9 +26,30 @@ public class interestPointService {
     @Autowired
     private eventRepo eventRepo;
 
+    @Autowired
+    private jwtService jwtService;
+
+    @Autowired
+    private userRepo userRepo;
+
+    @Autowired
+    private managerRepo managerRepo;
+
+    @Autowired
+    private stablishmentService stablishmentService;
+
     @Transactional
-    public void addInterestPointToStab(Long stabID, interestPoint newInterestPoint){
+    public void addInterestPointToStab(Long stabID, interestPoint newInterestPoint, String token){
         stablishment stablishment = stablishmentRepo.findById(stabID).orElse(null);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
 
         newInterestPoint.setStablishmentID(stablishment);
         stablishment.getInterestPoints().add(newInterestPoint);
@@ -65,9 +88,19 @@ public class interestPointService {
     }
 
     @Transactional
-    public void addInterestPointToEvent(Long stabID, String eventName, interestPoint newInterestPoint){
+    public void addInterestPointToEvent(Long stabID, String eventName, interestPoint newInterestPoint, String token){
         stablishment stablishment = stablishmentRepo.findById(stabID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
+
         newInterestPoint.setEventName(event);
         event.getInterestPoints().add(newInterestPoint);
 
@@ -83,9 +116,18 @@ public class interestPointService {
     }
 
     @Transactional
-    public void updateInterestPointFromStablishment(Long stablishmentID, Long interestPointID, interestPoint targetInterestPoint){
+    public void updateInterestPointFromStablishment(Long stablishmentID, Long interestPointID, interestPoint targetInterestPoint, String token){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
 
         if (interestPoint.getStablishmentID() == stablishment){
             interestPoint.setDescription(targetInterestPoint.getDescription());
@@ -97,10 +139,19 @@ public class interestPointService {
     }
 
     @Transactional
-    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, interestPoint targetInterestPoint){
+    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, interestPoint targetInterestPoint, String token){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
         interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
 
         if (interestPoint.getEventName() == event){
             interestPoint.setDescription(targetInterestPoint.getDescription());
@@ -112,19 +163,39 @@ public class interestPointService {
     }
 
     @Transactional
-    public void deleteInterestPointFromStablishment(Long stablishmentID, Long interestPointID){
+    public void deleteInterestPointFromStablishment(Long stablishmentID, Long interestPointID, String token){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
+
         if (interestPoint.getStablishmentID() == stablishment){
             interestPointRepo.deleteById(interestPointID);
         }
     }
 
     @Transactional
-    public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID){
+    public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, String token){
         stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
         event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
         interestPoint interestPoint = interestPointRepo.findById(interestPointID).orElse(null);
+        user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (targetManager == null){
+            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+        }
+
+        if (!stablishmentService.isManagerInStab(stablishment, targetManager)){
+            throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+        }
+
         if (interestPoint.getEventName() == event){
             interestPointRepo.deleteById(interestPointID);
         }
