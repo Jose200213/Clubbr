@@ -38,4 +38,7 @@ public class worker {
     @JsonProperty("salary")
     private float salary;
 
+    @OneToOne(mappedBy = "workerID")
+    private payment payment;
+
 }
