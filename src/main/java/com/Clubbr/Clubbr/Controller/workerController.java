@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.Clubbr.Clubbr.Service.workerService;
@@ -25,7 +26,7 @@ public class workerController {
     private workerService workerService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<worker>> getAllWorkers(Long stablishmentID, String token) {
+    public ResponseEntity<List<worker>> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, String token) {
         try {
             return ResponseEntity.ok(workerService.getAllWorkers(stablishmentID, token));
         } catch (ManagerNotFoundException e) {
@@ -38,7 +39,7 @@ public class workerController {
     }
 
     @GetMapping("/{userID}")
-    public ResponseEntity<worker> getWorker(Long stablishmentID, String userID, String token) {
+    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, String userID, String token) {
         try {
             return ResponseEntity.ok(workerService.getWorker(userID, stablishmentID, token));
         } catch (UserNotFoundException | ManagerNotFoundException e) {
@@ -51,9 +52,9 @@ public class workerController {
     }
 
     @GetMapping("/update")
-    public ResponseEntity<String> updateWorker(worker targetWorker, String token) {
+    public ResponseEntity<String> updateWorker(@PathVariable("stablishmentID") Long stablishmentID, worker targetWorker, String token) {
         try {
-            workerService.updateWorker(targetWorker, token);
+            workerService.updateWorker(stablishmentID, targetWorker, token);
             return ResponseEntity.ok("Worker actualizado correctamente");
         } catch (WorkerNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

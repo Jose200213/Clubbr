@@ -57,40 +57,42 @@ public class workerService {
 
         public worker getWorker(String userID, Long stablishmentID, String token) {
                 stablishment targetStablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
-                user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+                user targetUser = userRepo.findById(userID).orElse(null);
+                user requestUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
                 if (targetUser == null){
                         throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + targetUser.getUserID());
                 }
 
-                if (targetUser.getUserRole() == role.WORKER){
-                        if (!targetUser.getUserID().equals(userID)){
+                if (requestUser.getUserRole() == role.WORKER){
+                        if (!requestUser.getUserID().equals(userID)){
                                 throw new UserNotFoundException("No se ha encontrado el usuario con el ID " + targetUser.getUserID());
                         }
                         return workerRepo.findByUserIDAndStablishmentID(targetUser, targetStablishment).orElse(null);
                 }
 
-                manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+                manager targetManager = managerRepo.findByUserID(requestUser).orElse(null);
                 if (targetManager == null){
                         throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
                 }
                 if (!stablishmentService.isManagerInStab(targetStablishment, targetManager)){
-                        throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
+                        throw new ManagerNotFromStablishmentException("El manager con el ID " + requestUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
                 }
                 return workerRepo.findByUserIDAndStablishmentID(targetUser, targetStablishment).orElse(null);
         }
 
-        public void updateWorker(worker targetWorker, String token) {
+        public void updateWorker(Long stablishmentID, worker targetWorker, String token) {
                 user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
                 manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
+                stablishment targetStablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
                 if (targetManager == null){
                         throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
                 }
 
-                if (!stablishmentService.isManagerInStab(targetWorker.getStablishmentID(), targetManager)){
+                if (!stablishmentService.isManagerInStab(targetStablishment, targetManager)){
                         throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetWorker.getStablishmentID().getStablishmentID());
                 }
 
-                worker workerToUpdate = workerRepo.findByUserIDAndStablishmentID(targetWorker.getUserID(), targetWorker.getStablishmentID()).orElse(null);
+                worker workerToUpdate = workerRepo.findByUserIDAndStablishmentID(targetWorker.getUserID(), targetStablishment).orElse(null);
                 if (workerToUpdate == null){
                         throw new WorkerNotFoundException("No se ha encontrado el usuario con el ID " + targetWorker.getUserID());
                 }
