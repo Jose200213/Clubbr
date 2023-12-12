@@ -50,7 +50,7 @@ public class attendanceService {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-        workers = workerService.getAllWorkers(stab);
+        //workers = workerService.getAllWorkers(stab);
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
