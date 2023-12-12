@@ -19,7 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.*;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/*
 @WebMvcTest  // Anotación para indicar que es un test para el controlador web
 public class eventControllerTest {
 

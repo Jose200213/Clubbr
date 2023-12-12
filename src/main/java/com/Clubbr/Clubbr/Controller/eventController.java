@@ -23,9 +23,9 @@ public class eventController {
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) throws MqttException {
+    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
 
-        eventService.addEventToStab(stabID, newEvent);
+        eventService.addEventToStab(stabID, newEvent, token);
 
     }
 
@@ -43,23 +43,26 @@ public class eventController {
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
     @PutMapping("/event/{eventName}/{eventDate}/update")
-    public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent) {
+    public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
 
-        eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent);
+        eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent, token);
 
     }
 
     @DeleteMapping("/event/{eventName}/{eventDate}/delete")
-    public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
+    public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestHeader("Authorization") String token) {
 
-        eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate);
+
+        eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate, token);
 
     }
 
-    @PostMapping("/event/persistent/{repeticiones}")
-    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent) {
 
-        eventService.addPersistentEventToStab(stabID, repeticiones, newEvent);
+    @PostMapping("/event/persistent/{repeticiones}")
+    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
+
+
+        eventService.addPersistentEventToStab(stabID, repeticiones, newEvent, token);
 
     }
 

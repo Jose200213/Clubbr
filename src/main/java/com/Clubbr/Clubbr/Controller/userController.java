@@ -1,12 +1,9 @@
 package com.Clubbr.Clubbr.Controller;
 
-import com.Clubbr.Clubbr.Entity.worker;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Service.userService;
-import com.Clubbr.Clubbr.Service.workerService;
 import java.util.List;
 
 
@@ -17,32 +14,29 @@ public class userController {
     @Autowired
     private userService userService;
 
-
     @GetMapping("/all")
     public List<user> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public user getUser(@PathVariable String id) {
-        return userService.getUser(id);
+    @GetMapping("/{userID}")
+    public user getUser(@PathVariable String userID) {
+        return userService.getUser(userID);
     }
-
-    @PostMapping("/add")
-    public void addUser(@RequestBody user newUser) {
-        userService.addUser(newUser);
-    }
-
 
     @PutMapping("/update")
     public void updateUser(@RequestBody user targetUser) {
         userService.updateUser(targetUser);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/delete/{userID}")
+    public void deleteUser(@PathVariable String userID) {
+        userService.deleteUser(userID);
     }
 
-
+    @PostMapping("/manager/{userID}")
+    public void addManager(@PathVariable String userID) {
+        userService.addManager(userID);
+    }
 }
+
