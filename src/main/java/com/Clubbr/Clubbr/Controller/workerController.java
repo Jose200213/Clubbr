@@ -9,10 +9,7 @@ import com.Clubbr.Clubbr.advice.WorkerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.workerService;
 
 import java.util.Collections;
@@ -26,7 +23,7 @@ public class workerController {
     private workerService workerService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<worker>> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, String token) {
+    public ResponseEntity<List<worker>> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
             return ResponseEntity.ok(workerService.getAllWorkers(stablishmentID, token));
         } catch (ManagerNotFoundException e) {
@@ -39,7 +36,7 @@ public class workerController {
     }
 
     @GetMapping("/{userID}")
-    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, String userID, String token) {
+    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, String userID, @RequestHeader("Authorization") String token) {
         try {
             return ResponseEntity.ok(workerService.getWorker(userID, stablishmentID, token));
         } catch (UserNotFoundException | ManagerNotFoundException e) {
@@ -51,8 +48,8 @@ public class workerController {
         }
     }
 
-    @GetMapping("/update")
-    public ResponseEntity<String> updateWorker(@PathVariable("stablishmentID") Long stablishmentID, worker targetWorker, String token) {
+    @PutMapping("/update")
+    public ResponseEntity<String> updateWorker(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody worker targetWorker, @RequestHeader("Authorization") String token) {
         try {
             workerService.updateWorker(stablishmentID, targetWorker, token);
             return ResponseEntity.ok("Worker actualizado correctamente");
@@ -61,7 +58,7 @@ public class workerController {
         } catch (ManagerNotFromStablishmentException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }
