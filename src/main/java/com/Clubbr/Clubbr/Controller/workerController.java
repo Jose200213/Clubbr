@@ -36,7 +36,7 @@ public class workerController {
     }
 
     @GetMapping("/{userID}")
-    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, String userID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
         try {
             return ResponseEntity.ok(workerService.getWorker(userID, stablishmentID, token));
         } catch (UserNotFoundException | ManagerNotFoundException e) {
