@@ -410,7 +410,7 @@ public class stablishmentService {
             manager newManager = new manager();
             newManager.setUserID(targetUser);
             newManager.setStablishmentID(new ArrayList<>());
-            newManager.setOwner(false);
+            newManager.setOwner(true);
             newManager.getStablishmentID().add(targetStab);
 
             targetStab.getManagerID().add(newManager);
