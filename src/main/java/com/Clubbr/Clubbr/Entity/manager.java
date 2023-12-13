@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,7 +28,7 @@ public class manager {
     @Column(name = "isOwner")
     private boolean isOwner;
 
-    @ManyToMany(mappedBy = "managerID", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "managerID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<stablishment> stablishmentID;
     
 }

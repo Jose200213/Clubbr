@@ -57,6 +57,6 @@ public class stablishment {
     private List<event> events;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "stablishmentInventory")
     private List<item> inventory;
 }

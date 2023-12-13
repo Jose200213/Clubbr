@@ -113,7 +113,6 @@ public class stablishmentService {
             throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + stabID + " no pertenece al manager con el ID " + userId);
         }
 
-        stabManager.getStablishmentID().remove(targetStab);
         managerRepo.save(stabManager);
         stabRepo.deleteById(stabID);
     }
@@ -138,11 +137,11 @@ public class stablishmentService {
         if (!stabManager.isOwner()) {
             throw new ManagerNotOwnerException("El manager con el ID " + userId + " no puede crear un establecimiento");
         }
-
         stabManager.getStablishmentID().add(newStab);
-        newStab.setManagerID(Collections.singletonList(stabManager));
-        managerRepo.save(stabManager);
+        newStab.setManagerID(new ArrayList<>());
+        newStab.getManagerID().add(stabManager);
         stabRepo.save(newStab);
+        managerRepo.save(stabManager);
     }
 
     /**
@@ -393,6 +392,7 @@ public class stablishmentService {
 
         manager newManager = new manager();
         newManager.setUserID(targetUser);
+        newManager.setStablishmentID(new ArrayList<>());
         newManager.setOwner(false);
         newManager.getStablishmentID().add(targetStab);
 

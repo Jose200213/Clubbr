@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.Clubbr.Clubbr.Entity.manager;
@@ -37,6 +39,7 @@ public class userService {
             targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setOwner(true);
+            newManager.setStablishmentID(new ArrayList<>());
 
             managerRepo.save(newManager);
             userRepo.save(targetUser);
