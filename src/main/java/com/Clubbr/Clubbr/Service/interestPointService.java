@@ -54,8 +54,9 @@ public class interestPointService {
         newInterestPoint.setStablishmentID(stablishment);
         stablishment.getInterestPoints().add(newInterestPoint);
 
-        interestPointRepo.save(newInterestPoint);
+
         stablishmentRepo.save(stablishment);
+        interestPointRepo.save(newInterestPoint);
     }
 
     @Transactional(readOnly = true)
@@ -104,8 +105,9 @@ public class interestPointService {
         newInterestPoint.setEventName(event);
         event.getInterestPoints().add(newInterestPoint);
 
-        interestPointRepo.save(newInterestPoint);
         eventRepo.save(event);
+        interestPointRepo.save(newInterestPoint);
+
     }
 
     @Transactional(readOnly = true)

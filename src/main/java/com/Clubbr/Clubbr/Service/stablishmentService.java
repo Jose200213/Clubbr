@@ -167,9 +167,10 @@ public class stablishmentService {
         targetWorker.setStablishmentID(targetStab);
         targetWorker.setWorkingHours(160L);
         targetStab.getWorkers().add(targetWorker);
-        stabRepo.save(targetStab);
+
         workerRepo.save(targetWorker);
         userRepo.save(targetUser);
+        stabRepo.save(targetStab);
     }
 
     /**
@@ -320,8 +321,8 @@ public class stablishmentService {
         targetUser.setUserRole(role.USER);
         targetStab.getWorkers().remove(worker);
         userRepo.save(targetUser);
-        stabRepo.save(targetStab);
         workerRepo.delete(worker);
+        stabRepo.save(targetStab);
     }
 
     /**
@@ -391,8 +392,8 @@ public class stablishmentService {
             newManager.getStablishmentID().add(targetStab);
 
             targetStab.getManagerID().add(newManager);
-            stabRepo.save(targetStab);
             managerRepo.save(newManager);
+            stabRepo.save(targetStab);
         }
     }
 
@@ -416,8 +417,8 @@ public class stablishmentService {
             newManager.getStablishmentID().add(targetStab);
 
             targetStab.getManagerID().add(newManager);
-            stabRepo.save(targetStab);
             managerRepo.save(newManager);
+            stabRepo.save(targetStab);
         }
     }
 
