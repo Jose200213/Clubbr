@@ -28,7 +28,9 @@ public class manager {
     @Column(name = "isOwner")
     private boolean isOwner;
 
-    @ManyToMany(mappedBy = "managerID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<stablishment> stablishmentID;
+    @ManyToOne
+    @JoinColumn (name = "stablishmentID")
+    @JsonBackReference(value = "stablishmentManagers")
+    private stablishment stablishmentID;
     
 }

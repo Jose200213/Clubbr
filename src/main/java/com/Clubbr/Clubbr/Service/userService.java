@@ -39,7 +39,6 @@ public class userService {
             targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setOwner(true);
-            newManager.setStablishmentID(new ArrayList<>());
 
             managerRepo.save(newManager);
             userRepo.save(targetUser);

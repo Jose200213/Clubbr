@@ -40,12 +40,8 @@ public class stablishment {
     @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;
 
-    @ManyToMany
-    @JoinTable(
-            name = "manager_stablishmentRepository",
-            joinColumns = @JoinColumn(name = "stablishmentID"),
-            inverseJoinColumns = @JoinColumn(name = "managerID")
-    )
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentManagers")
     private List<manager> managerID;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
