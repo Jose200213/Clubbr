@@ -384,6 +384,7 @@ public class stablishmentService {
         }
         if (stabManager.isOwner()){
             manager newManager = new manager();
+            targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setStablishmentID(new ArrayList<>());
             newManager.setOwner(false);
@@ -408,6 +409,7 @@ public class stablishmentService {
 
         if (requestUser.getUserRole() == role.ADMIN) {
             manager newManager = new manager();
+            targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setStablishmentID(new ArrayList<>());
             newManager.setOwner(true);
