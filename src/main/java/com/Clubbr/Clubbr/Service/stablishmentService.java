@@ -422,7 +422,8 @@ public class stablishmentService {
             targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setOwner(false);
-            newManager.setStablishmentID(targetStab);
+            newManager.setStablishmentID(new ArrayList<>());
+            newManager.getStablishmentID().add(targetStab);
 
             targetStab.getManagerID().add(newManager);
             managerRepo.save(newManager);
@@ -446,7 +447,8 @@ public class stablishmentService {
             targetUser.setUserRole(role.MANAGER);
             newManager.setUserID(targetUser);
             newManager.setOwner(true);
-            newManager.setStablishmentID(targetStab);
+            newManager.setStablishmentID(new ArrayList<>());
+            newManager.getStablishmentID().add(targetStab);
 
             targetStab.getManagerID().add(newManager);
             managerRepo.save(newManager);
