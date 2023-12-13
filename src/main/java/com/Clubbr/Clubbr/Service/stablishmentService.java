@@ -131,17 +131,10 @@ public class stablishmentService {
         user user = userRepo.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
 
-        manager stabManager = managerRepo.findByUserID(user)
-                .orElseThrow(() -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userId));
-
-        if (!stabManager.isOwner()) {
-            throw new ManagerNotOwnerException("El manager con el ID " + userId + " no puede crear un establecimiento");
+        if (user.getUserRole() == role.ADMIN){
+            newStab.setManagerID(new ArrayList<>());
+            stabRepo.save(newStab);
         }
-        stabManager.getStablishmentID().add(newStab);
-        newStab.setManagerID(new ArrayList<>());
-        newStab.getManagerID().add(stabManager);
-        stabRepo.save(newStab);
-        managerRepo.save(stabManager);
     }
 
     /**
@@ -389,16 +382,41 @@ public class stablishmentService {
         if (!isManagerInStab(targetStab, stabManager)) {
             throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + userId);
         }
+        if (stabManager.isOwner()){
+            manager newManager = new manager();
+            newManager.setUserID(targetUser);
+            newManager.setStablishmentID(new ArrayList<>());
+            newManager.setOwner(false);
+            newManager.getStablishmentID().add(targetStab);
 
-        manager newManager = new manager();
-        newManager.setUserID(targetUser);
-        newManager.setStablishmentID(new ArrayList<>());
-        newManager.setOwner(false);
-        newManager.getStablishmentID().add(targetStab);
+            targetStab.getManagerID().add(newManager);
+            stabRepo.save(targetStab);
+            managerRepo.save(newManager);
+        }
+    }
 
-        targetStab.getManagerID().add(newManager);
-        stabRepo.save(targetStab);
-        managerRepo.save(newManager);
+    public void addOwner(Long stablishmentID, String userID, String token){
+        String userId = jwtService.extractUserIDFromToken(token);
+        user requestUser = userRepo.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
+        stablishment targetStab = stabRepo.findById(stablishmentID)
+                .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
+
+        user targetUser = userRepo.findById(userID)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userID));
+
+
+        if (requestUser.getUserRole() == role.ADMIN) {
+            manager newManager = new manager();
+            newManager.setUserID(targetUser);
+            newManager.setStablishmentID(new ArrayList<>());
+            newManager.setOwner(false);
+            newManager.getStablishmentID().add(targetStab);
+
+            targetStab.getManagerID().add(newManager);
+            stabRepo.save(targetStab);
+            managerRepo.save(newManager);
+        }
     }
 
     /**
