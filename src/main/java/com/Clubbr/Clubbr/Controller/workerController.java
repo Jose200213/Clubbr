@@ -35,6 +35,13 @@ public class workerController {
         }
     }
 
+    /*@GetMapping("/aller")
+    public ResponseEntity<List<worker>> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID) {
+
+            return ResponseEntity.ok(workerService.getAllWorkers(stablishmentID));
+
+    }*/
+
     @GetMapping("/{userID}")
     public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
         try {

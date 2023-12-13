@@ -61,7 +61,7 @@ public class panicAlertService {
         stablishment stab = stabRepo.findById(targetEvent.getStablishmentID().getStablishmentID()).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
 
-        //workers = workerService.getAllWorkers(stab);
+        workers = workerService.getAllWorkers(stab);
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
@@ -72,7 +72,7 @@ public class panicAlertService {
 
 
         for(worker worker : workers){
-            if(worker.getEventName() == existingEvent || worker.getEventName() == null){
+            if(worker.getEvent() == existingEvent || worker.getEvent() == null){
                 ObjectNode json = objectMapper.createObjectNode();
                 json.put("Date", LocalDate.now().toString());
                 json.put("Time", LocalTime.now().format(formatter).toString());

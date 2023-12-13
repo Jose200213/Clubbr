@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.Clubbr.Clubbr.Service.workerService;
-import com.Clubbr.Clubbr.Service.attendanceService;
 
 import java.time.LocalDate;
 
@@ -17,7 +16,7 @@ public class MqttReceiver implements MqttCallback {
     
 
     @Autowired
-    private attendanceService attendanceService;
+    private workerService workerService;
 
     @Autowired
     private MqttClient mqttClient;
@@ -57,7 +56,7 @@ public class MqttReceiver implements MqttCallback {
         boolean attendance = respuesta.equals("asistire");
         if(LocalDate.now().isBefore(eventDate)){
 
-            attendanceService.updateAttendance(tgID, attendance, eventName, eventDate, stabID);
+            workerService.updateAttendance(tgID, attendance, eventName, eventDate, stabID);
         }
 
     }

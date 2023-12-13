@@ -1,8 +1,9 @@
 package com.Clubbr.Clubbr.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
-import com.Clubbr.Clubbr.Entity.manager;
+import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import com.Clubbr.Clubbr.advice.UserNotFoundException;
@@ -10,19 +11,21 @@ import com.Clubbr.Clubbr.advice.WorkerNotFoundException;
 import com.Clubbr.Clubbr.utils.role;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.Clubbr.Clubbr.Entity.worker;
 import com.Clubbr.Clubbr.Repository.workerRepo;
-import com.Clubbr.Clubbr.Entity.stablishment;
-import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.userRepo;
 import com.Clubbr.Clubbr.Repository.managerRepo;
+import com.Clubbr.Clubbr.Repository.eventRepo;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class workerService {
 
         @Autowired
         private workerRepo workerRepo;
+
+        @Autowired
+        private eventRepo eventRepo;
 
         @Autowired
         private stablishmentRepo stablishmentRepo;
@@ -54,6 +57,18 @@ public class workerService {
 
                 return workerRepo.findAllByStablishmentID(targetStablishment);
         }
+
+        //Metodo sin securizar interno que usan attendanceControl de eventService y panicAlertService
+        public List<worker> getAllWorkers(stablishment stablishment) {
+                return workerRepo.findAllByStablishmentID(stablishment);
+
+        }
+
+        /*public List<worker> getAllWorkers(Long stablishment) {
+                stablishment targetStablishment = stablishmentRepo.findById(stablishment).orElse(null);
+                return workerRepo.findAllByStablishmentID(targetStablishment);
+
+        }*/  //Service para probar el controller sin securizacion
 
         public worker getWorker(String userID, Long stablishmentID, String token) {
                 stablishment targetStablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
@@ -100,5 +115,19 @@ public class workerService {
                 workerToUpdate.setSalary(targetWorker.getSalary());
                 workerToUpdate.setWorkingHours(targetWorker.getWorkingHours());
                 workerRepo.save(workerToUpdate);
+        }
+
+
+        @Transactional
+        public void updateAttendance(String telegramID, boolean attendance, String eventName, LocalDate eventDate, Long stabID) {
+                // Buscas el usuario con el telegramID que recibiste
+                user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
+                stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
+                event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+
+                worker workerToUpdate = workerRepo.findByUserIDAndEventNameAndEventDateAndStablishmentID(targetUser, existingEvent.getEventName(), existingEvent.getEventDate(), stab);
+                workerToUpdate.setAttendance(attendance);
+                workerRepo.save(workerToUpdate);
+
         }
 }

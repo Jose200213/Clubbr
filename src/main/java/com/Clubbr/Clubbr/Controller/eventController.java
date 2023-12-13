@@ -1,8 +1,10 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
+import com.Clubbr.Clubbr.Service.workerService;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.Clubbr.Clubbr.Service.panicAlertService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ public class eventController {
 
     @Autowired
     private panicAlertService panicAlertService;
+
+    @Autowired
+    private workerService workerService;
 
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
@@ -64,6 +69,11 @@ public class eventController {
 
         eventService.addPersistentEventToStab(stabID, repeticiones, newEvent, token);
 
+    }
+
+    @PostMapping("/event/{eventName}/{eventDate}/attendance-control")
+    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
+        eventService.attendanceControlWorkers(stabID, eventName, eventDate);
     }
 
 

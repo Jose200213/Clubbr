@@ -1,9 +1,12 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -27,6 +30,22 @@ public class worker {
     @JsonBackReference(value = "stablishmentWorkers")
     private stablishment stablishmentID;
 
+    @Id
+    @Column(name = "eventName")
+    private String eventName;
+
+    @Id
+    @Column(name = "eventDate")
+    private LocalDate eventDate;
+
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "eventName", referencedColumnName = "eventName", insertable = false, updatable = false),
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate", insertable = false, updatable = false),
+    })
+    @JsonBackReference(value = "eventWorkers")
+    private event event;
+
     @ManyToOne
     @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")
     private interestPoint interestPointID;
@@ -38,12 +57,7 @@ public class worker {
     @JsonProperty("salary")
     private float salary;
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
-            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
-    })
-    @JsonBackReference(value = "eventWorkers")
-    private event eventName;
+    @Column(name = "attendance")
+    private boolean attendance;
 
 }

@@ -9,7 +9,12 @@ import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -222,5 +227,47 @@ public class eventService {
 
     //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
 
+    @Transactional
+    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate) throws JsonProcessingException, MqttException {
+        List<worker> workers = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+
+        workers = workerService.getAllWorkers(stab);
+
+        // Crear una lista para almacenar los JSON
+        List<ObjectNode> jsonList = new ArrayList<>();
+
+        for(worker worker : workers){
+            if(worker.getEvent() == existingEvent){
+                ObjectNode json = objectMapper.createObjectNode();
+                json.put("Date", existingEvent.getEventDate().toString());
+                json.put("Time", stab.getOpenTime().toString());
+                json.put("StabName", stab.getStabName());
+                json.put("StabAddress", stab.getStabAddress());
+                json.put("EventName", existingEvent.getEventName());
+                json.put("StabId", stab.getStablishmentID());
+                json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
+
+
+                jsonList.add(json);
+            }
+        }
+
+        // Convertir la lista de JSON a una cadena de texto JSON
+        String jsonString = objectMapper.writeValueAsString(jsonList);
+
+        // Publicar la cadena de texto JSON como un mensaje MQTT
+        byte[] payload = jsonString.getBytes();
+        MqttMessage mqttMessage = new MqttMessage(payload);
+        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        if (mqttClient != null) {
+            mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        } else {
+            // Manejar la situación en la que mqttClient es null
+            System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
+        }
+    }
 
 }
