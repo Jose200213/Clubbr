@@ -59,17 +59,11 @@ public class workerService {
                 return workerRepo.findAllByStablishmentID(targetStablishment);
         }
 
-        //Metodo sin securizar interno que usan attendanceControl de eventService y panicAlertService
+        //Metodo interno sobrecargado que usan otros metodos, no necesita securizacion porque solo se usa internamente.
         public List<worker> getAllWorkers(stablishment stablishment) {
                 return workerRepo.findAllByStablishmentID(stablishment);
 
         }
-
-        /*public List<worker> getAllWorkers(Long stablishment) {
-                stablishment targetStablishment = stablishmentRepo.findById(stablishment).orElse(null);
-                return workerRepo.findAllByStablishmentID(targetStablishment);
-
-        }*/  //Service para probar el controller sin securizacion
 
         public worker getWorker(String userID, Long stablishmentID, String token) {
                 stablishment targetStablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
@@ -121,12 +115,12 @@ public class workerService {
 
         @Transactional
         public void updateAttendance(String telegramID, boolean attendance, String eventName, LocalDate eventDate, Long stabID) {
-                // Buscas el usuario con el telegramID que recibiste
+
                 user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
                 stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
                 event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-                worker workerToUpdate = workerRepo.findByUserIDAndEventNameAndEventDateAndStablishmentID(targetUser, existingEvent.getEventName(), existingEvent.getEventDate(), stab);
+                worker workerToUpdate = workerRepo.findByUserIDAndEventAndStablishmentID(targetUser, existingEvent, stab);
                 workerToUpdate.setAttendance(attendance);
                 workerRepo.save(workerToUpdate);
 

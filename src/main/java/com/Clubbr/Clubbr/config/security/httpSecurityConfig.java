@@ -39,7 +39,7 @@ public class httpSecurityConfig {
     private static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> buildersRequestMatchers() {
         return authConfig -> {
             //region AUTHENTICATION CONTROLLER
-            /*authConfig.requestMatchers(HttpMethod.POST, "/authentication/login").permitAll();
+            authConfig.requestMatchers(HttpMethod.POST, "/authentication/login").permitAll();
             authConfig.requestMatchers(HttpMethod.POST, "/authentication/register").permitAll();
             authConfig.requestMatchers("/error").permitAll();
             //endregion
@@ -121,9 +121,9 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
             //endregion
 
-            authConfig.anyRequest().denyAll();*/
+            authConfig.anyRequest().denyAll();
 
-            authConfig.anyRequest().permitAll();
+            //authConfig.anyRequest().permitAll();
         };
     }
 }
