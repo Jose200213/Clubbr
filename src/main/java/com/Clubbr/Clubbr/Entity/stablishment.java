@@ -1,6 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,11 +42,10 @@ public class stablishment {
     private List<worker> workers;
 
     @ManyToMany
-    @JoinTable(
-            name = "manager_stablishmentRepository",
+    @JoinTable(name = "stablishmentManager",
             joinColumns = @JoinColumn(name = "stablishmentID"),
-            inverseJoinColumns = @JoinColumn(name = "managerID")
-    )
+            inverseJoinColumns = @JoinColumn(name = "managerID"))
+    @JsonIgnore
     private List<manager> managerID;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
@@ -57,7 +57,7 @@ public class stablishment {
     private List<event> events;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "stablishmentInventory")
     private List<item> inventory;
 
     @OneToMany(mappedBy = "stablishmentID")

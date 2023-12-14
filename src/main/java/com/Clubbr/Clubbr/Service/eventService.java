@@ -9,12 +9,17 @@ import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
+import com.Clubbr.Clubbr.utils.role;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +65,7 @@ public class eventService {
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
+
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
@@ -69,13 +74,15 @@ public class eventService {
             throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
+            if (manager == null) {
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
+            }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
-
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            if (!stablishmentService.isManagerInStab(stab, manager)) {
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         newEvent.setStablishmentID(stab);
@@ -124,18 +131,20 @@ public class eventService {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to update not found");
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
+            if (manager == null) {
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
+            }
 
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            if (!stablishmentService.isManagerInStab(stab, manager)) {
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
@@ -167,18 +176,20 @@ public class eventService {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to delete not found");
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
+            if (manager == null) {
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
+            }
 
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            if (!stablishmentService.isManagerInStab(stab, manager)) {
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         eventRepo.delete(existingEvent);
@@ -190,7 +201,6 @@ public class eventService {
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
@@ -200,12 +210,15 @@ public class eventService {
 
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
+            if (manager == null) {
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
+            }
 
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            if (!stablishmentService.isManagerInStab(stab, manager)) {
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         newEvent.setStablishmentID(stab);

@@ -44,6 +44,6 @@ public class item {
 
     @ManyToOne
     @JoinColumn(name = "stablishmentID")
-    @JsonBackReference
+    @JsonBackReference(value = "stablishmentInventory")
     private stablishment stablishmentID;
 }

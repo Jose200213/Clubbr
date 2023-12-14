@@ -51,12 +51,13 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/add").hasAuthority(permission.CREATE_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/add").hasAuthority(permission.CREATE_STAB_MANAGERS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/addOwner").hasAuthority(permission.CREATE_STAB_OWNER.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/update").hasAuthority(permission.UPDATE_STABLISHMENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}").hasAuthority(permission.DELETE_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/delete/{stablishmentID}").hasAuthority(permission.DELETE_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.DELETE_STABLISHMENT_WORKERS.name());
             //endregion
             //region EVENT CONTROLLER

@@ -45,15 +45,16 @@ public class workerService {
         public List<worker> getAllWorkers(Long stablishmentID, String token) {
                 stablishment targetStablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
                 user targetUser = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-                manager targetManager = managerRepo.findByUserID(targetUser).orElse(null);
-
-                if (targetManager == null){
-                        throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+            if (targetUser.getUserRole() != role.ADMIN) {
+                manager manager = managerRepo.findByUserID(targetUser).orElse(null);
+                if (manager == null) {
+                    throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
                 }
 
-                if (!stablishmentService.isManagerInStab(targetStablishment, targetManager)){
-                        throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
+                if (!stablishmentService.isManagerInStab(targetStablishment, manager)) {
+                    throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
                 }
+            }
 
                 return workerRepo.findAllByStablishmentID(targetStablishment);
         }
