@@ -155,26 +155,31 @@ public class stablishmentService {
     public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
         String userId = jwtService.extractUserIDFromToken(token);
 
+        user user = userRepo.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + userId));
+
         stablishment targetStab = stabRepo.findById(stablishmentID)
             .orElseThrow(() -> new StablishmentNotFoundException("No se ha encontrado el establecimiento con el ID " + stablishmentID));
 
         user targetUser = userRepo.findById(targetWorker.getUserID().getUserID())
             .orElseThrow(() -> new UserNotFoundException("No se ha encontrado el usuario con el ID " + targetWorker.getUserID().getUserID()));
 
-        if (targetUser.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(targetUser).orElse(null);
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
             if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + targetUser.getUserID());
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
             }
 
             if (!isManagerInStab(targetStab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
             }
         }
 
         targetUser.setUserRole(role.WORKER);
         targetWorker.setStablishmentID(targetStab);
-        targetWorker.setWorkingHours(160L);
+        targetWorker.setWorkingHours(160L);  //Este atributo probablemente se mueva a otra tabla (salary)
+        targetWorker.setAttendance(true);
+        targetWorker.setEvent(null);  // Añade un trabajador fijo.
         targetStab.getWorkers().add(targetWorker);
 
         workerRepo.save(targetWorker);
