@@ -51,6 +51,7 @@ public class workerService {
                                 throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
                         }
                 }
+            }
 
                 return workerRepo.findAllByStablishmentID(targetStablishment);
         }

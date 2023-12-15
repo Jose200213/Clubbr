@@ -12,6 +12,7 @@ public enum role {
     ADMIN(Arrays.asList(permission.READ_STABLISHMENTS, permission.CREATE_EVENTS,
             permission.CREATE_OWNER_MANAGER, permission.CREATE_STAB_MANAGERS,
             permission.READ_MY_USER,
+            permission.CREATE_STAB_OWNER,
             permission.CREATE_INTEREST_POINTS, permission.CREATE_STABLISHMENTS,
             permission.CREATE_TICKETS, permission.READ_EVENTS, permission.READ_INTEREST_POINTS,
             permission.READ_TICKETS, permission.READ_USERS, permission.UPDATE_USERS,

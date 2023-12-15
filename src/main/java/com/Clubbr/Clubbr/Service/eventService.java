@@ -10,6 +10,7 @@ import com.Clubbr.Clubbr.advice.UserNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
+import com.Clubbr.Clubbr.utils.role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,11 @@ public class eventService {
             throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
+        if (user.getUserRole() != role.ADMIN) {
+            manager manager = managerRepo.findByUserID(user).orElse(null);
+            if (manager == null) {
+                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
+            }
 
         if (userService.isManager(user)){
             manager manager = managerService.getManager(user);

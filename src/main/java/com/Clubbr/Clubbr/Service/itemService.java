@@ -7,6 +7,7 @@ import com.Clubbr.Clubbr.advice.ItemNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import com.Clubbr.Clubbr.advice.StablishmentNotFoundException;
+import com.Clubbr.Clubbr.utils.role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
