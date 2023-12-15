@@ -1,6 +1,10 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
+import com.Clubbr.Clubbr.advice.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Service.userService;
@@ -34,8 +38,5 @@ public class userController {
         userService.deleteUser(userID);
     }
 
-    @PostMapping("/manager/{userID}")
-    public void addManager(@PathVariable String userID) {
-        userService.addManager(userID);
-    }
+
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface workerRepo extends JpaRepository<worker, workerID>{
     List<worker> findAllByStablishmentID(stablishment stablishment);
     Optional<worker> findByUserIDAndStablishmentID(user user, stablishment stablishment);

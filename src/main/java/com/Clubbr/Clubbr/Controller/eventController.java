@@ -53,8 +53,6 @@ public class eventController {
     }
 
 
-
-
     //////////////////////////////////////////// CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
     // Recibe en el json los parametros del evento y ademas el numero de repeticiones (veces que se añadira a DB) y la frecuencia (en dias)
     // Para ello emplea como receptor del json el dto eventWithPersistenceDto.

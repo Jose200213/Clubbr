@@ -1,10 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.item;
-import com.Clubbr.Clubbr.advice.ItemNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
-import com.Clubbr.Clubbr.advice.StablishmentNotFoundException;
+import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Service.itemService;
 import org.springframework.http.HttpStatus;
@@ -27,12 +24,12 @@ public class itemController {
         try {
             itemService.addItemToStablishment(stablishmentID, newItem, token);
             return ResponseEntity.ok("Se agregó el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (UserNotFoundException | StablishmentNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 
@@ -41,10 +38,10 @@ public class itemController {
         try {
             List<item> items = itemService.getItemsFromStablishment(stablishmentID, token);
             return ResponseEntity.ok(items);
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
         } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
@@ -55,10 +52,10 @@ public class itemController {
         try {
             item item = itemService.getItemFromStablishment(stablishmentID, itemID, token);
             return ResponseEntity.ok(item);
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException | UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -69,12 +66,12 @@ public class itemController {
         try {
             itemService.updateItemFromStablishment(stablishmentID, itemID, updateItem, token);
             return ResponseEntity.ok("Se ha actualizado el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (StablishmentNotFoundException | ItemNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 
@@ -83,12 +80,12 @@ public class itemController {
         try {
             itemService.deleteItemFromStablishment(stablishmentID, itemID, token);
             return ResponseEntity.ok("Se ha eliminado el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (StablishmentNotFoundException | ItemNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 

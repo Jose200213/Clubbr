@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface eventRepo extends JpaRepository<event, eventID> {
@@ -18,5 +19,5 @@ public interface eventRepo extends JpaRepository<event, eventID> {
 
     event findByStablishmentIDAndEventNameAndEventDate(@Param("stablishmentID") stablishment stabID, @Param("eventName") String name, @Param("eventDate") LocalDate date);
 
-    event findByEventNameAndStablishmentID(String eventName, stablishment stablishmentID);
+    Optional<event> findByEventNameAndStablishmentID(String eventName, stablishment stablishmentID);
 }

@@ -60,59 +60,13 @@ public class stablishmentController {
         }
     }
 
-    @PostMapping("/{stablishmentID}/worker/add")
-    public ResponseEntity<String> addWorkerToStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestBody worker targetWorker, @RequestHeader("Authorization") String token){
-        try{
-            stabService.addWorkerToStab(stablishmentID, targetWorker, token);
-            return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
-        }
-    }
-
-    @PutMapping("/{stablishmentID}/worker/{userID}/interestPoint/{interestPointID}/update")
-    public ResponseEntity<String> addWorkerToStabInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
-        try {
-            stabService.addWorkerToStabInterestPoint(stablishmentID, userID, interestPointID, token);
-            return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException | InterestPointNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException | InterestPointNotFromStablishmentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
-        }
-    }
-
-    @PutMapping("/{stablishmentID}/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update")
-    public ResponseEntity<String> addWorkerToEventInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
-        try {
-            stabService.addWorkerToEventInterestPoint(stablishmentID, eventName, userID, interestPointID, token);
-            return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException | InterestPointNotFoundException | EventNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException | InterestPointNotFromEventException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
-        }
-    }
-
     @PostMapping("/add")
-    public ResponseEntity<String> addStab(@RequestBody stablishment newStab, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> addStab(@RequestBody stablishment newStab) {
         try {
-            stabService.addStablishment(newStab, token);
+            stabService.addStablishment(newStab);
             return ResponseEntity.ok("Se agregó el establecimiento correctamente");
-        } catch (UserNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotOwnerException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el establecimiento");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el establecimiento: " + e.getMessage());
         }
     }
 
@@ -130,20 +84,6 @@ public class stablishmentController {
         }
     }
 
-    @DeleteMapping("/{stablishmentID}/worker/{userID}/delete")
-    public ResponseEntity<String> deleteWorkerFromStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
-        try {
-            stabService.deleteWorkerFromStab(stablishmentID, userID, token);
-            return ResponseEntity.ok("Se eliminó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al eliminar el trabajador");
-        }
-    }
-
     @DeleteMapping("/delete/{stablishmentID}")
     public ResponseEntity<String> deleteStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
@@ -155,20 +95,6 @@ public class stablishmentController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al eliminar el establecimiento");
-        }
-    }
-
-    @PostMapping("/{stablishmentID}/manager/{userID}/add")
-    public ResponseEntity<String> addManagerToStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String userID, @RequestHeader("Authorization") String token){
-        try{
-            stabService.addManagerToStab(stablishmentID, userID, token);
-            return ResponseEntity.ok("Se agregó el manager correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el manager");
         }
     }
 }

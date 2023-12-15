@@ -4,6 +4,8 @@ import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.ticket;
 import com.Clubbr.Clubbr.Entity.user;
+import com.Clubbr.Clubbr.advice.TicketNotFoundException;
+import com.Clubbr.Clubbr.advice.TicketNotFromUserException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,51 +27,47 @@ public class ticketService {
     private ticketRepo ticketRepo;
 
     @Autowired
-    private eventRepo eventRepo;
+    private eventService eventService;
 
     @Autowired
-    private stablishmentRepo stablishmentRepo;
+    private stablishmentService stablishmentService;
 
     @Autowired
-    private userRepo userRepo;
+    private userService userService;
 
     @Autowired
     private jwtService jwtService;
 
     public void addTicketToEvent(Long stablishmentID, String eventName, String token){
-        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
-        event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        stablishment stablishment = stablishmentService.getStab(stablishmentID);
+        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (event != null && stablishment != null && userId != null){
-            ticket newTicket = new ticket();
-            newTicket.setEventName(event);
-            newTicket.setUserID(userId);
-            newTicket.setStablishmentID(stablishment);
-            newTicket.setTicketPrice(event.getEventPrice());
-            userId.getTickets().add(newTicket);
-            newTicket.setPurchaseDateTime(LocalDateTime.now());
-            ticketRepo.save(newTicket);
-        }
+        ticket newTicket = new ticket();
+        newTicket.setEventName(event);
+        newTicket.setUserID(userId);
+        newTicket.setStablishmentID(stablishment);
+        newTicket.setTicketPrice(event.getEventPrice());
+        userId.getTickets().add(newTicket);
+        newTicket.setPurchaseDateTime(LocalDateTime.now());
+
+        ticketRepo.save(newTicket);
     }
 
     public ticket getTicketFromUser(String token, Long ticketID){
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
+        ticket ticket = ticketRepo.findById(ticketID)
+                .orElseThrow(() -> new TicketNotFoundException("No se ha encontrado el ticket con el ID " + ticketID));
 
-        ticket userTicket = ticketRepo.findById(ticketID).orElse(null);
-        if (userId != null && userTicket != null && userTicket.getUserID() == userId){
-            return userTicket;
+        if (!ticket.getUserID().getUserID().equals(userId.getUserID())){
+            throw new TicketNotFromUserException("El ticket con el ID " + ticketID + " no pertenece al usuario con el ID " + userId.getUserID());
         }
-        return null;
+        return ticket;
     }
 
     public List<ticket> getAllTicketsFromUser(String token){
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-
-        if (userId != null){
-            return ticketRepo.findByUserID(userId);
-        }
-        return null;
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
+        return ticketRepo.findByUserID(userId);
     }
 
     public void deleteExpiredTickets(){

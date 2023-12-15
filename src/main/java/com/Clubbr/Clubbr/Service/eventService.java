@@ -3,6 +3,7 @@ package com.Clubbr.Clubbr.Service;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.advice.EventNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
 import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
 import com.Clubbr.Clubbr.advice.UserNotFoundException;
@@ -10,6 +11,7 @@ import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.userRepo;
@@ -26,16 +28,13 @@ public class eventService {
     private eventRepo eventRepo;
 
     @Autowired
-    private stablishmentRepo stabRepo;
-
-    @Autowired
     private jwtService jwtService;
 
     @Autowired
-    private userRepo userRepo;
+    private userService userService;
 
     @Autowired
-    private managerRepo managerRepo;
+    private managerService managerService;
 
     @Autowired
     private stablishmentService stablishmentService;
@@ -48,11 +47,8 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
     @Transactional
     public void addEventToStab(Long stabID, event newEvent, String token) {
-
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
-        //event eventAux = new event();
+        stablishment stab = stablishmentService.getStab(stabID);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if(eventFlag != null){
@@ -61,12 +57,11 @@ public class eventService {
 
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
-
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)){
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)){
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         newEvent.setStablishmentID(stab);
@@ -131,35 +126,37 @@ public class eventService {
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
-
     }
 
     @Transactional(readOnly = true)
     public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
+    }
+
+    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID){
+        return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
+                .orElseThrow(() -> new EventNotFoundException("No se ha encontrado el evento con nombre " + eventName + " en el establecimiento con ID " + stablishmentID.getStablishmentID()));
     }
 
     @Transactional
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
 
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to update not found");
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
-
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)){
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)){
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
@@ -188,21 +185,19 @@ public class eventService {
 
     @Transactional
     public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, String token) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to delete not found");
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
-
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)){
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)){
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         eventRepo.delete(existingEvent);
@@ -211,10 +206,8 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
     @Transactional
     public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent, String token) {
-
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-        manager manager = managerRepo.findByUserID(user).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
@@ -224,12 +217,11 @@ public class eventService {
 
         }
 
-        if (manager == null){
-            throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-        }
-
-        if (!stablishmentService.isManagerInStab(stab, manager)){
-            throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)){
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)){
+                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+            }
         }
 
         newEvent.setStablishmentID(stab);
@@ -251,7 +243,7 @@ public class eventService {
 
     //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
 
-    //Esta version solo añade un evento a un local, no debe recibir interest points en el body ni los contempla.
+    //Esta version solo añade un evento  un local, no debe recibir interest points en el body ni los contempla.
     ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
     /*@Transactional
     public void addEventToStab(Long stabID, event newEvent) {
