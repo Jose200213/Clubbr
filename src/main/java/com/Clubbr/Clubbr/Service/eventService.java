@@ -12,7 +12,6 @@ import com.Clubbr.Clubbr.config.exception.NotFoundException;
 import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import com.Clubbr.Clubbr.utils.role;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.userRepo;
@@ -52,20 +51,15 @@ public class eventService {
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
 
             throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
-        if (user.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(user).orElse(null);
-            if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-            }
 
-        if (userService.isManager(user)){
+        if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)){
+            if (!managerService.isManagerInStab(stab, manager)) {
                 throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
             }
         }
@@ -73,11 +67,11 @@ public class eventService {
         newEvent.setStablishmentID(stab);
         newEvent.setTotalTickets(stab.getCapacity());
 
-        if(newEvent.getInterestPoints() != null){
+        if (newEvent.getInterestPoints() != null) {
 
             List<interestPoint> iPsToStore = new ArrayList<>();
 
-            for(interestPoint ip : newEvent.getInterestPoints()){
+            for (interestPoint ip : newEvent.getInterestPoints()) {
 
                 interestPoint interestPointAux = new interestPoint();
                 interestPointAux.setStablishmentID(stab);
@@ -92,10 +86,10 @@ public class eventService {
         }
 
         eventRepo.save(newEvent);
-
     }
 
-    //Añade eventos persistentes con una frecuencia y un numero de repeticiones recibidos en el body y recuperados en el dto eventWithPersistenceDto.
+
+//Añade eventos persistentes con una frecuencia y un numero de repeticiones recibidos en el body y recuperados en el dto eventWithPersistenceDto.
     /*@Transactional
     public void addPersistentEventToStab(Long stabID, eventWithPersistenceDto newEventDto) {
         event newEvent = new event();
@@ -129,6 +123,7 @@ public class eventService {
         }while(i < newEventDto.getRepeticiones());
 
     }*/
+//////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
@@ -142,7 +137,7 @@ public class eventService {
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
     }
 
-    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID){
+    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
         return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
                 .orElseThrow(() -> new EventNotFoundException("No se ha encontrado el evento con nombre " + eventName + " en el establecimiento con ID " + stablishmentID.getStablishmentID()));
     }
@@ -158,16 +153,16 @@ public class eventService {
             throw new NotFoundException("Event to update not found");
         }
 
-        if (userService.isManager(user)){
+        if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)){
+            if (!managerService.isManagerInStab(stab, manager)) {
                 throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
             }
         }
 
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
             throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
         }
 
@@ -199,9 +194,9 @@ public class eventService {
             throw new NotFoundException("Event to delete not found");
         }
 
-        if (userService.isManager(user)){
+        if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)){
+            if (!managerService.isManagerInStab(stab, manager)) {
                 throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
             }
         }
@@ -217,15 +212,15 @@ public class eventService {
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
 
-                throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
 
-        if (userService.isManager(user)){
+        if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)){
+            if (!managerService.isManagerInStab(stab, manager)) {
                 throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
             }
         }
@@ -236,21 +231,21 @@ public class eventService {
 
         int i = 0;
 
-        do{
+        do {
 
             eventRepo.save(newEvent);
             newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
             newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(7));
             i++;
 
-        }while(i < repeticiones);
+        } while (i < repeticiones);
 
     }
 
-    //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
+//////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
 
-    //Esta version solo añade un evento  un local, no debe recibir interest points en el body ni los contempla.
-    ////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
+//Esta version solo añade un evento  un local, no debe recibir interest points en el body ni los contempla.
+////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
     /*@Transactional
     public void addEventToStab(Long stabID, event newEvent) {
 
@@ -269,6 +264,6 @@ public class eventService {
         eventRepo.save(newEvent);
 
     }*/
-    ////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
-
+////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
 }
+
