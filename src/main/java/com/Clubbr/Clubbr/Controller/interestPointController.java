@@ -1,17 +1,12 @@
 package com.Clubbr.Clubbr.Controller;
 
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
-import com.Clubbr.Clubbr.advice.WorkerNotFoundException;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.interestPointService;
-
 import com.Clubbr.Clubbr.Entity.interestPoint;
-
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -26,29 +21,57 @@ public class interestPointController {
 
     // GET ONE BY STAB
     @GetMapping("/interestPoint/{interestPointID}")
-    public interestPoint getInterestPointByStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID){
-        return interestPointService.getInterestPointByStablishment(stablishmentID, interestPointID);
+    public ResponseEntity<?> getInterestPointByStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID){
+        try {
+            interestPoint interestPoint = interestPointService.getInterestPointByStablishment(stablishmentID, interestPointID);
+            return ResponseEntity.ok(interestPoint);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
 
     // GET LIST BY STAB
     @GetMapping("/interestPoint/all")
-    public List<interestPoint> getInterestPointsByStablishment(@PathVariable("stablishmentID") Long stablishmentID){
-        return interestPointService.getInterestPointsByStablishment(stablishmentID);
+    public ResponseEntity<?> getInterestPointsByStablishment(@PathVariable("stablishmentID") Long stablishmentID){
+        try {
+            List<interestPoint> interestPoints = interestPointService.getInterestPointsByStablishment(stablishmentID);
+            return ResponseEntity.ok(interestPoints);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
 
     // GET ONE BY EVENT
     @GetMapping("/event/{eventName}/interestPoint/{interestPointID}")
-    public interestPoint getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
-        return interestPointService.getInterestPointByEventName(stablishmentID, eventName, interestPointID);
+    public ResponseEntity<?> getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
+        try {
+            interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, eventName, interestPointID);
+            return ResponseEntity.ok(interestPoint);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
 
     // GET LIST BY EVENT
     @GetMapping("/event/{eventName}/interestPoint/all")
-    public List<interestPoint> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
-        return interestPointService.getInterestPointsByEventName(eventName, stablishmentID);
+    public ResponseEntity<?> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
+        try {
+            List<interestPoint> interestPoints = interestPointService.getInterestPointsByEventName(eventName, stablishmentID);
+            return ResponseEntity.ok(interestPoints);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
     //endregion
@@ -61,10 +84,8 @@ public class interestPointController {
         try {
             interestPointService.addInterestPointToStab(stablishmentID, newInterestPoint, token);
             return ResponseEntity.ok("Interest Point añadido correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
@@ -77,10 +98,8 @@ public class interestPointController {
         try {
             interestPointService.addInterestPointToEvent(stablishmentID, eventName, newInterestPoint, token);
             return ResponseEntity.ok("Interest Point añadido correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
@@ -96,11 +115,9 @@ public class interestPointController {
         try {
             interestPointService.updateInterestPointFromStablishment(stablishmentID, interestPointID, targetInterestPoint, token);
             return ResponseEntity.ok("Interest Point actualizado correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e){
+        }  catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
     }
@@ -112,10 +129,8 @@ public class interestPointController {
         try {
             interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, interestPointID, targetInterestPoint, token);
             return ResponseEntity.ok("Interest Point actualizado correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
@@ -131,10 +146,8 @@ public class interestPointController {
         try {
             interestPointService.deleteInterestPointFromStablishment(stablishmentID, interestPointID, token);
             return ResponseEntity.ok("Interest Point eliminado correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }
@@ -147,10 +160,8 @@ public class interestPointController {
         try {
             interestPointService.deleteInterestPointFromEvent(stablishmentID, eventName, interestPointID, token);
             return ResponseEntity.ok("Interest Point eliminado correctamente");
-        } catch (ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
         }

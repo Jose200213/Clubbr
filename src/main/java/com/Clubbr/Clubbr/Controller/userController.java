@@ -1,7 +1,6 @@
 package com.Clubbr.Clubbr.Controller;
 
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.UserNotFoundException;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +18,27 @@ public class userController {
     private userService userService;
 
     @GetMapping("/all")
-    public List<user> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<user> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{userID}")
-    public user getUser(@PathVariable String userID) {
-        return userService.getUser(userID);
+    public ResponseEntity<?> getUser(@PathVariable String userID) {
+        try {
+            user targetUser = userService.getUser(userID);
+            return ResponseEntity.ok(targetUser);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
     }
 
     @PutMapping("/update")

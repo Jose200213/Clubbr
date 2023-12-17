@@ -5,13 +5,9 @@ import java.util.List;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import com.Clubbr.Clubbr.utils.role;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.workerRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
-import com.Clubbr.Clubbr.Repository.managerRepo;
 import com.Clubbr.Clubbr.Repository.interestPointRepo;
 
 @Service
@@ -48,17 +44,21 @@ public class workerService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
             }
         }
 
-    return workerRepo.findAllByStablishmentID(targetStablishment);
+        List<worker> workers = workerRepo.findAllByStablishmentID(targetStablishment);
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
+        return workers;
     }
 
 
     public worker getWorker(user userID, stablishment stablishmentID) {
         return workerRepo.findByUserIDAndStablishmentID(userID, stablishmentID)
-                .orElseThrow(() -> new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + userID.getUserID()));
+                .orElseThrow(() -> new ResourceNotFoundException("Trabajador", "userID", userID.getUserID(), "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
 
     }
 
@@ -69,14 +69,14 @@ public class workerService {
 
         if (requestUser.getUserRole() == role.WORKER){
             if (!targetUser.equals(requestUser)){
-                throw new WorkerNotFoundException("No se ha encontrado el trabajador con el ID " + targetUser.getUserID());
+                throw new ResourceNotFoundException("Trabajador", "userID", targetUser.getUserID());
             }
         }
 
         if (userService.isManager(requestUser)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
             }
         }
 
@@ -92,7 +92,7 @@ public class workerService {
         if (userService.isManager(requestUser)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -112,9 +112,9 @@ public class workerService {
         interestPoint interestPoint = interestPointService.getInterestPointByStablishment(targetStab.getStablishmentID(), interestPointID);
 
         if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
+            manager targetManager = managerService.getManager(requestUser);
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + requestUser.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -133,9 +133,9 @@ public class workerService {
         interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, event.getEventName(), interestPointID);
 
         if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
+            manager targetManager = managerService.getManager(requestUser);
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + requestUser.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -152,9 +152,9 @@ public class workerService {
         worker worker = getWorker(userService.getUser(userID), targetStab);
 
         if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
+            manager targetManager = managerService.getManager(requestUser);
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + requestUser.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -167,9 +167,9 @@ public class workerService {
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
 
         if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
+            manager targetManager = managerService.getManager(requestUser);
             if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + requestUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
             }
         }
 

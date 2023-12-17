@@ -24,34 +24,32 @@ public class ticketController {
         try {
             ticketService.addTicketToEvent(stablishmentID, eventName, token);
             return ResponseEntity.ok("Ticket añadido correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | EventNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
     @GetMapping("/ticket/{ticketID}")
-    public ResponseEntity<ticket> getTicketFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable("ticketID") Long ticketID){
+    public ResponseEntity<?> getTicketFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable("ticketID") Long ticketID){
         try {
             return ResponseEntity.ok(ticketService.getTicketFromUser(token, ticketID));
-        } catch (UserNotFoundException | TicketNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (TicketNotFromUserException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
     @GetMapping("/ticket/all")
-    public ResponseEntity<List<ticket>> getAllTicketsFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<?> getAllTicketsFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         try {
             return ResponseEntity.ok(ticketService.getAllTicketsFromUser(token));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 

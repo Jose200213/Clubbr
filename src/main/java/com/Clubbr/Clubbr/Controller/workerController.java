@@ -19,28 +19,24 @@ public class workerController {
     private workerService workerService;
 
     @GetMapping("/worker/all")
-    public ResponseEntity<List<worker>> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
             return ResponseEntity.ok(workerService.getAllWorkers(stablishmentID, token));
-        } catch (ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
     @GetMapping("/worker/{userID}")
-    public ResponseEntity<worker> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
         try {
             return ResponseEntity.ok(workerService.getWorkerFromStab(userID, stablishmentID, token));
-        } catch (WorkerNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -49,12 +45,10 @@ public class workerController {
         try {
             workerService.deleteWorkerFromStab(stablishmentID, userID, token);
             return ResponseEntity.ok("Se eliminó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al eliminar el trabajador");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -63,12 +57,10 @@ public class workerController {
         try {
             workerService.addWorkerToEventInterestPoint(stablishmentID, eventName, userID, interestPointID, token);
             return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException | InterestPointNotFoundException | EventNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException | InterestPointNotFromEventException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -77,12 +69,10 @@ public class workerController {
         try {
             workerService.addWorkerToStabInterestPoint(stablishmentID, userID, interestPointID, token);
             return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException | WorkerNotFoundException | InterestPointNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException | InterestPointNotFromStablishmentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -91,12 +81,10 @@ public class workerController {
         try{
             workerService.addWorkerToStab(stablishmentID, targetWorker, token);
             return ResponseEntity.ok("Se agregó el trabajador correctamente");
-        } catch (StablishmentNotFoundException | UserNotFoundException | ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el trabajador");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -105,12 +93,10 @@ public class workerController {
         try {
             workerService.updateWorker(stablishmentID, targetWorker, token);
             return ResponseEntity.ok("Worker actualizado correctamente");
-        } catch (WorkerNotFoundException | ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException | WorkerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 }

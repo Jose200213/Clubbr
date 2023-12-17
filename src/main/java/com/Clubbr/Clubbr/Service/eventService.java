@@ -2,20 +2,13 @@ package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.advice.EventNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
-import com.Clubbr.Clubbr.advice.UserNotFoundException;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
-import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
-import com.Clubbr.Clubbr.utils.role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.Clubbr.Clubbr.Repository.userRepo;
-import com.Clubbr.Clubbr.Repository.managerRepo;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -60,7 +53,7 @@ public class eventService {
         if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
             if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
@@ -139,7 +132,7 @@ public class eventService {
 
     public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
         return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
-                .orElseThrow(() -> new EventNotFoundException("No se ha encontrado el evento con nombre " + eventName + " en el establecimiento con ID " + stablishmentID.getStablishmentID()));
+                .orElseThrow(() -> new ResourceNotFoundException("Evento", "eventName", eventName, "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
     }
 
     @Transactional
@@ -156,7 +149,7 @@ public class eventService {
         if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
             if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
@@ -197,7 +190,7 @@ public class eventService {
         if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
             if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
@@ -221,7 +214,7 @@ public class eventService {
         if (userService.isManager(user)) {
             manager manager = managerService.getManager(user);
             if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 

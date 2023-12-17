@@ -3,18 +3,12 @@ package com.Clubbr.Clubbr.Service;
 import com.Clubbr.Clubbr.Entity.item;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.user;
-import com.Clubbr.Clubbr.advice.ItemNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
-import com.Clubbr.Clubbr.advice.StablishmentNotFoundException;
-import com.Clubbr.Clubbr.utils.role;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.itemRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
-import com.Clubbr.Clubbr.Repository.managerRepo;
 import com.Clubbr.Clubbr.Entity.manager;
 
 import java.util.List;
@@ -48,7 +42,7 @@ public class itemService {
         if (userService.isManager(user)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -67,7 +61,7 @@ public class itemService {
         if (userService.isManager(user)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
         return itemRepo.findByStablishmentID(targetStab);
@@ -81,20 +75,20 @@ public class itemService {
         if (userService.isManager(user)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
         item item = getItem(itemID);
         if (item.getStablishmentID() != targetStab){
-            throw new ItemNotFoundException("No se ha encontrado el item con el ID " + itemID + " en el establecimiento con el ID" + stablishmentID);
+            throw new ResourceNotFoundException("Item", "itemID", itemID, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
         }
         
         return item;
     }
 
     public item getItem(Long itemID){
-        return itemRepo.findById(itemID).orElseThrow(() -> new ItemNotFoundException("No se ha encontrado el item con el ID " + itemID));
+        return itemRepo.findById(itemID).orElseThrow(() -> new ResourceNotFoundException("Item", "itemID", itemID));
     }
 
     @Transactional

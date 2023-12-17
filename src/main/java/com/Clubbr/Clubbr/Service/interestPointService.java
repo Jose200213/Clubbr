@@ -3,14 +3,11 @@ package com.Clubbr.Clubbr.Service;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.interestPointRepo;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
-import com.Clubbr.Clubbr.Repository.managerRepo;
 
 import java.util.List;
 
@@ -50,7 +47,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
             }
         }
 
@@ -69,7 +66,7 @@ public class interestPointService {
 
     public interestPoint getInterestPoint(Long interestPointID){
         return interestPointRepo.findById(interestPointID)
-                .orElseThrow(() -> new InterestPointNotFoundException("No se ha encontrado el punto de interés con el ID " + interestPointID));
+                .orElseThrow(() -> new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID));
     }
 
     @Transactional(readOnly = true)
@@ -78,7 +75,7 @@ public class interestPointService {
         interestPoint interestPoint = getInterestPoint(interestPointID);
 
         if (interestPoint.getStablishmentID() != stablishment){
-            throw new InterestPointNotFromStablishmentException("No se ha encontrado el punto de interés con el ID " + interestPointID + " en el establecimiento con el ID " + stablishmentID);
+            throw new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID, "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
         }
         return interestPoint;
     }
@@ -90,7 +87,7 @@ public class interestPointService {
         interestPoint interestPoint = getInterestPoint(interestPointID);
 
         if (interestPoint.getEventName() != event){
-            throw new InterestPointNotFromEventException("No se ha encontrado el punto de interés con el ID " + interestPointID + " en el evento con el nombre " + eventName);
+            throw new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID, "Evento", "eventName", event.getEventName());
         }
         return interestPoint;
     }
@@ -104,7 +101,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
             }
         }
 
@@ -130,7 +127,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(interestPoint.getStablishmentID(), targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + interestPoint.getStablishmentID().getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", interestPoint.getStablishmentID().getStablishmentID());
             }
         }
 
@@ -150,7 +147,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
             }
         }
 
@@ -169,7 +166,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)){
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(interestPoint.getStablishmentID(), targetManager)){
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + interestPoint.getStablishmentID().getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", interestPoint.getStablishmentID().getStablishmentID());
             }
         }
 
@@ -185,7 +182,7 @@ public class interestPointService {
         if (userService.isManager(targetUser)) {
             manager targetManager = managerService.getManager(targetUser);
             if (!managerService.isManagerInStab(stablishment, targetManager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + targetUser.getUserID() + " no es manager del establecimiento con el ID " + stablishment.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
             }
         }
 

@@ -4,20 +4,13 @@ import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.ticket;
 import com.Clubbr.Clubbr.Entity.user;
-import com.Clubbr.Clubbr.advice.TicketNotFoundException;
-import com.Clubbr.Clubbr.advice.TicketNotFromUserException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.ticketRepo;
-import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 
 @Service
@@ -57,17 +50,21 @@ public class ticketService {
     public ticket getTicketFromUser(String token, Long ticketID){
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
         ticket ticket = ticketRepo.findById(ticketID)
-                .orElseThrow(() -> new TicketNotFoundException("No se ha encontrado el ticket con el ID " + ticketID));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", "ticketID", ticketID));
 
         if (!ticket.getUserID().getUserID().equals(userId.getUserID())){
-            throw new TicketNotFromUserException("El ticket con el ID " + ticketID + " no pertenece al usuario con el ID " + userId.getUserID());
+            throw new ResourceNotFoundException("Ticket", "ticketID", ticketID, "Usuario", "userID", userId.getUserID());
         }
         return ticket;
     }
 
     public List<ticket> getAllTicketsFromUser(String token){
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
-        return ticketRepo.findByUserID(userId);
+        List<ticket> tickets = ticketRepo.findByUserID(userId);
+        if (tickets.isEmpty()){
+            throw new ResourceNotFoundException("Tickets");
+        }
+        return tickets;
     }
 
     public void deleteExpiredTickets(){

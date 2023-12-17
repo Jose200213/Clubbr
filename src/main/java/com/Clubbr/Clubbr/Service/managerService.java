@@ -3,8 +3,7 @@ package com.Clubbr.Clubbr.Service;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.utils.role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -38,8 +37,8 @@ public class managerService {
 
     public manager getManager(user userID){
         return managerRepo.findByUserID(userID).orElseThrow(
-                () -> new ManagerNotFoundException("No se ha encontrado el manager con el ID " + userID.getUserID()
-                ));
+                () -> new ResourceNotFoundException("Manager", "userID", userID)
+        );
     }
 
     public void addOwnerToStab(Long stablishmentID, String userID){
@@ -67,7 +66,7 @@ public class managerService {
         if (userService.isManager(requestUser)){
             manager stabManager = getManager(requestUser);
             if (!isManagerInStab(targetStab, stabManager)) {
-                throw new ManagerNotFromStablishmentException("El establecimiento con el ID " + targetStab.getStablishmentID() + " no pertenece al manager con el ID " + userId);
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
