@@ -16,4 +16,5 @@ public class ScheduledTasks {
     public void generatePaymentForAllUsers(){
         paymentService.generatePaymentForAllUsers();
     }
+    //Hacer otro scheduled cada 12 horas que sea para updatear, no para generarlos
 }
