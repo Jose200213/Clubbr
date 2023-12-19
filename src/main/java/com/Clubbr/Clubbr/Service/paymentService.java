@@ -34,6 +34,7 @@ public class paymentService {
             payment.setUserID(worker.getUserID());
             payment.setAmount(paymentAmount);
             payment.setPaymentDate(new Date());
+            payment.setPaid(false);
 
             paymentRepository.save(payment);
         }
@@ -51,6 +52,7 @@ public class paymentService {
             payment.setUserID(worker.getUserID());
             payment.setAmount(paymentAmount);
             payment.setPaymentDate(new Date());
+            payment.setPaid(false);
 
             paymentRepository.save(payment);
         }
@@ -58,7 +60,7 @@ public class paymentService {
 
     //Metodo para generar el pago de todos los usuarios (Auto pago el 1 de cada mes)
     public void generatePaymentForAllUsers(){
-        List<worker> workers = workerRepository.findAll();
+        List<worker> workers = workerRepository.findAll(); //where eventID = NULL
 
         for (worker worker : workers){
             //Aqui calcular cuanto hay que pagarle
@@ -69,7 +71,8 @@ public class paymentService {
             payment.setUserID(worker.getUserID());
             payment.setAmount(paymentAmount);
             payment.setPaymentDate(new Date());
-
+            payment.setPaid(false);
+            
             paymentRepository.save(payment);
         }
     }
