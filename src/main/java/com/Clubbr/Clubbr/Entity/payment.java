@@ -17,9 +17,22 @@ public class payment {
     @Column(name = "paymentID")
     private Long paymentID;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "userID")
     private user userID;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "stablishmentID")
+    private stablishment stablishmentID;
+
+    @Id
+    @JoinColumn(name = "eventID") 
+    private event eventID;
+
+    @Column(name = "Paid")
+    private Bool paid
 
     @Column(name = "amount")
     private float amount;
