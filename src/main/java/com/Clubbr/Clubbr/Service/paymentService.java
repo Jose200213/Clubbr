@@ -1,6 +1,5 @@
 package com.Clubbr.Clubbr.Service;
 
-<<<<<<< Updated upstream
 import com.Clubbr.Clubbr.Repository.workerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,66 +8,14 @@ import com.Clubbr.Clubbr.Entity.worker;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Repository.paymentRepo;
 import com.Clubbr.Clubbr.Entity.payment;
-=======
-import com.Clubbr.Clubbr.Entity.payment;
-import com.Clubbr.Clubbr.Entity.worker;
-import com.Clubbr.Clubbr.Repository.paymentRepo;
-import com.Clubbr.Clubbr.Repository.workerRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 
 import java.util.Date;
->>>>>>> Stashed changes
 import java.util.List;
 
 @Service
 public class paymentService {
 
-    @Autowired
-<<<<<<< Updated upstream
-    private workerRepo workerRepo;
-
-    @Autowired
-    private paymentRepo paymentRepo;
-
-    @Transactional
-    public void actualizarPagos(){
-        List<worker> workers = workerRepo.findAll();
-
-        for (worker worker : workers){
-            float salario = worker.getSalary();
-            float horasTrabajadas = worker.getWorkingHours();
-            float nuevoPago = salario * horasTrabajadas;
-
-            payment payment = worker.getPayment();
-            if (payment == null){
-                payment = new payment();
-                payment.setWorker(worker);
-            }
-            payment.setFinalPayment(nuevoPago);
-            paymentRepo.save(payment);
-        }
-    }
-
-    @Transactional
-    public void actualizarPagosLocal(stablishment stablishment){
-        List<worker> workers = workerRepo.findAllByStablishmentID(stablishment);
-
-        for (worker worker : workers){
-            float salario = worker.getSalary();
-            float horasTrabajadas = worker.getWorkingHours();
-            float nuevoPago = salario * horasTrabajadas;
-
-            payment payment = worker.getPayment();
-            if (payment == null){
-                payment = new payment();
-                payment.setWorker(worker);
-            }
-            payment.setFinalPayment(nuevoPago);
-            paymentRepo.save(payment);
-        }
-    }
-=======
     private paymentRepo paymentRepository;
 
     @Autowired
@@ -131,5 +78,4 @@ public class paymentService {
 
         return worker.getSalary() * worker.getWorkingHours();
     }
->>>>>>> Stashed changes
 }
