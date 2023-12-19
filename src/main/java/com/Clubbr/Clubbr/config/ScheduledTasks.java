@@ -13,7 +13,7 @@ public class ScheduledTasks {
 
     //Ejecutar al comienzo de cada mes a las 00:00
     @Scheduled(cron = "0 0 0 1 * ?")
-    public void actualizarPagos(){
-        paymentService.actualizarPagos();
+    public void generatePaymentForAllUsers(){
+        paymentService.generatePaymentForAllUsers();
     }
 }
