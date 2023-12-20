@@ -23,6 +23,12 @@ import user from './svg/mdi-user.svg'
 /********************************** GENERALES *****************************************/
 /**************************************************************************************/
 
+function BotonDB() {
+  return (
+    <button type='button' className='button-db' onClick={() => alert('Me has pulsado')}> Hago cosas </button>
+  )
+}
+
 function Background({children}) {
   return ( 
     <div className='background-colorizer'>
@@ -218,7 +224,7 @@ function TicketsList() {
 
 const App = () => {
   const Options = ['Locals', 'Events', 'Tickets']
-  const Menus = ['Login', 'User']
+  const Menus = ['Login', 'User', 'DB']
   const [active, setActive] = useState(Options[0])
   const [menu, setMenu] = useState(Menus[0])
 
@@ -277,6 +283,12 @@ const App = () => {
                     <TicketsList tickets/>
                   </div>
                 </CSSTransition>
+              </Then>
+            </If>
+
+            <If condition={menu === 'DB'}>
+              <Then>
+                <BotonDB/>
               </Then>
             </If>
 

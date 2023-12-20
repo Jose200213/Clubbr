@@ -2,6 +2,22 @@
   text-align: center;
 }
 
+
+.button-db {
+  border: 3px solid black;
+  height: 10%;
+  width: 10%;
+  justify-self: center;
+  top: 200px;
+  position: relative;
+  left: 45%;
+}
+
+.button-db:hover {
+  transform: scale(1.2);
+  transition: all 0.2s ease;
+}
+
 /**************************************************************************************/
 /********************************** GENERALES *****************************************/
 /**************************************************************************************/
