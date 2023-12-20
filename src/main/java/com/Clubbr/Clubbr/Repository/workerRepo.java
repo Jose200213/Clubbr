@@ -4,6 +4,7 @@ import com.Clubbr.Clubbr.Entity.worker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Entity.stablishment;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

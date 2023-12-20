@@ -1,4 +1,4 @@
-package com.Clubbr.Clubbr.dto;
+package com.Clubbr.Clubbr.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
