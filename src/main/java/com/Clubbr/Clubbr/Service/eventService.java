@@ -2,24 +2,17 @@ package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.managerRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.userRepo;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
-import com.Clubbr.Clubbr.utils.role;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +28,9 @@ public class eventService {
     private eventRepo eventRepo;
 
     @Autowired
+    private userRepo userRepo;
+
+    @Autowired
     private stablishmentRepo stabRepo;
 
     @Autowired
@@ -44,15 +40,16 @@ public class eventService {
     @Autowired
     private workerService workerService;
 
+    @Autowired
     private jwtService jwtService;
 
 
     @Autowired
-    private userRepo userRepo;
+    private userService userService;
 
 
     @Autowired
-    private managerRepo managerRepo;
+    private managerService managerService;
 
     @Autowired
     private stablishmentService stablishmentService;
@@ -61,39 +58,33 @@ public class eventService {
     @Transactional
     public void addEventToStab(Long stabID, event newEvent, String token) {
 
+        stablishment stab = stablishmentService.getStab(stabID);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-
-        //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
 
             throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
-        if (user.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(user).orElse(null);
-            if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-            }
 
-            if (!stablishmentService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
         newEvent.setStablishmentID(stab);
         newEvent.setTotalTickets(stab.getCapacity());
 
-        if(newEvent.getInterestPoints() != null){
+        if (newEvent.getInterestPoints() != null) {
 
 
             List<interestPoint> iPsToStore = new ArrayList<>();
 
-            for(interestPoint ip : newEvent.getInterestPoints()){
+            for (interestPoint ip : newEvent.getInterestPoints()) {
 
                 interestPoint interestPointAux = new interestPoint();
                 interestPointAux.setStablishmentID(stab);
@@ -108,48 +99,47 @@ public class eventService {
         }
 
         eventRepo.save(newEvent);
-
     }
 
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
-
     }
 
     @Transactional(readOnly = true)
     public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
+    }
+
+    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
+        return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento", "eventName", eventName, "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
     }
 
     @Transactional
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
 
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to update not found");
         }
 
-        if (user.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(user).orElse(null);
-            if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-            }
-
-            if (!stablishmentService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
             throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
         }
 
@@ -173,22 +163,18 @@ public class eventService {
 
     @Transactional
     public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, String token) {
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to delete not found");
         }
 
-        if (user.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(user).orElse(null);
-            if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-            }
-
-            if (!stablishmentService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
@@ -198,26 +184,21 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
     @Transactional
     public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent, String token) {
-
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        user user = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         //event eventAux = new event();
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
-        if(eventFlag != null){
+        if (eventFlag != null) {
 
-                throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
 
         }
 
-        if (user.getUserRole() != role.ADMIN) {
-            manager manager = managerRepo.findByUserID(user).orElse(null);
-            if (manager == null) {
-                throw new ManagerNotFoundException("No se ha encontrado el manager con el ID " + user.getUserID());
-            }
-
-            if (!stablishmentService.isManagerInStab(stab, manager)) {
-                throw new ManagerNotFromStablishmentException("El manager con el ID " + user.getUserID() + " no es manager del establecimiento con el ID " + stab.getStablishmentID());
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
@@ -227,23 +208,25 @@ public class eventService {
 
         int i = 0;
 
-        do{
+        do {
 
             eventRepo.save(newEvent);
             newEvent.setEventDate(newEvent.getEventDate().plusDays(7));
             newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(7));
             i++;
 
-        }while(i < repeticiones);
+        } while (i < repeticiones);
 
     }
 
-    //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
+//////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
+
 
     @Transactional
     public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate) throws JsonProcessingException, MqttException {
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
@@ -283,4 +266,6 @@ public class eventService {
         }
     }
 
+
 }
+

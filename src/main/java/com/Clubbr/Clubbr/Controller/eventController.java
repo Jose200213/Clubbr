@@ -1,9 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
-import com.Clubbr.Clubbr.Service.workerService;
 import com.Clubbr.Clubbr.Service.eventService;
-import com.Clubbr.Clubbr.Service.panicAlertService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +16,6 @@ public class eventController {
 
     @Autowired
     private eventService eventService;
-
-    @Autowired
-    private panicAlertService panicAlertService;
-
-    @Autowired
-    private workerService workerService;
-
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")

@@ -1,15 +1,11 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.item;
-import com.Clubbr.Clubbr.advice.ItemNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFoundException;
-import com.Clubbr.Clubbr.advice.ManagerNotFromStablishmentException;
-import com.Clubbr.Clubbr.advice.StablishmentNotFoundException;
+import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Service.itemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -27,40 +23,34 @@ public class itemController {
         try {
             itemService.addItemToStablishment(stablishmentID, newItem, token);
             return ResponseEntity.ok("Se agregó el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 
     @GetMapping("/item/all")
-    public ResponseEntity<List<item>> getItemsFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getItemsFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
             List<item> items = itemService.getItemsFromStablishment(stablishmentID, token);
             return ResponseEntity.ok(items);
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
     @GetMapping("/item/{itemID}")
-    public ResponseEntity<item> getItemFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("itemID") Long itemID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getItemFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("itemID") Long itemID, @RequestHeader("Authorization") String token) {
         try {
             item item = itemService.getItemFromStablishment(stablishmentID, itemID, token);
             return ResponseEntity.ok(item);
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
@@ -69,12 +59,10 @@ public class itemController {
         try {
             itemService.updateItemFromStablishment(stablishmentID, itemID, updateItem, token);
             return ResponseEntity.ok("Se ha actualizado el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 
@@ -83,12 +71,10 @@ public class itemController {
         try {
             itemService.deleteItemFromStablishment(stablishmentID, itemID, token);
             return ResponseEntity.ok("Se ha eliminado el item correctamente");
-        } catch (StablishmentNotFoundException | ItemNotFoundException | ManagerNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ManagerNotFromStablishmentException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el item: " + e.getMessage());
         }
     }
 

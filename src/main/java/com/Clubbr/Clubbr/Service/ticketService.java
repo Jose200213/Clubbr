@@ -4,18 +4,13 @@ import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.ticket;
 import com.Clubbr.Clubbr.Entity.user;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.ticketRepo;
-import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 
 @Service
@@ -25,51 +20,51 @@ public class ticketService {
     private ticketRepo ticketRepo;
 
     @Autowired
-    private eventRepo eventRepo;
+    private eventService eventService;
 
     @Autowired
-    private stablishmentRepo stablishmentRepo;
+    private stablishmentService stablishmentService;
 
     @Autowired
-    private userRepo userRepo;
+    private userService userService;
 
     @Autowired
     private jwtService jwtService;
 
     public void addTicketToEvent(Long stablishmentID, String eventName, String token){
-        stablishment stablishment = stablishmentRepo.findById(stablishmentID).orElse(null);
-        event event = eventRepo.findByEventNameAndStablishmentID(eventName, stablishment);
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        stablishment stablishment = stablishmentService.getStab(stablishmentID);
+        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (event != null && stablishment != null && userId != null){
-            ticket newTicket = new ticket();
-            newTicket.setEventName(event);
-            newTicket.setUserID(userId);
-            newTicket.setStablishmentID(stablishment);
-            newTicket.setTicketPrice(event.getEventPrice());
-            userId.getTickets().add(newTicket);
-            newTicket.setPurchaseDateTime(LocalDateTime.now());
-            ticketRepo.save(newTicket);
-        }
+        ticket newTicket = new ticket();
+        newTicket.setEventName(event);
+        newTicket.setUserID(userId);
+        newTicket.setStablishmentID(stablishment);
+        newTicket.setTicketPrice(event.getEventPrice());
+        userId.getTickets().add(newTicket);
+        newTicket.setPurchaseDateTime(LocalDateTime.now());
+
+        ticketRepo.save(newTicket);
     }
 
     public ticket getTicketFromUser(String token, Long ticketID){
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
+        ticket ticket = ticketRepo.findById(ticketID)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", "ticketID", ticketID));
 
-        ticket userTicket = ticketRepo.findById(ticketID).orElse(null);
-        if (userId != null && userTicket != null && userTicket.getUserID() == userId){
-            return userTicket;
+        if (!ticket.getUserID().getUserID().equals(userId.getUserID())){
+            throw new ResourceNotFoundException("Ticket", "ticketID", ticketID, "Usuario", "userID", userId.getUserID());
         }
-        return null;
+        return ticket;
     }
 
     public List<ticket> getAllTicketsFromUser(String token){
-        user userId = userRepo.findById(jwtService.extractUserIDFromToken(token)).orElse(null);
-
-        if (userId != null){
-            return ticketRepo.findByUserID(userId);
+        user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
+        List<ticket> tickets = ticketRepo.findByUserID(userId);
+        if (tickets.isEmpty()){
+            throw new ResourceNotFoundException("Tickets");
         }
-        return null;
+        return tickets;
     }
 
     public void deleteExpiredTickets(){
