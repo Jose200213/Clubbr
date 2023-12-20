@@ -3,6 +3,7 @@ package com.Clubbr.Clubbr.Service;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.Repository.workerRepo;
 import com.Clubbr.Clubbr.Repository.userRepo;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
@@ -38,9 +39,6 @@ public class eventService {
     private MqttClient mqttClient;
 
     @Autowired
-    private workerService workerService;
-
-    @Autowired
     private jwtService jwtService;
 
 
@@ -53,6 +51,9 @@ public class eventService {
 
     @Autowired
     private stablishmentService stablishmentService;
+
+    @Autowired
+    private workerRepo workerRepo;
 
 
     @Transactional
@@ -230,7 +231,9 @@ public class eventService {
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-        workers = workerService.getAllWorkers(stab);
+        //workers = workerService.getAllWorkers(stab);
+
+        workers = workerRepo.findAllByStablishmentID(stab);
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();

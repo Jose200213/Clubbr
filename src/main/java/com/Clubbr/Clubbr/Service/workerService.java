@@ -8,6 +8,7 @@ import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 
 import com.Clubbr.Clubbr.utils.role;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.workerRepo;
@@ -44,6 +45,9 @@ public class workerService {
     private jwtService jwtService;
 
     @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
     private stablishmentService stablishmentService;
 
     @Autowired
@@ -76,14 +80,6 @@ public class workerService {
         }
         return workers;
     }
-
-
-    //Metodo interno sobrecargado que usan otros metodos, no necesita securizacion porque solo se usa internamente.
-    public List<worker> getAllWorkers(stablishment stablishment) {
-        return workerRepo.findAllByStablishmentID(stablishment);
-
-    }
-
 
     public worker getWorker(user userID, stablishment stablishmentID) {
         return workerRepo.findByUserIDAndStablishmentID(userID, stablishmentID)
@@ -125,6 +121,7 @@ public class workerService {
 
     }
 
+    @Transactional
     public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
         String userId = jwtService.extractUserIDFromToken(token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
@@ -140,10 +137,33 @@ public class workerService {
 
         targetUser.setUserRole(role.WORKER);
         targetWorker.setUserID(targetUser);
-        targetStab.getWorkers().add(targetWorker);
         targetWorker.setStablishmentID(targetStab);
-        targetWorker.setWorkingHours(160L);
+
+        if (targetWorker.getEvent() != null){
+
+            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEvent().getEventName(), targetWorker.getEvent().getEventDate());
+            if(eventFlag == null){
+                throw new ResourceNotFoundException("Evento", "eventName", targetWorker.getEvent().getEventName(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+            targetWorker.setAttendance(false);
+            eventFlag.getWorkers().add(targetWorker);
+            eventRepo.save(eventFlag);
+
+        }else{
+            targetWorker.setWorkingHours(160L);
+            targetWorker.setAttendance(true);
+            targetWorker.setEvent(null);
+        }
+
+        targetStab.getWorkers().add(targetWorker);
+        stablishmentRepo.save(targetStab);
+
+        if (targetWorker.getId() != null && workerRepo.existsById(targetWorker.getId())) {
+            targetWorker = entityManager.merge(targetWorker);
+        }
+
         workerRepo.save(targetWorker);
+        userRepo.save(targetUser);
     }
 
     public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){

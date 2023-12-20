@@ -21,12 +21,6 @@ public class MqttReceiver implements MqttCallback {
     @Autowired
     private MqttClient mqttClient;
 
-    /*@PostConstruct
-    public void init() throws MqttException{
-        mqttClient.setCallback(this);
-        mqttClient.subscribe("Clubbr/ConfirmAttendance");
-    }*/
-
     @PostConstruct
     public void init() {
         try {

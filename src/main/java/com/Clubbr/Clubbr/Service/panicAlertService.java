@@ -1,10 +1,9 @@
 package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
-
-import com.Clubbr.Clubbr.Repository.panicAlertRepo;
-import com.Clubbr.Clubbr.Service.workerService;
 import com.Clubbr.Clubbr.Repository.eventRepo;
+import com.Clubbr.Clubbr.Repository.workerRepo;
+import com.Clubbr.Clubbr.Repository.panicAlertRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.userRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +42,7 @@ public class panicAlertService {
     private eventRepo eventRepo;
 
     @Autowired
-    private workerService workerService;
+    private workerRepo workerRepo;
 
 
     @Transactional
@@ -61,7 +60,8 @@ public class panicAlertService {
         stablishment stab = stabRepo.findById(targetEvent.getStablishmentID().getStablishmentID()).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
 
-        workers = workerService.getAllWorkers(stab);
+        //workers = workerService.getAllWorkers(stab);
+        workers = workerRepo.findAllByStablishmentID(stab);
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
