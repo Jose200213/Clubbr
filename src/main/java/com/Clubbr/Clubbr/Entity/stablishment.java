@@ -1,10 +1,5 @@
 package com.Clubbr.Clubbr.Entity;
 
-<<<<<<< HEAD
-=======
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
->>>>>>> PruebaMerge06-12-2023
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,16 +38,6 @@ public class stablishment {
     @OneToMany(mappedBy = "stablishmentID")
     private List<worker> workers;
 
-<<<<<<< HEAD
-=======
-    @ManyToMany
-    @JoinTable(name = "stablishmentManager",
-            joinColumns = @JoinColumn(name = "stablishmentID"),
-            inverseJoinColumns = @JoinColumn(name = "managerID"))
-    @JsonIgnore
-    private List<manager> managerID;
-
->>>>>>> PruebaMerge06-12-2023
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentInterestPoints")
     private List<interestPoint> interestPoints;
@@ -61,13 +46,7 @@ public class stablishment {
     @JsonManagedReference(value = "stablishmentEvents")
     private List<event> events;
 
-<<<<<<< HEAD
     @Column(name = "floorPlan")
     private String floorPlan; //Plano de la planta del local
 
-=======
-    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "stablishmentInventory")
-    private List<item> inventory;
->>>>>>> PruebaMerge06-12-2023
 }

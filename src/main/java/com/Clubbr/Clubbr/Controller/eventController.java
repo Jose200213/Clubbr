@@ -1,7 +1,6 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
-<<<<<<< HEAD
 import com.Clubbr.Clubbr.Entity.panicAlert;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.Entity.worker;
@@ -9,9 +8,6 @@ import com.Clubbr.Clubbr.dto.eventWithPersistenceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-=======
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> PruebaMerge06-12-2023
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.Clubbr.Clubbr.Service.panicAlertService;
@@ -33,9 +29,9 @@ public class eventController {
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
+    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent) {
 
-        eventService.addEventToStab(stabID, newEvent, token);
+        eventService.addEventToStab(stabID, newEvent);
 
     }
 
@@ -53,7 +49,6 @@ public class eventController {
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
     @PutMapping("/event/update/{eventName}/{eventDate}")
-<<<<<<< HEAD
     public ResponseEntity<String> updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent) {
         try {
             eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent);
@@ -61,20 +56,17 @@ public class eventController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operación: " + e.getMessage());
         }
-=======
-    public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
-
-        eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent, token);
->>>>>>> PruebaMerge06-12-2023
 
     }
 
     @DeleteMapping("/event/delete/{eventName}/{eventDate}")
-    public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestHeader("Authorization") String token) {
+    public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
 
-        eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate, token);
+        eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate);
 
     }
+
+
 
 
     //////////////////////////////////////////// CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
@@ -90,7 +82,6 @@ public class eventController {
 
     //////////////////////////////////////////// CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
     // Asume que la frecuencia es siempre 7 dias. El evento se repetirá cada 7 dias (una semana) tantas veces como repeticiones se indiquen en el path.
-<<<<<<< HEAD
     /*@PostMapping("/event/addPersistent/{repeticiones}")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent) {
         //try{
@@ -99,12 +90,6 @@ public class eventController {
         //}catch (Exception e){
         //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en la operacion: " + e.getMessage());
         //}
-=======
-    @PostMapping("/event/addPersistent/{repeticiones}")
-    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
-
-        eventService.addPersistentEventToStab(stabID, repeticiones, newEvent, token);
->>>>>>> PruebaMerge06-12-2023
 
     }*/
     //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
