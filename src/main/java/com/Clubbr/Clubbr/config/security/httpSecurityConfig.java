@@ -65,6 +65,8 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}").hasAuthority(permission.READ_EVENTS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/add").hasAuthority(permission.CREATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/persistent/{repeticiones}").hasAuthority(permission.CREATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/attendance-control").hasAuthority(permission.ATTENDANCE_CONTROL.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update").hasAuthority(permission.UPDATE_EVENTS.name());
 

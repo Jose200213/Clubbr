@@ -224,14 +224,20 @@ public class eventService {
 
 
     @Transactional
-    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate) throws JsonProcessingException, MqttException {
+    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate, String token) throws JsonProcessingException, MqttException {
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         stablishment stab = stabRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-        //workers = workerService.getAllWorkers(stab);
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
+            }
+        }
 
         workers = workerRepo.findAllByStablishmentID(stab);
 
@@ -254,17 +260,14 @@ public class eventService {
             }
         }
 
-        // Convertir la lista de JSON a una cadena de texto JSON
         String jsonString = objectMapper.writeValueAsString(jsonList);
 
-        // Publicar la cadena de texto JSON como un mensaje MQTT
         byte[] payload = jsonString.getBytes();
         MqttMessage mqttMessage = new MqttMessage(payload);
-        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+
         if (mqttClient != null) {
             mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
         } else {
-            // Manejar la situación en la que mqttClient es null
             System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
         }
     }

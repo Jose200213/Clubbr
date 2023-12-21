@@ -63,8 +63,8 @@ public class eventController {
     }
 
     @PostMapping("/event/{eventName}/{eventDate}/attendance-control")
-    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
-        eventService.attendanceControlWorkers(stabID, eventName, eventDate);
+    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestHeader("Authorization") String token) throws MqttException, JsonProcessingException {
+        eventService.attendanceControlWorkers(stabID, eventName, eventDate, token);
     }
 
 
