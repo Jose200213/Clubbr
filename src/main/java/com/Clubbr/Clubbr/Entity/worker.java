@@ -41,7 +41,7 @@ public class worker {
             @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
     //@JsonBackReference(value = "eventWorkers")
-    private event event;
+    private event eventID;
 
     @ManyToOne
     @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")

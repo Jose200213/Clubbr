@@ -26,7 +26,10 @@ public class payment {
     private stablishment stablishmentID;
 
     @ManyToOne
-    @JoinColumn(name = "eventID")
+    @JoinColumns({
+            @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
+    })
     private event eventID;              // No se por qué está, ya que cada worker tiene su evento si existe -> workerID.getEventID()
 
     @Column(name = "Paid")

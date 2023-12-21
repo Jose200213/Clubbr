@@ -72,7 +72,7 @@ public class panicAlertService {
 
 
         for(worker worker : workers){
-            if(worker.getEvent() == existingEvent || worker.getEvent() == null){
+            if(worker.getEventID() == existingEvent || worker.getEventID() == null){
                 ObjectNode json = objectMapper.createObjectNode();
                 json.put("Date", LocalDate.now().toString());
                 json.put("Time", LocalTime.now().format(formatter).toString());

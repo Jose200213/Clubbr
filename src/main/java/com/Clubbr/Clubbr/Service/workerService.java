@@ -59,6 +59,9 @@ public class workerService {
     @Autowired
     private eventService eventService;
 
+    @Autowired
+    private userRepo userRepo;
+
     public List<worker> getAllWorkersFromStab(Long stablishmentID, String token) {
         stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
         user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
@@ -133,7 +136,7 @@ public class workerService {
         stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-        worker workerToUpdate = workerRepo.findByUserIDAndEventAndStablishmentID(targetUser, existingEvent, stab);
+        worker workerToUpdate = workerRepo.findByUserIDAndEventIDAndStablishmentID(targetUser, existingEvent, stab);
         workerToUpdate.setAttendance(attendance);
         workerRepo.save(workerToUpdate);
 
@@ -157,11 +160,11 @@ public class workerService {
         targetWorker.setUserID(targetUser);
         targetWorker.setStablishmentID(targetStab);
 
-        if (targetWorker.getEvent() != null){
+        if (targetWorker.getEventID() != null){
 
-            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEvent().getEventName(), targetWorker.getEvent().getEventDate());
+            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
             if(eventFlag == null){
-                throw new ResourceNotFoundException("Evento", "eventName", targetWorker.getEvent().getEventName(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Evento", "eventName", targetWorker.getEventID().getEventName(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
             targetWorker.setAttendance(false);
             eventFlag.getWorkers().add(targetWorker);
@@ -170,7 +173,7 @@ public class workerService {
         }else{
             targetWorker.setWorkingHours(160L);
             targetWorker.setAttendance(true);
-            targetWorker.setEvent(null);
+            targetWorker.setEventID(null);
         }
 
         targetStab.getWorkers().add(targetWorker);

@@ -239,7 +239,7 @@ public class eventService {
         List<ObjectNode> jsonList = new ArrayList<>();
 
         for(worker worker : workers){
-            if(worker.getEvent() == existingEvent){
+            if(worker.getEventID() == existingEvent){
                 ObjectNode json = objectMapper.createObjectNode();
                 json.put("Date", existingEvent.getEventDate().toString());
                 json.put("Time", stab.getOpenTime().toString());

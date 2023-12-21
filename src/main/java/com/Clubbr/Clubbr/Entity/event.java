@@ -53,7 +53,7 @@ public class event {
     @JsonManagedReference
     private List<interestPoint> interestPoints;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "eventID", cascade = CascadeType.ALL)
     //@JsonManagedReference(value = "eventWorkers")
     private List<worker> workers;
 
