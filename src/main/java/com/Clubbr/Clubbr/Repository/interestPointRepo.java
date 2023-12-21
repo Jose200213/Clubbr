@@ -15,4 +15,5 @@ public interface interestPointRepo extends JpaRepository<interestPoint, Long> {
     List<interestPoint> findByStablishmentID(stablishment stablishmentID);
     List<interestPoint> findByEventName(event eventName);
 
+
 }

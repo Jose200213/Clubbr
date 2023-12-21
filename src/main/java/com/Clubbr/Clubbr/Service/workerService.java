@@ -1,14 +1,26 @@
 package com.Clubbr.Clubbr.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.Clubbr.Clubbr.Entity.*;
+
 import com.Clubbr.Clubbr.advice.*;
+
 import com.Clubbr.Clubbr.utils.role;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.workerRepo;
+
+import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.Repository.userRepo;
+import com.Clubbr.Clubbr.Repository.managerRepo;
+import com.Clubbr.Clubbr.Repository.eventRepo;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.Clubbr.Clubbr.Repository.interestPointRepo;
+
 
 @Service
 public class workerService {
@@ -17,13 +29,23 @@ public class workerService {
     private workerRepo workerRepo;
 
     @Autowired
+    private eventRepo eventRepo;
+
+    @Autowired
+    private stablishmentRepo stablishmentRepo;
+
+    @Autowired
     private userService userService;
+
 
     @Autowired
     private managerService managerService;
 
     @Autowired
     private jwtService jwtService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private stablishmentService stablishmentService;
@@ -47,6 +69,7 @@ public class workerService {
                 throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
             }
         }
+
 
         List<worker> workers = workerRepo.findAllByStablishmentID(targetStablishment);
         if (workers.isEmpty()) {
@@ -103,6 +126,20 @@ public class workerService {
         return getWorker(targetUser, targetStablishment);
     }
 
+    @Transactional
+    public void updateAttendance(String telegramID, boolean attendance, String eventName, LocalDate eventDate, Long stabID) {
+
+        user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
+        stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+
+        worker workerToUpdate = workerRepo.findByUserIDAndEventAndStablishmentID(targetUser, existingEvent, stab);
+        workerToUpdate.setAttendance(attendance);
+        workerRepo.save(workerToUpdate);
+
+    }
+
+    @Transactional
     public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
         String userId = jwtService.extractUserIDFromToken(token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
@@ -118,10 +155,33 @@ public class workerService {
 
         targetUser.setUserRole(role.WORKER);
         targetWorker.setUserID(targetUser);
-        targetStab.getWorkers().add(targetWorker);
         targetWorker.setStablishmentID(targetStab);
-        targetWorker.setWorkingHours(160L);
+
+        if (targetWorker.getEvent() != null){
+
+            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEvent().getEventName(), targetWorker.getEvent().getEventDate());
+            if(eventFlag == null){
+                throw new ResourceNotFoundException("Evento", "eventName", targetWorker.getEvent().getEventName(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+            targetWorker.setAttendance(false);
+            eventFlag.getWorkers().add(targetWorker);
+            eventRepo.save(eventFlag);
+
+        }else{
+            targetWorker.setWorkingHours(160L);
+            targetWorker.setAttendance(true);
+            targetWorker.setEvent(null);
+        }
+
+        targetStab.getWorkers().add(targetWorker);
+        stablishmentRepo.save(targetStab);
+
+        if (targetWorker.getId() != null && workerRepo.existsById(targetWorker.getId())) {
+            targetWorker = entityManager.merge(targetWorker);
+        }
+
         workerRepo.save(targetWorker);
+        userRepo.save(targetUser);
     }
 
     public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){
@@ -199,4 +259,5 @@ public class workerService {
         workerToUpdate.setWorkingHours(targetWorker.getWorkingHours());
         workerRepo.save(workerToUpdate);
     }
+
 }

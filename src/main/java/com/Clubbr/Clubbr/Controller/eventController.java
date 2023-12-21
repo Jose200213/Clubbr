@@ -1,9 +1,11 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Entity.event;
+import com.Clubbr.Clubbr.Service.eventService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.Clubbr.Clubbr.Service.eventService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +26,7 @@ public class eventController {
     }
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.
-    @GetMapping("/event/allordered")
+    @GetMapping("/event/all-ordered")
     public List<event> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
         return eventService.getAllEventsOrderedByDateInStab(stabID);
     }
@@ -36,41 +38,34 @@ public class eventController {
     }
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
-    @PutMapping("/event/update/{eventName}/{eventDate}")
+    @PutMapping("/event/{eventName}/{eventDate}/update")
     public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
 
         eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent, token);
 
     }
 
-    @DeleteMapping("/event/delete/{eventName}/{eventDate}")
+    @DeleteMapping("/event/{eventName}/{eventDate}/delete")
     public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestHeader("Authorization") String token) {
+
 
         eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate, token);
 
     }
 
 
-    //////////////////////////////////////////// CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
-    // Recibe en el json los parametros del evento y ademas el numero de repeticiones (veces que se añadira a DB) y la frecuencia (en dias)
-    // Para ello emplea como receptor del json el dto eventWithPersistenceDto.
-    /*@PostMapping("/event/addPersistent")
-    public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody eventWithPersistenceDto newEventDto) {
-
-        eventService.addPersistentEventToStab(stabID, newEventDto);
-
-    }*/
-    //////////////////////////////////////////// FIN CONTROLADOR AÑADE EVENTOS PERSISTENTES CON DTO ////////////////////////////////////////////
-
-    //////////////////////////////////////////// CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
-    // Asume que la frecuencia es siempre 7 dias. El evento se repetirá cada 7 dias (una semana) tantas veces como repeticiones se indiquen en el path.
-    @PostMapping("/event/addPersistent/{repeticiones}")
+    @PostMapping("/event/persistent/{repeticiones}")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
+
 
         eventService.addPersistentEventToStab(stabID, repeticiones, newEvent, token);
 
     }
-    //////////////////////////////////////////// FIN CONTROLADOR ADD EVENTOS PERSISTENTES SIN DTO ////////////////////////////////////////////
+
+    @PostMapping("/event/{eventName}/{eventDate}/attendance-control")
+    public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
+        eventService.attendanceControlWorkers(stabID, eventName, eventDate);
+    }
 
 
 }

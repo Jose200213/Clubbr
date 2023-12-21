@@ -62,4 +62,9 @@ public class stablishment {
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentInventory")
     private List<item> inventory;
+
+    @OneToMany(mappedBy = "stablishmentID")
+    @JsonManagedReference(value = "stablishmentPanicAlerts")
+    private List<panicAlert> panicAlerts;
+
 }

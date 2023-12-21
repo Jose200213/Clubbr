@@ -2,13 +2,21 @@ package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
+import com.Clubbr.Clubbr.Repository.stablishmentRepo;
+import com.Clubbr.Clubbr.Repository.workerRepo;
+import com.Clubbr.Clubbr.Repository.userRepo;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,10 +29,22 @@ public class eventService {
     private eventRepo eventRepo;
 
     @Autowired
+    private userRepo userRepo;
+
+    @Autowired
+    private stablishmentRepo stabRepo;
+
+    @Autowired
+
+    private MqttClient mqttClient;
+
+    @Autowired
     private jwtService jwtService;
+
 
     @Autowired
     private userService userService;
+
 
     @Autowired
     private managerService managerService;
@@ -32,16 +52,16 @@ public class eventService {
     @Autowired
     private stablishmentService stablishmentService;
 
-    //Esta version añade un evento a un local y añade interest points especificos al evento si y solo si los hay en el body.
-    //La funcion debe tener manejada si o si la excepcion de eventos con el mismo nombre y fecha pues de no ser asi,
-    //jpa no detecta que haya error y al insertar el evento con el mismo nombre y fecha que otro, lo trata como un update
-    //y no como un insert, por lo que no se lanza excepcion (restriccion clave primaria) y se actualiza el evento existente y
-    //se añaden los interest points (si los hay en el body) al mismo (Todo esto sin añadir un nuevo evento a la DB, si no solo actualizarlo => interest points replicados en DB)
-    //////////////////////////////////////////// FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
+    @Autowired
+    private workerRepo workerRepo;
+
+
     @Transactional
     public void addEventToStab(Long stabID, event newEvent, String token) {
+
         stablishment stab = stablishmentService.getStab(stabID);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+
         event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
 
         if (eventFlag != null) {
@@ -62,6 +82,7 @@ public class eventService {
 
         if (newEvent.getInterestPoints() != null) {
 
+
             List<interestPoint> iPsToStore = new ArrayList<>();
 
             for (interestPoint ip : newEvent.getInterestPoints()) {
@@ -81,42 +102,6 @@ public class eventService {
         eventRepo.save(newEvent);
     }
 
-
-//Añade eventos persistentes con una frecuencia y un numero de repeticiones recibidos en el body y recuperados en el dto eventWithPersistenceDto.
-    /*@Transactional
-    public void addPersistentEventToStab(Long stabID, eventWithPersistenceDto newEventDto) {
-        event newEvent = new event();
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
-
-        if(eventFlag != null){
-
-            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
-
-        }
-
-        newEvent.setStablishmentID(stab);
-        newEvent.setTotalTickets(stab.getCapacity());
-        newEvent.setEventName(newEventDto.getEventName());
-        newEvent.setEventDate(newEventDto.getEventDate());
-        newEvent.setEventDescription(newEventDto.getEventDescription());
-        newEvent.setEventTime(stab.getOpenTime().toString());
-        newEvent.setEventFinishDate(newEventDto.getEventFinishDate());
-
-        int i = 0;
-
-        do{
-
-            eventRepo.save(newEvent);
-            newEvent.setEventDate(newEvent.getEventDate().plusDays(newEventDto.getFrecuencia()));
-            newEvent.setEventFinishDate(newEvent.getEventFinishDate().plusDays(newEventDto.getFrecuencia()));
-            i++;
-
-        }while(i < newEventDto.getRepeticiones());
-
-    }*/
-//////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS E INTEREST_POINTS (OPCIONAL) ////////////////////////////////////////////
 
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
@@ -237,26 +222,53 @@ public class eventService {
 
 //////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
 
-//Esta version solo añade un evento  un local, no debe recibir interest points en el body ni los contempla.
-////////////////////////////////////////////FUNCION AÑADE EVENTOS////////////////////////////////////////////
-    /*@Transactional
-    public void addEventToStab(Long stabID, event newEvent) {
+
+    @Transactional
+    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate) throws JsonProcessingException, MqttException {
+        List<worker> workers = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
         stablishment stab = stabRepo.findById(stabID).orElse(null);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
-        event eventAux = new event();
+        //workers = workerService.getAllWorkers(stab);
 
-        eventAux = getEvent(stab, newEvent.getEventName(), newEvent.getEventDate());
+        workers = workerRepo.findAllByStablishmentID(stab);
 
-        if(eventAux != null){
-            throw new BadRequestException("Event with name: " + newEvent.getEventName() + " and date: " + newEvent.getEventDate() + " already exists");
+        // Crear una lista para almacenar los JSON
+        List<ObjectNode> jsonList = new ArrayList<>();
+
+        for(worker worker : workers){
+            if(worker.getEvent() == existingEvent){
+                ObjectNode json = objectMapper.createObjectNode();
+                json.put("Date", existingEvent.getEventDate().toString());
+                json.put("Time", stab.getOpenTime().toString());
+                json.put("StabName", stab.getStabName());
+                json.put("StabAddress", stab.getStabAddress());
+                json.put("EventName", existingEvent.getEventName());
+                json.put("StabId", stab.getStablishmentID());
+                json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
+
+
+                jsonList.add(json);
+            }
         }
 
-        newEvent.setStablishmentID(stab);
+        // Convertir la lista de JSON a una cadena de texto JSON
+        String jsonString = objectMapper.writeValueAsString(jsonList);
 
-        eventRepo.save(newEvent);
+        // Publicar la cadena de texto JSON como un mensaje MQTT
+        byte[] payload = jsonString.getBytes();
+        MqttMessage mqttMessage = new MqttMessage(payload);
+        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        if (mqttClient != null) {
+            mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+        } else {
+            // Manejar la situación en la que mqttClient es null
+            System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
+        }
+    }
 
-    }*/
-////////////////////////////////////////////FIN FUNCION AÑADE EVENTOS////////////////////////////////////////////
+
 }
 

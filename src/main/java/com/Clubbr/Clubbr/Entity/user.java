@@ -55,6 +55,13 @@ public class user implements UserDetails {
     @JsonManagedReference
     private List<ticket> tickets;
 
+    @Column(name = "TelegramID", unique = true)
+    private Long telegramID;
+
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "userPanicAlerts")
+    private List<panicAlert> panicAlerts;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = userRole.getPermissions().stream()
@@ -90,5 +97,4 @@ public class user implements UserDetails {
         return true;
     }
 }
-
 

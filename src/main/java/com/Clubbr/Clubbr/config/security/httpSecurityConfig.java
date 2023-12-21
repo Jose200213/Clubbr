@@ -61,14 +61,14 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.DELETE_STABLISHMENT_WORKERS.name());
             //endregion
             //region EVENT CONTROLLER
-            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/allordered").hasAuthority(permission.READ_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/all-ordered").hasAuthority(permission.READ_EVENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}").hasAuthority(permission.READ_EVENTS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/add").hasAuthority(permission.CREATE_EVENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/update/{eventName}/{eventDate}").hasAuthority(permission.UPDATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update").hasAuthority(permission.UPDATE_EVENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/delete/{eventName}/{eventDate}").hasAuthority(permission.DELETE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/delete").hasAuthority(permission.DELETE_EVENTS.name());
 
 
             //endregion
@@ -117,6 +117,8 @@ public class httpSecurityConfig {
             //region WORKER CONTROLLER
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/all").hasAuthority(permission.READ_STAB_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.READ_WORKERS.name());
+
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
             //endregion

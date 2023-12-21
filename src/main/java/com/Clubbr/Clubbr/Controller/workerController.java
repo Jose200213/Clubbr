@@ -29,6 +29,7 @@ public class workerController {
         }
     }
 
+
     @GetMapping("/worker/{userID}")
     public ResponseEntity<?> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
         try {
