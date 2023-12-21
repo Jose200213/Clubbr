@@ -28,6 +28,10 @@ public class worker {
     private stablishment stablishmentID;
 
     @ManyToOne
+    @JoinColumn (name = "eventID")
+    private event eventID;
+
+    @ManyToOne
     @JoinColumn (name = "interestPointID", referencedColumnName = "interestPointID")
     private interestPoint interestPointID;
 
@@ -37,5 +41,8 @@ public class worker {
     @Column (name = "salary")
     @JsonProperty("salary")
     private float salary;
+
+    @OneToMany(mappedBy = "workerID", cascade = CascadeType.ALL)
+    private List<payment> paymentID;
 
 }

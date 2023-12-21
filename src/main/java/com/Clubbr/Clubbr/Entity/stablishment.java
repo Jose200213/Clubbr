@@ -41,6 +41,9 @@ public class stablishment {
     @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;
 
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    private List<payment> paymentID;
+
     @ManyToMany
     @JoinTable(name = "stablishmentManager",
             joinColumns = @JoinColumn(name = "stablishmentID"),

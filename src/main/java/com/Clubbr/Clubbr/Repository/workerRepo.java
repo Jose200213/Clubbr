@@ -13,5 +13,7 @@ import java.util.Optional;
 public interface workerRepo extends JpaRepository<worker, workerID>{
     List<worker> findAllByStablishmentID(stablishment stablishment);
     Optional<worker> findByUserIDAndStablishmentID(user user, stablishment stablishment);
+    List<worker> findAllByUserID(user userID);
+    List<worker> findAllByEventIDIsNull();
     void deleteByUserIDAndStablishmentID(user  user, stablishment stablishment);
 }

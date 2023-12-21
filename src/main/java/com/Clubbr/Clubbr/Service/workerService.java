@@ -37,7 +37,7 @@ public class workerService {
     @Autowired
     private eventService eventService;
 
-    public List<worker> getAllWorkers(Long stablishmentID, String token) {
+    public List<worker> getAllWorkersFromStab(Long stablishmentID, String token) {
         stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
         user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
@@ -53,6 +53,26 @@ public class workerService {
             throw new ResourceNotFoundException("Trabajadores");
         }
         return workers;
+    }
+
+    public List<worker> getAllWorkersFromUser(user userID) {
+        List<worker> workers = workerRepo.findAllByUserID(userID);
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
+        return workers;
+    }
+
+    public List<worker> getAllWorkers() {
+        List<worker> workers = workerRepo.findAll();
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
+        return workers;
+    }
+
+    public List<worker> getWorkersWithNullEventID() {
+        return workerRepo.findAllByEventIDIsNull();
     }
 
 

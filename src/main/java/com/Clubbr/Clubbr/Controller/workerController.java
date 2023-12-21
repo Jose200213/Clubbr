@@ -21,7 +21,7 @@ public class workerController {
     @GetMapping("/worker/all")
     public ResponseEntity<?> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
-            return ResponseEntity.ok(workerService.getAllWorkers(stablishmentID, token));
+            return ResponseEntity.ok(workerService.getAllWorkersFromStab(stablishmentID, token));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
