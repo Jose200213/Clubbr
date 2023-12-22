@@ -144,7 +144,6 @@ public class eventService {
             throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
         }
 
-        // Crea un nuevo evento con los datos actualizados
         event newEvent = new event();
         newEvent.setEventName(targetEvent.getEventName());
         newEvent.setEventDate(targetEvent.getEventDate());
@@ -182,7 +181,6 @@ public class eventService {
         eventRepo.delete(existingEvent);
     }
 
-    //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
     @Transactional
     public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent, String token) {
         stablishment stab = stablishmentService.getStab(stabID);
@@ -220,8 +218,6 @@ public class eventService {
 
     }
 
-//////////////////////////////////////////// FIN FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) ////////////////////////////////////////////
-
 
     @Transactional
     public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate, String token) throws JsonProcessingException, MqttException {
@@ -241,7 +237,6 @@ public class eventService {
 
         workers = workerRepo.findAllByStablishmentID(stab);
 
-        // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
 
         for(worker worker : workers){

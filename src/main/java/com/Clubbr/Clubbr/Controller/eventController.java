@@ -44,7 +44,6 @@ public class eventController {
         }
     }
 
-    //Controller que devuelve un evento de un local por su nombre y fecha.
     @GetMapping("/event/{eventName}/{eventDate}")
     public ResponseEntity<?> getEventInStabByEventNameAndDate(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
         try {
@@ -55,7 +54,6 @@ public class eventController {
         }
     }
 
-    //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
     @PutMapping("/event/{eventName}/{eventDate}/update")
     public ResponseEntity<String> updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
         try {
