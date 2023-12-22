@@ -229,7 +229,7 @@ public class eventService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
+        stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
 
         if (userService.isManager(user)) {
@@ -253,8 +253,7 @@ public class eventService {
                 json.put("StabAddress", stab.getStabAddress());
                 json.put("EventName", existingEvent.getEventName());
                 json.put("StabId", stab.getStablishmentID());
-                json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
-
+                json.put("TelegramID", userService.getUser(worker.getUserID().getUserID()).getTelegramID());
 
                 jsonList.add(json);
             }
@@ -271,7 +270,6 @@ public class eventService {
             System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
         }
     }
-
 
 }
 

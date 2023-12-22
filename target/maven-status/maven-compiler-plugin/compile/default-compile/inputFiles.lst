@@ -1,3 +1,4 @@
+C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\paymentService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\authenticationController.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\eventController.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\interestPointController.java
@@ -28,6 +29,7 @@ C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\config\
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\config\security\filter\jwtAuthenticationFilter.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\dto\eventWithPersistenceDto.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\config\exception\BadRequestException.java
+C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Entity\payment.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\interestPointRepo.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\eventService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\stablishmentService.java
@@ -40,6 +42,7 @@ C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\utils\permission.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Entity\event.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Controller\workerController.java
+C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\paymentRepo.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Entity\panicAlert.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Service\panicAlertService.java
 C:\Users\jhona\Desktop\Clubbrv2\Clubbrv2\src\main\java\com\Clubbr\Clubbr\Repository\stablishmentRepo.java
