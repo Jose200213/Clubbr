@@ -1,8 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
-
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,19 +25,25 @@ public class panicAlert {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
-            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
-            @JoinColumn(name = "stablishmentID", referencedColumnName = "stablishmentID"),
-
+            @JoinColumn(name = "eventDate", referencedColumnName = "eventDate")
     })
-    @JsonBackReference(value = "eventPanicAlert")
+    @JsonBackReference
     private event eventName;
+    //@JsonBackReference(value = "eventPanicAlerts")
+
+    @ManyToOne
+    @JoinColumn(name = "stablishmentID", referencedColumnName = "stablishmentID")
+    @JsonBackReference(value = "stablishmentPanicAlerts")
+    private stablishment stablishmentID;
+    //@JsonBackReference(value = "stablishmentPanicAlerts")
 
     @ManyToOne
     @JoinColumn(name = "userID", referencedColumnName = "userID")
-    @JsonBackReference(value = "userPanicAlert")
+    @JsonBackReference(value = "userPanicAlerts")
     private user userID;
+    //@JsonBackReference(value = "userPanicAlerts")
 
-    @Column(name = "panicAlertDate")
+    @Column(name = "panicAlertDateTime")
     private LocalDateTime panicAlertDateTime;
 
 

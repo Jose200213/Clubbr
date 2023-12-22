@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticketID")
-    private int ticketID;
+    private Long ticketID;
 
     @ManyToOne
     @JoinColumns({
@@ -31,6 +32,7 @@ public class ticket {
 
     @ManyToOne
     @JoinColumn(name = "userID")
+    @JsonBackReference
     private user userID;
 
     @ManyToOne
@@ -45,5 +47,4 @@ public class ticket {
 
     @Column(name = "validated")
     private boolean validated;
-
 }

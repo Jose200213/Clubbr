@@ -51,23 +51,24 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/add").hasAuthority(permission.CREATE_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/add").hasAuthority(permission.CREATE_STAB_MANAGERS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/addOwner").hasAuthority(permission.CREATE_OWNER_MANAGER.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/update").hasAuthority(permission.UPDATE_STABLISHMENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}").hasAuthority(permission.DELETE_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/delete/{stablishmentID}").hasAuthority(permission.DELETE_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.DELETE_STABLISHMENT_WORKERS.name());
             //endregion
             //region EVENT CONTROLLER
-            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/allordered").hasAuthority(permission.READ_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/all-ordered").hasAuthority(permission.READ_EVENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}").hasAuthority(permission.READ_EVENTS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/add").hasAuthority(permission.CREATE_EVENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/update/{eventName}/{eventDate}").hasAuthority(permission.UPDATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update").hasAuthority(permission.UPDATE_EVENTS.name());
 
-            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/delete/{eventName}/{eventDate}").hasAuthority(permission.DELETE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/delete").hasAuthority(permission.DELETE_EVENTS.name());
 
 
             //endregion
@@ -117,7 +118,16 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/all").hasAuthority(permission.READ_STAB_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.READ_WORKERS.name());
 
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
+
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
+            //endregion
+
+            //region PANICALERT CONTROLLER
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/event/user/panic-alert/activate").hasAuthority(permission.ACTIVE_PANIC.name());
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/event/panic-alert/{panicAlertId}/delete").hasAuthority(permission.DELETE_PANIC_ALERT.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/panic-alerts").hasAuthority(permission.READ_PANIC_ALERTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment//event/panicAlerts/{userId}").hasAuthority(permission.READ_PANIC_ALERTS.name());
             //endregion
 
             authConfig.anyRequest().denyAll();

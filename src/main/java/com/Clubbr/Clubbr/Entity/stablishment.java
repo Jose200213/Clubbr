@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,8 +37,19 @@ public class stablishment {
     @Column(name = "capacity")
     private int capacity;
 
-    @OneToMany(mappedBy = "stablishmentID")
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;
+
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    private List<payment> paymentID;
+
+    @ManyToMany
+    @JoinTable(name = "stablishmentManager",
+            joinColumns = @JoinColumn(name = "stablishmentID"),
+            inverseJoinColumns = @JoinColumn(name = "managerID"))
+    @JsonIgnore
+    private List<manager> managerID;
 
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentInterestPoints")
@@ -46,7 +59,15 @@ public class stablishment {
     @JsonManagedReference(value = "stablishmentEvents")
     private List<event> events;
 
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "stablishmentInventory")
+    private List<item> inventory;
+
+    @OneToMany(mappedBy = "stablishmentID")
+    @JsonManagedReference(value = "stablishmentPanicAlerts")
+    private List<panicAlert> panicAlerts;
+
     @Column(name = "floorPlan")
-    private String floorPlan; //Plano de la planta del local
+    private String floorPlan;
 
 }
