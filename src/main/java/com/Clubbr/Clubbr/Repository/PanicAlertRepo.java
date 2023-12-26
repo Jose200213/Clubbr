@@ -15,5 +15,6 @@ public interface panicAlertRepo extends JpaRepository<panicAlert, Long> {
 
     List<panicAlert> findAllByStablishmentID(@Param("stablishmentID") stablishment stab);
 
-    List<panicAlert> findByEventName_StablishmentIDAndUserID(stablishment stablishment, user userId);
+
+    List<panicAlert> findAllByStablishmentIDAndUserID(stablishment stab, user user);
 }

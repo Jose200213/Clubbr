@@ -44,6 +44,9 @@ public class panicAlertService {
 
 
     @Autowired
+    private stablishmentService stabService;
+
+    @Autowired
     private stablishmentRepo stabRepo;
 
     @Autowired
@@ -57,9 +60,10 @@ public class panicAlertService {
 
 
     @Transactional
-    public void createPanicAlert(event targetEvent, String userId) throws JsonProcessingException, MqttException {
+    public void createPanicAlert(event targetEvent, String token) throws JsonProcessingException, MqttException {
         panicAlert newPanicAlert = new panicAlert();
-        user alertUser = userRepo.findByUserID(userId);
+        String userId = jwtService.extractUserIDFromToken(token);
+        user alertUser = userService.getUser(userId);
 
         newPanicAlert.setEventName(targetEvent);
         newPanicAlert.setStablishmentID(targetEvent.getStablishmentID());
@@ -116,19 +120,31 @@ public class panicAlertService {
     }
 
     @Transactional
-    public void deletePanicAlertById(Long panicAlertId, String token) {
+    public void deletePanicAlertById(Long stablishmentID, Long panicAlertId, String token) {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment targetStab = stabService.getStab(stablishmentID);
+
+        if(userService.isManager(user)){
+            manager stabManager = managerService.getManager(user);
+            if(!managerService.isManagerInStab(targetStab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+        }
+
         panicAlertRepo.deleteById(panicAlertId);
     }
 
     @Transactional(readOnly = true)
     public List<panicAlert> getPanicAlertsByStab(Long stabId, String token) {
-        stablishment stab = stabRepo.findById(stabId).orElse(null);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment stab = stabService.getStab(stabId);
 
-        if (userService.isManager(targetUser)) {
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(stab, targetManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
+        if (userService.isManager(user)) {
+            manager stabManager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, stabManager)) {
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
         return panicAlertRepo.findAllByStablishmentID(stab);
@@ -136,21 +152,18 @@ public class panicAlertService {
 
     @Transactional(readOnly = true)
     public List<panicAlert> getPanicAlertsByStabAndUser(Long stabID, String userId, String token) {
-        String tokenUserId = jwtService.extractUserIDFromToken(token);
-        if (!userId.equals(tokenUserId)) {
-            throw new ResourceNotFoundException("El usuario del token no coincide con el usuario proporcionado");
-        }
+        user user = userService.getUser(userId);
+        String userToken = jwtService.extractUserIDFromToken(token);
+        user userMG = userService.getUser(userToken);
+        stablishment stab = stabService.getStab(stabID);
 
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        user User = userRepo.findByUserID(userId);
-
-        if (userService.isManager(User)) {
-            manager targetManager = managerService.getManager(User);
-            if (!managerService.isManagerInStab(stab, targetManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", User.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
+        if(userService.isManager(userMG)){
+            manager stabManager = managerService.getManager(userMG);
+            if(!managerService.isManagerInStab(stab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userMG, "Establecimiento", "stablishmentID", stab.getStablishmentID());
             }
         }
 
-        return panicAlertRepo.findByEventName_StablishmentIDAndUserID(stab, User);
+        return panicAlertRepo.findAllByStablishmentIDAndUserID(stab, user);
     }
 }
