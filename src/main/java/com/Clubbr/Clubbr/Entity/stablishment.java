@@ -1,8 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +13,9 @@ import java.util.List;
 @Table(name = "stablishmentRepository")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "stablishmentID")
 public class stablishment {
 
     @Id
@@ -66,5 +67,8 @@ public class stablishment {
     @OneToMany(mappedBy = "stablishmentID")
     @JsonManagedReference(value = "stablishmentPanicAlerts")
     private List<panicAlert> panicAlerts;
+
+    @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
+    private List<payment> payments;
 
 }

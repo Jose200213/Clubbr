@@ -123,9 +123,9 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
             //endregion
 
-            authConfig.anyRequest().denyAll();
+            //authConfig.anyRequest().denyAll();
 
-            //authConfig.anyRequest().permitAll();
+            authConfig.anyRequest().permitAll();
         };
     }
 }
