@@ -127,6 +127,7 @@ public class httpSecurityConfig {
 
             //region PANIC ALERT CONTROLLER
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/panic-alerts").hasAuthority(permission.READ_PANIC_ALERTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/panic-alerts/{userId}").hasAuthority(permission.READ_PANIC_ALERTS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/event/user/panic-alert/activate").hasAuthority(permission.ACTIVATE_PANIC_ALERT.name());
 

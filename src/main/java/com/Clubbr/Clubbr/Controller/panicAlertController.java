@@ -38,8 +38,7 @@ public class panicAlertController {
             return ResponseEntity.ok("Alerta de pánico eliminada con éxito");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la alerta de pánico: " + e.getMessage());
         }
     }
@@ -48,6 +47,18 @@ public class panicAlertController {
     public ResponseEntity<?> getPanicAlertsByStab(@PathVariable("stablishmentID") Long stabID, @RequestHeader("Authorization") String token) {
         try {
             List<panicAlert> panicAlerts = panicAlertService.getPanicAlertsByStab(stabID, token);
+            return ResponseEntity.ok(panicAlerts);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener las alertas de pánico: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("{stablishmentID}/panic-alerts/{userId}")
+    public ResponseEntity<?> getPanicAlertsByStabAndUser(@PathVariable("stablishmentID") Long stabID, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
+        try {
+            List<panicAlert> panicAlerts = panicAlertService.getPanicAlertsByStabAndUser(stabID, userId, token);
             return ResponseEntity.ok(panicAlerts);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

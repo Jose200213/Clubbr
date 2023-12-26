@@ -142,4 +142,21 @@ public class panicAlertService {
 
         return panicAlertRepo.findAllByStablishmentID(stab);
     }
+
+    @Transactional(readOnly = true)
+    public List<panicAlert> getPanicAlertsByStabAndUser(Long stabId, String userId, String token) {
+        user user = userService.getUser(userId);
+        String userToken = jwtService.extractUserIDFromToken(token);
+        user userMG = userService.getUser(userToken);
+        stablishment stab = stabService.getStab(stabId);
+
+        if(userService.isManager(userMG)){
+            manager stabManager = managerService.getManager(userMG);
+            if(!managerService.isManagerInStab(stab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userMG, "Establecimiento", "stablishmentID", stab.getStablishmentID());
+            }
+        }
+
+        return panicAlertRepo.findAllByStablishmentIDAndUserID(stab, user);
+    }
 }
