@@ -61,6 +61,7 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.DELETE_STABLISHMENT_WORKERS.name());
             //endregion
             //region EVENT CONTROLLER
+            authConfig.requestMatchers(HttpMethod.GET, "/event/all").hasAuthority(permission.READ_EVENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/all-ordered").hasAuthority(permission.READ_EVENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}").hasAuthority(permission.READ_EVENTS.name());
 
