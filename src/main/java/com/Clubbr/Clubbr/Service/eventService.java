@@ -119,11 +119,6 @@ public class eventService {
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
     }
 
-    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
-        return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento", "eventName", eventName, "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
-    }
-
     @Transactional
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
 

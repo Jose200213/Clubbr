@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.workerService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("stablishment/{stablishmentID}")
+@RequestMapping("/stablishment/{stablishmentID}")
 public class workerController {
 
     @Autowired
@@ -53,10 +54,10 @@ public class workerController {
         }
     }
 
-    @PutMapping("/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update")
-    public ResponseEntity<String> addWorkerToEventInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
+    @PutMapping("/event/{eventName}/{eventDate}/worker/{userID}/interestPoint/{interestPointID}/update")
+    public ResponseEntity<String> addWorkerToEventInterestPoint(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate")LocalDate eventDate, @PathVariable("userID") String userID, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
         try {
-            workerService.addWorkerToEventInterestPoint(stablishmentID, eventName, userID, interestPointID, token);
+            workerService.addWorkerToEventInterestPoint(stablishmentID, eventName, eventDate, userID, interestPointID, token);
             return ResponseEntity.ok("Se agregó el trabajador correctamente");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

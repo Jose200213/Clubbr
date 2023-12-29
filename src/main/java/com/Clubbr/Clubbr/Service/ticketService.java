@@ -31,9 +31,9 @@ public class ticketService {
     @Autowired
     private jwtService jwtService;
 
-    public void addTicketToEvent(Long stablishmentID, String eventName, String token){
+    public void addTicketToEvent(Long stablishmentID, String eventName, LocalDate eventDate, String token){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         ticket newTicket = new ticket();

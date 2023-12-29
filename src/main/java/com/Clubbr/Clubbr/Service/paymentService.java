@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.paymentRepo;
 
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
@@ -131,9 +132,9 @@ public class paymentService {
         return paymentRepository.findByStablishmentIDAndPaymentDate(targetStab, YearMonth.now());
     }
 
-    public List<payment> getPaymentByEvent(Long stablishmentID, String eventName){
+    public List<payment> getPaymentByEvent(Long stablishmentID, String eventName, LocalDate eventDate){
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
-        event targetEvent = eventService.getEventByEventNameAndStablishmentID(eventName, targetStab);
+        event targetEvent = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), eventName, eventDate);
         return paymentRepository.findByEventIDAndPaymentDate(targetEvent, YearMonth.now());
     }
 
