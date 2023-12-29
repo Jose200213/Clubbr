@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.paymentService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -56,10 +57,10 @@ public class paymentController {
         }
     }
 
-    @GetMapping("/payment/stablishment/{stablishmentID}/event/{eventName}")
-    public ResponseEntity<?> getPaymentByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
+    @GetMapping("/payment/stablishment/{stablishmentID}/event/{eventName}/{eventDate}")
+    public ResponseEntity<?> getPaymentByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         try {
-            List<payment> payments = paymentService.getPaymentByEvent(stablishmentID, eventName);
+            List<payment> payments = paymentService.getPaymentByEvent(stablishmentID, eventName, eventDate);
             return ResponseEntity.ok(payments);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

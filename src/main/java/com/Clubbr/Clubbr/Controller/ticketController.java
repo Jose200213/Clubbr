@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.ticketService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,10 +20,10 @@ public class ticketController {
     @Autowired
     private ticketService ticketService;
 
-    @PostMapping("/stablishment/{stablishmentID}/event/{eventName}/ticket/add")
-    public ResponseEntity<String> addTicketToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+    @PostMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/ticket/add")
+    public ResponseEntity<String> addTicketToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         try {
-            ticketService.addTicketToEvent(stablishmentID, eventName, token);
+            ticketService.addTicketToEvent(stablishmentID, eventName, eventDate, token);
             return ResponseEntity.ok("Ticket añadido correctamente");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

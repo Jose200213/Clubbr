@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RestController
-@RequestMapping("/stablishment/{stablishmentID}")
+@RestController()
 public class eventController {
 
     @Autowired
     private eventService eventService;
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
-    @PostMapping("/event/add")
+    @PostMapping("/stablishment/{stablishmentID}/event/add")
     public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
 
         eventService.addEventToStab(stabID, newEvent, token);
@@ -26,26 +25,31 @@ public class eventController {
     }
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.
-    @GetMapping("/event/all-ordered")
+    @GetMapping("/stablishment/{stablishmentID}/event/all-ordered")
     public List<event> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
         return eventService.getAllEventsOrderedByDateInStab(stabID);
     }
 
+    @GetMapping("/event/all")
+    public List<event> getAllEvents(){
+        return eventService.getAllEvents();
+    }
+
     //Controller que devuelve un evento de un local por su nombre y fecha.
-    @GetMapping("/event/{eventName}/{eventDate}")
+    @GetMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}")
     public event getEventInStabByEventNameAndDate(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
         return eventService.getEventByStabNameDate(stablishmentID, eventName, eventDate);
     }
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.
-    @PutMapping("/event/{eventName}/{eventDate}/update")
+    @PutMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update")
     public void updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
 
         eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent, token);
 
     }
 
-    @DeleteMapping("/event/{eventName}/{eventDate}/delete")
+    @DeleteMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/delete")
     public void deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestHeader("Authorization") String token) {
 
 
@@ -54,7 +58,7 @@ public class eventController {
     }
 
 
-    @PostMapping("/event/persistent/{repeticiones}")
+    @PostMapping("/stablishment/{stablishmentID}/event/persistent/{repeticiones}")
     public void addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
 
 
@@ -62,7 +66,7 @@ public class eventController {
 
     }
 
-    @PostMapping("/event/{eventName}/{eventDate}/attendance-control")
+    @PostMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/attendance-control")
     public void attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate) throws MqttException, JsonProcessingException {
         eventService.attendanceControlWorkers(stabID, eventName, eventDate);
     }

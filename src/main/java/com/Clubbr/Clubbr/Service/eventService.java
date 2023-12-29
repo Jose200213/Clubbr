@@ -109,15 +109,14 @@ public class eventService {
         return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
     }
 
+    public List<event> getAllEvents() {
+        return eventRepo.findAllOrderByEventDateAfterOrderByEventDateAsc(LocalDate.now());
+    }
+
     @Transactional(readOnly = true)
     public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
         stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
-    }
-
-    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
-        return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento", "eventName", eventName, "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
     }
 
     @Transactional
