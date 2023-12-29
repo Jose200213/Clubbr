@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.Dto.eventDto;
+import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,19 +28,22 @@ public class eventController {
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.
     @GetMapping("/stablishment/{stablishmentID}/event/all-ordered")
-    public List<event> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
-        return eventService.getAllEventsOrderedByDateInStab(stabID);
+    public List<eventListDto> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
+        List<event> events = eventService.getAllEventsOrderedByDateInStab(stabID);
+        return eventService.getEventsListDto(events);
     }
 
     @GetMapping("/event/all")
-    public List<event> getAllEvents(){
-        return eventService.getAllEvents();
+    public List<eventListDto> getAllEvents(){
+        List<event> events =  eventService.getAllEvents();
+        return eventService.getEventsListDto(events);
     }
 
     //Controller que devuelve un evento de un local por su nombre y fecha.
     @GetMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}")
-    public event getEventInStabByEventNameAndDate(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
-        return eventService.getEventByStabNameDate(stablishmentID, eventName, eventDate);
+    public eventDto getEventInStabByEventNameAndDate(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
+        event event = eventService.getEventByStabNameDate(stablishmentID, eventName, eventDate);
+        return eventService.getEventDto(event);
     }
 
     //Controller que maneja la actualizacion de un evento de un local por su nombre y fecha.

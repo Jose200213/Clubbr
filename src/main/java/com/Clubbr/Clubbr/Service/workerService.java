@@ -241,7 +241,11 @@ public class workerService {
             }
         }
 
-        worker.getUserID().setUserRole(role.USER);
+        if (getAllWorkersFromUser(worker.getUserID()).size() == 1){
+            worker.getUserID().setUserRole(role.USER);
+            userRepo.save(worker.getUserID());
+        }
+
         workerRepo.delete(worker);
     }
 
