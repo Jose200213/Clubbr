@@ -1,0 +1,130 @@
+.login-container {
+    background: linear-gradient(
+      180deg,
+      rgba(109.44, 108.98, 108.98, 0.75) 0%,
+      rgba(184.88, 184.1, 184.1, 0.05) 79.17%,
+      rgba(109.44, 108.98, 108.98, 0) 100%
+    );
+    border-radius: 20px;
+    width: 100%;
+    padding: 12px;
+  
+    
+  }
+  
+  .login-container > div {
+    margin-bottom: 12px;
+  }
+  
+    .login-logo-container {
+      height: 120px;
+      justify-content: center;
+      display: flex;
+      width: 100%;
+    }
+  
+      .login-logo-image {
+        height: 117px;
+        width: 111px;
+        animation-duration: 1s;
+        animation-name: fadenslide;
+  
+        margin-right: -80px;
+      }
+  
+      .login-logo-text {
+        -webkit-text-stroke: 1px #000000;
+        color: #ffffff;
+        font-family: "Michroma", Helvetica;
+        font-size: 50px;
+        font-weight: 400;
+        text-shadow: 0px 4px 4px #00000040;
+        animation-duration: 1s;
+        animation-name: fadenslide;
+  
+        margin-top: 20px;
+      }
+  
+    .login-input-field-container {
+      display: flex;
+      width: 100%;
+    }
+  
+      .login-user-input-field {
+        /*background-color: transparent;
+        border: 0;
+        color: #000000;
+        font-family: "Inter", Helvetica;
+        font-size: 24px;
+        font-weight: 400;
+        height: 50px;
+        letter-spacing: 0;
+        line-height: normal;
+        padding: 0;
+        text-align: center;
+        width: 317px;
+        outline: none;*/
+  
+      background-color: #d9d9d9;
+      border-radius: 55.5px;
+      height: 50px;
+      text-align: center;
+      width: 100%;
+  
+      }
+  
+      .login-icon {
+        height: 50px;
+        width: 50px;
+        right: 32px;
+        position: absolute;
+        margin-top: 4px;
+      }
+  
+    .login-submit {
+      background-color: #78bbcf;
+      border-radius: 55.5px;
+      height: 50px;
+      top: 160px;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      transition: all 0.2s ease;
+    }
+    
+    .login-submit:hover {
+      transform: scale(1.1);
+      color: #000000;
+      background-color: #5c9eb3;
+    }
+  
+    .login-error {
+      color: red;
+      font-size: 14px;
+      bottom: -20px; /* Ajusta según sea necesario para la posición del mensaje de error */
+      left: 0;
+    }
+  
+  @keyframes fadenslide {
+    from {
+      margin-left: 100%;
+      opacity: 0;
+    }
+    to {
+      margin-left: 0%;
+      opacity: 1;
+    }
+  }
+  
+  
+  
+  @media (min-width: 1024px) {
+    .background-image {
+      justify-content: center;
+    }
+  
+    .login-container {
+      width: 400px
+     }
+    }
