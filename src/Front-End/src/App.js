@@ -7,11 +7,11 @@ import './App.css';
 import {AuthProvider} from "./utils/TokenContext"
 import Login from "./components/Login/Login";
 
-import {PageNav, NavDisplay, NavFixed} from "./components/Navs";
+import {PageNav, NavDisplay, NavFixed} from "./components/Navs/Navs";
 
-import LocalsList from "./components/Locals"
-import EventsList from "./components/Events";
-import TicketsList from "./components/Tickets";
+import LocalsList from "./components/Locals/Locals"
+import EventsList from "./components/Events/Events";
+import TicketsList from "./components/Tickets/Tickets";
 
 import eventsicon from './svg/eventicon.svg'
 import localsicon from './svg/localsicon.svg'
@@ -42,8 +42,8 @@ function Background({children}) {
 const App = () => {
     const Options = ['Locals', 'Events', 'Tickets']
     const Menus = ['Login', 'User']
-    const [active, setActive] = useState(Options[0])
-    const [menu, setMenu] = useState(Menus[0])
+    const [active, setActive] = useState(Options[2])
+    const [menu, setMenu] = useState(Menus[1])
 
     const HandleLogin = () => {
         // Esta función se pasa como prop al LoginForm y se llama cuando se realiza el inicio de sesión
@@ -93,23 +93,23 @@ const App = () => {
 
                         <If condition={menu === 'User'}>
                             <Then>
-                                <CSSTransition in={active === 'Locals'} appear={true} unmountOnExit timeout={1000} classNames={'locals-list-animation'}>
+                                <CSSTransition in={active === 'Locals'} appear={true} unmountOnExit timeout={1000} classNames={'list-animation'}>
                                     <div className='list-animation-container'>
                                         <LocalsList locals/>
                                     </div>
                                 </CSSTransition>
               
-                                <CSSTransition in={active === 'Events'} appear={true} unmountOnExit timeout={1000} classNames={'events-list-animation'}>
+                                <CSSTransition in={active === 'Events'} appear={true} unmountOnExit timeout={1000} classNames={'list-animation'}>
                                     <div className='list-animation-container'>
                                         <EventsList events/>
                                     </div>
                                 </CSSTransition>
 
-                                <CSSTransition in={active === 'Tickets'} appear={true} unmountOnExit timeout={1000} classNames={'tickets-list-animation'}>
-                                    <div className='list-animation-container'>
+                                {/*<CSSTransition in={active === 'Tickets'} appear={true} unmountOnExit timeout={1000} classNames={'list-animation'}>
+                                    <div className='list-animation-container'>*/}
                                         <TicketsList tickets/>
-                                    </div>
-                                </CSSTransition>
+                                    {/*</div>
+                                </CSSTransition>*/}
                             </Then>
                         </If>
 
