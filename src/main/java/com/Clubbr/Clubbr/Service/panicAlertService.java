@@ -57,6 +57,9 @@ public class panicAlertService {
     @Autowired
     private jwtService jwtService;
 
+    @Autowired
+    private eventService eventService;
+
 
     @Transactional
     public void createPanicAlert(event targetEvent, String token) throws JsonProcessingException, MqttException {
@@ -72,7 +75,7 @@ public class panicAlertService {
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         stablishment stab = stabService.getStab(targetEvent.getStablishmentID().getStablishmentID());
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
+        event existingEvent = eventService.getEventByStabNameDate(stab.getStablishmentID(), targetEvent.getEventName(), targetEvent.getEventDate());
 
         workers = workerRepo.findAllByStablishmentID(stab);
 

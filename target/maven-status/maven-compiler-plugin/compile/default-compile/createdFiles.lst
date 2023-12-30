@@ -22,6 +22,7 @@ com\Clubbr\Clubbr\Controller\panicAlertController.class
 com\Clubbr\Clubbr\Entity\manager$managerBuilder.class
 com\Clubbr\Clubbr\Repository\paymentRepo.class
 com\Clubbr\Clubbr\Repository\managerRepo.class
+com\Clubbr\Clubbr\Controller\paymentController.class
 com\Clubbr\Clubbr\Controller\eventController.class
 com\Clubbr\Clubbr\Entity\item.class
 com\Clubbr\Clubbr\Dto\eventDto.class
@@ -29,12 +30,15 @@ com\Clubbr\Clubbr\Entity\panicAlert.class
 com\Clubbr\Clubbr\Repository\interestPointRepo.class
 com\Clubbr\Clubbr\utils\permission.class
 com\Clubbr\Clubbr\config\security\httpSecurityConfig.class
+com\Clubbr\Clubbr\Dto\stablishmentDto.class
 com\Clubbr\Clubbr\Controller\authenticationController.class
 com\Clubbr\Clubbr\Entity\stablishment.class
+com\Clubbr\Clubbr\Dto\stablishmentListDto.class
 com\Clubbr\Clubbr\config\exception\BadRequestException.class
 com\Clubbr\Clubbr\Entity\worker.class
 com\Clubbr\Clubbr\Dto\authenticationResponse$authenticationResponseBuilder.class
 com\Clubbr\Clubbr\Controller\interestPointController.class
+com\Clubbr\Clubbr\config\WebConfig.class
 com\Clubbr\Clubbr\config\MqttReceiver.class
 com\Clubbr\Clubbr\Dto\registerRequest.class
 com\Clubbr\Clubbr\Service\authenticationService.class
@@ -47,6 +51,7 @@ com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\Service\managerService.class
 com\Clubbr\Clubbr\Dto\eventListDto.class
 com\Clubbr\Clubbr\config\MqttConfig.class
+com\Clubbr\Clubbr\Dto\ticketDto$ticketDtoBuilder.class
 com\Clubbr\Clubbr\Entity\interestPoint.class
 com\Clubbr\Clubbr\config\security\securityBeansInjector.class
 com\Clubbr\Clubbr\Controller\workerController.class
@@ -66,3 +71,4 @@ com\Clubbr\Clubbr\Repository\workerRepo.class
 com\Clubbr\Clubbr\Repository\stablishmentRepo.class
 com\Clubbr\Clubbr\Repository\userRepo.class
 com\Clubbr\Clubbr\Dto\attendanceDto.class
+com\Clubbr\Clubbr\Dto\ticketDto.class
