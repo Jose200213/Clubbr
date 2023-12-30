@@ -40,7 +40,7 @@ public class worker {
             @JoinColumn(name = "eventName", referencedColumnName = "eventName"),
             @JoinColumn(name = "eventDate", referencedColumnName = "eventDate"),
     })
-    //@JsonBackReference(value = "eventWorkers")
+    @JsonBackReference(value = "eventWorkers")
     private event eventID;
 
     @ManyToOne
@@ -55,6 +55,7 @@ public class worker {
     private float salary;
 
     @OneToMany(mappedBy = "workerID", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "workerPayments")
     private List<payment> paymentID;
     
     @Column(name = "attendance")

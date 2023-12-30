@@ -1,9 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -17,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(eventID.class)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "eventName")
 public class event {
 
     @Id
@@ -54,11 +54,13 @@ public class event {
     private List<interestPoint> interestPoints;
 
     @OneToMany(mappedBy = "eventID", cascade = CascadeType.ALL)
-    //@JsonManagedReference(value = "eventWorkers")
+    @JsonManagedReference(value = "eventWorkers")
     private List<worker> workers;
 
     @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<panicAlert> panicAlerts;
 
+    @OneToMany(mappedBy = "eventID", cascade = CascadeType.ALL)
+    private List<payment> paymentID;
 }

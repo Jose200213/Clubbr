@@ -207,13 +207,13 @@ public class workerService {
         workerRepo.save(worker);
     }
 
-    public void addWorkerToEventInterestPoint(Long stablishmentID, String eventName, String userID, Long interestPointID, String token){
+    public void addWorkerToEventInterestPoint(Long stablishmentID, String eventName, LocalDate eventDate,String userID, Long interestPointID, String token){
         String userId = jwtService.extractUserIDFromToken(token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
         user requestUser = userService.getUser(userId);
         worker worker = getWorker(userService.getUser(userID), targetStab);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, targetStab);
-        interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, event.getEventName(), interestPointID);
+        event event = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), eventName, eventDate);
+        interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, event.getEventName(), event.getEventDate(),interestPointID);
 
         if (userService.isManager(requestUser)){
             manager targetManager = managerService.getManager(requestUser);
@@ -241,7 +241,11 @@ public class workerService {
             }
         }
 
-        worker.getUserID().setUserRole(role.USER);
+        if (getAllWorkersFromUser(worker.getUserID()).size() == 1){
+            worker.getUserID().setUserRole(role.USER);
+            userRepo.save(worker.getUserID());
+        }
+
         workerRepo.delete(worker);
     }
 

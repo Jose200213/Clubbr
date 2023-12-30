@@ -8,10 +8,12 @@ import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.ticketRepo;
+import com.Clubbr.Clubbr.Dto.ticketDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ticketService {
@@ -31,9 +33,9 @@ public class ticketService {
     @Autowired
     private jwtService jwtService;
 
-    public void addTicketToEvent(Long stablishmentID, String eventName, String token){
+    public void addTicketToEvent(Long stablishmentID, String eventName, LocalDate eventDate, String token){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         ticket newTicket = new ticket();
@@ -58,13 +60,13 @@ public class ticketService {
         return ticket;
     }
 
-    public List<ticket> getAllTicketsFromUser(String token){
+    public List<ticketDto> getAllTicketsFromUser(String token){
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
         List<ticket> tickets = ticketRepo.findByUserID(userId);
         if (tickets.isEmpty()){
             throw new ResourceNotFoundException("Tickets");
         }
-        return tickets;
+        return tickets.stream().map(ticket ->  new ticketDto(ticket)).collect(Collectors.toList());
     }
 
     public void deleteExpiredTickets(){

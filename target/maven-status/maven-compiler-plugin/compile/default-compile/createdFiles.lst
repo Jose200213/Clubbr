@@ -24,6 +24,7 @@ com\Clubbr\Clubbr\Repository\paymentRepo.class
 com\Clubbr\Clubbr\Repository\managerRepo.class
 com\Clubbr\Clubbr\Controller\eventController.class
 com\Clubbr\Clubbr\Entity\item.class
+com\Clubbr\Clubbr\Dto\eventDto.class
 com\Clubbr\Clubbr\Entity\panicAlert.class
 com\Clubbr\Clubbr\Repository\interestPointRepo.class
 com\Clubbr\Clubbr\utils\permission.class
@@ -44,6 +45,7 @@ com\Clubbr\Clubbr\Entity\payment.class
 com\Clubbr\Clubbr\Service\workerService.class
 com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\Service\managerService.class
+com\Clubbr\Clubbr\Dto\eventListDto.class
 com\Clubbr\Clubbr\config\MqttConfig.class
 com\Clubbr\Clubbr\Entity\interestPoint.class
 com\Clubbr\Clubbr\config\security\securityBeansInjector.class
@@ -54,6 +56,7 @@ com\Clubbr\Clubbr\Service\interestPointService.class
 com\Clubbr\Clubbr\Controller\managerController.class
 com\Clubbr\Clubbr\Entity\manager.class
 com\Clubbr\Clubbr\Service\userService.class
+com\Clubbr\Clubbr\Dto\interestPointDto.class
 com\Clubbr\Clubbr\Repository\itemRepo.class
 com\Clubbr\Clubbr\utils\role.class
 com\Clubbr\Clubbr\Entity\user$userBuilder.class

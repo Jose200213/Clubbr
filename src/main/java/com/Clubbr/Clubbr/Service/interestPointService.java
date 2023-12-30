@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.interestPointDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import com.Clubbr.Clubbr.Repository.eventRepo;
 import org.springframework.transaction.annotation.Transactional;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -69,7 +71,6 @@ public class interestPointService {
                 .orElseThrow(() -> new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID));
     }
 
-    @Transactional(readOnly = true)
     public interestPoint getInterestPointByStablishment(Long stablishmentID, Long interestPointID){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
         interestPoint interestPoint = getInterestPoint(interestPointID);
@@ -80,10 +81,18 @@ public class interestPointService {
         return interestPoint;
     }
 
+    public interestPointDto getInterestPointDto(interestPoint interestPoint){
+        return new interestPointDto(interestPoint);
+    }
+
+    public List<interestPointDto> getInterestPointListDto(List<interestPoint> interestPoint){
+        return interestPoint.stream().map(interestPointDto::new).collect(java.util.stream.Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
-    public interestPoint getInterestPointByEventName(Long stablishmentID, String eventName, Long interestPointID){
+    public interestPoint getInterestPointByEventName(Long stablishmentID, String eventName, LocalDate eventDate, Long interestPointID){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         interestPoint interestPoint = getInterestPoint(interestPointID);
 
         if (interestPoint.getEventName() != event){
@@ -93,9 +102,9 @@ public class interestPointService {
     }
 
     @Transactional
-    public void addInterestPointToEvent(Long stabID, String eventName, interestPoint newInterestPoint, String token){
+    public void addInterestPointToEvent(Long stabID, String eventName, LocalDate eventDate, interestPoint newInterestPoint, String token){
         stablishment stablishment = stablishmentService.getStab(stabID);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (userService.isManager(targetUser)){
@@ -113,9 +122,9 @@ public class interestPointService {
     }
 
     @Transactional(readOnly = true)
-    public List<interestPoint> getInterestPointsByEventName(String eventName, Long stablishmentID){
+    public List<interestPoint> getInterestPointsByEventName(String eventName, LocalDate eventDate, Long stablishmentID){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        event event = eventService.getEventByEventNameAndStablishmentID(eventName, stablishment);
+        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         return interestPointRepo.findByEventName(event);
     }
 
@@ -139,8 +148,8 @@ public class interestPointService {
     }
 
     @Transactional
-    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, interestPoint targetInterestPoint, String token){
-        interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, interestPointID);
+    public void updateInterestPointFromEvent(Long stablishmentID, String eventName, LocalDate eventDate, Long interestPointID, interestPoint targetInterestPoint, String token){
+        interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, eventDate, interestPointID);
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
         user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
@@ -174,9 +183,9 @@ public class interestPointService {
     }
 
     @Transactional
-    public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, Long interestPointID, String token) {
+    public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, LocalDate eventDate, Long interestPointID, String token) {
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, interestPointID);
+        interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, eventDate, interestPointID);
         user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (userService.isManager(targetUser)) {

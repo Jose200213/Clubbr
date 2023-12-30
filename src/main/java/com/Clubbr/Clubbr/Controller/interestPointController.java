@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.Clubbr.Clubbr.Service.interestPointService;
 import com.Clubbr.Clubbr.Entity.interestPoint;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,7 +26,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointByStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID){
         try {
             interestPoint interestPoint = interestPointService.getInterestPointByStablishment(stablishmentID, interestPointID);
-            return ResponseEntity.ok(interestPoint);
+            return ResponseEntity.ok(interestPointService.getInterestPointDto(interestPoint));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -38,7 +40,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointsByStablishment(@PathVariable("stablishmentID") Long stablishmentID){
         try {
             List<interestPoint> interestPoints = interestPointService.getInterestPointsByStablishment(stablishmentID);
-            return ResponseEntity.ok(interestPoints);
+            return ResponseEntity.ok(interestPointService.getInterestPointListDto(interestPoints));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -48,11 +50,11 @@ public class interestPointController {
 
 
     // GET ONE BY EVENT
-    @GetMapping("/event/{eventName}/interestPoint/{interestPointID}")
-    public ResponseEntity<?> getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID){
+    @GetMapping("/event/{eventName}/{eventDate}/interestPoint/{interestPointID}")
+    public ResponseEntity<?> getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("interestPointID") Long interestPointID){
         try {
-            interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, eventName, interestPointID);
-            return ResponseEntity.ok(interestPoint);
+            interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, eventName, eventDate,interestPointID);
+            return ResponseEntity.ok(interestPointService.getInterestPointDto(interestPoint));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -62,11 +64,11 @@ public class interestPointController {
 
 
     // GET LIST BY EVENT
-    @GetMapping("/event/{eventName}/interestPoint/all")
-    public ResponseEntity<?> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName){
+    @GetMapping("/event/{eventName}/{eventDate}/interestPoint/all")
+    public ResponseEntity<?> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         try {
-            List<interestPoint> interestPoints = interestPointService.getInterestPointsByEventName(eventName, stablishmentID);
-            return ResponseEntity.ok(interestPoints);
+            List<interestPoint> interestPoints = interestPointService.getInterestPointsByEventName(eventName, eventDate, stablishmentID);
+            return ResponseEntity.ok(interestPointService.getInterestPointListDto(interestPoints));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -93,10 +95,10 @@ public class interestPointController {
 
 
     // POST TO EVENT
-    @PostMapping("/event/{eventName}/interestPoint/add")
-    public ResponseEntity<String> addInterestPointToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @RequestBody interestPoint newInterestPoint, @RequestHeader("Authorization") String token){
+    @PostMapping("/event/{eventName}/{eventDate}/interestPoint/add")
+    public ResponseEntity<String> addInterestPointToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestBody interestPoint newInterestPoint, @RequestHeader("Authorization") String token){
         try {
-            interestPointService.addInterestPointToEvent(stablishmentID, eventName, newInterestPoint, token);
+            interestPointService.addInterestPointToEvent(stablishmentID, eventName, eventDate, newInterestPoint, token);
             return ResponseEntity.ok("Interest Point añadido correctamente");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -124,10 +126,10 @@ public class interestPointController {
 
 
     // UPDATE FROM EVENT
-    @PutMapping("/event/{eventName}/interestPoint/update/{interestPointID}")
-    public ResponseEntity<String> updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID, @RequestBody interestPoint targetInterestPoint, @RequestHeader("Authorization") String token){
+    @PutMapping("/event/{eventName}/{eventDate}/interestPoint/update/{interestPointID}")
+    public ResponseEntity<String> updateInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("interestPointID") Long interestPointID, @RequestBody interestPoint targetInterestPoint, @RequestHeader("Authorization") String token){
         try {
-            interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, interestPointID, targetInterestPoint, token);
+            interestPointService.updateInterestPointFromEvent(stablishmentID, eventName, eventDate, interestPointID, targetInterestPoint, token);
             return ResponseEntity.ok("Interest Point actualizado correctamente");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -155,10 +157,10 @@ public class interestPointController {
 
 
     // DELETE FROM EVENT
-    @DeleteMapping("/event/{eventName}/interestPoint/delete/{interestPointID}")
-    public ResponseEntity<String> deleteInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
+    @DeleteMapping("/event/{eventName}/{eventDate}/interestPoint/delete/{interestPointID}")
+    public ResponseEntity<String> deleteInterestPointFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("interestPointID") Long interestPointID, @RequestHeader("Authorization") String token){
         try {
-            interestPointService.deleteInterestPointFromEvent(stablishmentID, eventName, interestPointID, token);
+            interestPointService.deleteInterestPointFromEvent(stablishmentID, eventName, eventDate, interestPointID, token);
             return ResponseEntity.ok("Interest Point eliminado correctamente");
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

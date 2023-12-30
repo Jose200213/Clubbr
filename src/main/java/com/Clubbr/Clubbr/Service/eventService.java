@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.eventDto;
+import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
@@ -109,15 +111,22 @@ public class eventService {
         return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
     }
 
+    public List<event> getAllEvents() {
+        return eventRepo.findAllOrderByEventDateAfterOrderByEventDateAsc(LocalDate.now());
+    }
+
+    public List<eventListDto> getEventsListDto(List<event> events) {
+        return events.stream().map(eventListDto::new).collect(java.util.stream.Collectors.toList());
+    }
+
+    public eventDto getEventDto(event event) {
+        return new eventDto(event);
+    }
+
     @Transactional(readOnly = true)
     public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
         stablishment stab = stablishmentService.getStab(stabID);
         return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
-    }
-
-    public event getEventByEventNameAndStablishmentID(String eventName, stablishment stablishmentID) {
-        return eventRepo.findByEventNameAndStablishmentID(eventName, stablishmentID)
-                .orElseThrow(() -> new ResourceNotFoundException("Evento", "eventName", eventName, "Establecimiento", "stablishmentID", stablishmentID.getStablishmentID()));
     }
 
     @Transactional

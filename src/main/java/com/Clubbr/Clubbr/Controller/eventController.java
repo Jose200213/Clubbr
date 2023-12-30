@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.Dto.eventDto;
+import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
@@ -13,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RestController
-@RequestMapping("/stablishment/{stablishmentID}")
+@RestController()
 public class eventController {
 
     @Autowired
     private eventService eventService;
 
 
-    @PostMapping("/event/add")
+    @PostMapping("/stablishment/{stablishmentID}/event/add")
     public ResponseEntity<String> addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
         try {
             eventService.addEventToStab(stabID, newEvent, token);
@@ -34,27 +35,35 @@ public class eventController {
     }
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.
-    @GetMapping("/event/all-ordered")
+    @GetMapping("/stablishment/{stablishmentID}/event/all-ordered")
     public ResponseEntity<?> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
         try {
             List<event> events = eventService.getAllEventsOrderedByDateInStab(stabID);
-            return ResponseEntity.ok(events);
+            List<eventListDto> eventsListDto = eventService.getEventsListDto(events);
+            return ResponseEntity.ok(eventsListDto);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
-    @GetMapping("/event/{eventName}/{eventDate}")
+    @GetMapping("/event/all")
+    public List<eventListDto> getAllEvents(){
+        List<event> events =  eventService.getAllEvents();
+        return eventService.getEventsListDto(events);
+    }
+
+    @GetMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}")
     public ResponseEntity<?> getEventInStabByEventNameAndDate(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate) {
         try {
             event event = eventService.getEventByStabNameDate(stablishmentID, eventName, eventDate);
-            return ResponseEntity.ok(event);
+            eventDto eventDto = eventService.getEventDto(event);
+            return ResponseEntity.ok(eventDto);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
     }
 
-    @PutMapping("/event/{eventName}/{eventDate}/update")
+    @PutMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update")
     public ResponseEntity<String> updateEventFromStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestBody event targetEvent, @RequestHeader("Authorization") String token) {
         try {
             eventService.updateEventFromStablishment(stablishmentID, eventName, eventDate, targetEvent, token);
@@ -66,7 +75,7 @@ public class eventController {
         }
     }
 
-    @DeleteMapping("/event/{eventName}/{eventDate}/delete")
+    @DeleteMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/delete")
     public ResponseEntity<String> deleteEventFromStablishment(@PathVariable Long stablishmentID, @PathVariable String eventName, @PathVariable LocalDate eventDate, @RequestHeader("Authorization") String token) {
         try {
             eventService.deleteEventFromStablishment(stablishmentID, eventName, eventDate, token);
@@ -79,7 +88,7 @@ public class eventController {
     }
 
 
-    @PostMapping("/event/persistent/{repeticiones}")
+    @PostMapping("/stablishment/{stablishmentID}/event/persistent/{repeticiones}")
     public ResponseEntity<String> addPersistentEventToStab(@PathVariable("stablishmentID") Long stabID, @PathVariable("repeticiones") int repeticiones, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
         try {
             eventService.addPersistentEventToStab(stabID, repeticiones, newEvent, token);
@@ -91,7 +100,7 @@ public class eventController {
         }
     }
 
-    @PostMapping("/event/{eventName}/{eventDate}/attendance-control")
+    @PostMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/attendance-control")
     public ResponseEntity<String> attendanceControlWorkers(@PathVariable("stablishmentID") Long stabID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestHeader("Authorization") String token) throws MqttException, JsonProcessingException {
         try {
             eventService.attendanceControlWorkers(stabID, eventName, eventDate, token);
@@ -101,7 +110,7 @@ public class eventController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
         }
-    }
 
+    }
 }
 

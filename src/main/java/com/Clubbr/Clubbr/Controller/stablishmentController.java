@@ -1,5 +1,7 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.Dto.stablishmentDto;
+import com.Clubbr.Clubbr.Dto.stablishmentListDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class stablishmentController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllStab() {
         try{
-            List<stablishment> stablishments = stabService.getAllStab();
+            List<stablishmentListDto> stablishments = stabService.getAllStabDto();
             return ResponseEntity.ok(stablishments);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -34,7 +36,7 @@ public class stablishmentController {
     @GetMapping("/{stablishmentID}")
     public ResponseEntity<?> getStab(@PathVariable Long stablishmentID) {
         try{
-            stablishment stablishment = stabService.getStab(stablishmentID);
+            stablishmentDto stablishment = stabService.getStabDto(stablishmentID);
             return ResponseEntity.ok(stablishment);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
