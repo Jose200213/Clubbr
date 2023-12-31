@@ -18,7 +18,6 @@ public class stablishmentDto {
     private String openTime;
     private String closeTime;
     private int capacity;
-    private List<interestPoint> interestPoints;
 
     public stablishmentDto(stablishment stablishment) {
         this.stablishmentID = stablishment.getStablishmentID();
@@ -27,6 +26,5 @@ public class stablishmentDto {
         this.openTime = stablishment.getOpenTime().toString();
         this.closeTime = stablishment.getCloseTime().toString();
         this.capacity = stablishment.getCapacity();
-        this.interestPoints = stablishment.getInterestPoints();
     }
 }

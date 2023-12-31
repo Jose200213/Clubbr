@@ -1,7 +1,6 @@
 package com.Clubbr.Clubbr.Controller;
 
 import com.Clubbr.Clubbr.Dto.eventDto;
-import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Service.eventService;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
@@ -39,7 +38,7 @@ public class eventController {
     public ResponseEntity<?> getAllEventsOrderedByDateInStab(@PathVariable("stablishmentID") Long stabID){
         try {
             List<event> events = eventService.getAllEventsOrderedByDateInStab(stabID);
-            List<eventListDto> eventsListDto = eventService.getEventsListDto(events);
+            List<eventDto> eventsListDto = eventService.getEventsListDto(events);
             return ResponseEntity.ok(eventsListDto);
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
@@ -47,7 +46,7 @@ public class eventController {
     }
 
     @GetMapping("/event/all")
-    public List<eventListDto> getAllEvents(){
+    public List<eventDto> getAllEvents(){
         List<event> events =  eventService.getAllEvents();
         return eventService.getEventsListDto(events);
     }

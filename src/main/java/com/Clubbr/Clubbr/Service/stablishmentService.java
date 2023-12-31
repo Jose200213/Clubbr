@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.Clubbr.Clubbr.Dto.stablishmentDto;
-import com.Clubbr.Clubbr.Dto.stablishmentListDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.context.annotation.Lazy;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 
 /**
@@ -58,9 +55,9 @@ public class stablishmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<stablishmentListDto> getAllStabDto() {
+    public List<stablishmentDto> getAllStabDto() {
         List<stablishment> stabList = getAllStab();
-        return stabList.stream().map(stablishmentListDto::new).collect(Collectors.toList());
+        return stabList.stream().map(stablishmentDto::new).collect(Collectors.toList());
     }
 
     /**

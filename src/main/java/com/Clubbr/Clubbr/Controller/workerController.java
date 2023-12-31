@@ -20,9 +20,9 @@ public class workerController {
     private workerService workerService;
 
     @GetMapping("/worker/all")
-    public ResponseEntity<?> getAllWorkers(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getAllWorkersFromStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {
-            return ResponseEntity.ok(workerService.getAllWorkersFromStab(stablishmentID, token));
+            return ResponseEntity.ok(workerService.getWorkersListDto(workerService.getAllWorkersFromStab(stablishmentID, token)));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -32,9 +32,31 @@ public class workerController {
 
 
     @GetMapping("/worker/{userID}")
-    public ResponseEntity<?> getWorker(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getWorkerFromStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
         try {
-            return ResponseEntity.ok(workerService.getWorkerFromStab(userID, stablishmentID, token));
+            return ResponseEntity.ok(workerService.getWorkerDto(workerService.getWorkerFromStab(userID, stablishmentID, token)));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/event/{eventName}/{eventDate}/worker/all")
+    public ResponseEntity<?> getAllWorkersFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestHeader("Authorization") String token) {
+        try {
+            return ResponseEntity.ok(workerService.getWorkersListDto(workerService.getAllWorkersFromEvent(stablishmentID, eventName, eventDate, token)));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/event/{eventName}/{eventDate}/worker/{userID}")
+    public ResponseEntity<?> getWorkerFromEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("userID") String userID, @RequestHeader("Authorization") String token) {
+        try {
+            return ResponseEntity.ok(workerService.getWorkerDto(workerService.getWorkerFromEvent(userID, stablishmentID, eventName, eventDate, token)));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){

@@ -120,6 +120,8 @@ public class httpSecurityConfig {
             //region WORKER CONTROLLER
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/all").hasAuthority(permission.READ_STAB_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/worker/{userID}").hasAuthority(permission.READ_WORKERS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/worker/all").hasAuthority(permission.READ_WORKERS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/worker/{userID}").hasAuthority(permission.READ_WORKERS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
 

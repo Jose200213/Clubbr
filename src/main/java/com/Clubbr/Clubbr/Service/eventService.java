@@ -1,7 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Dto.eventDto;
-import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
 import com.Clubbr.Clubbr.Repository.workerRepo;
@@ -106,8 +105,8 @@ public class eventService {
         return eventRepo.findAllOrderByEventDateAfterOrderByEventDateAsc(LocalDate.now());
     }
 
-    public List<eventListDto> getEventsListDto(List<event> events) {
-        return events.stream().map(eventListDto::new).collect(java.util.stream.Collectors.toList());
+    public List<eventDto> getEventsListDto(List<event> events) {
+        return events.stream().map(eventDto::new).collect(java.util.stream.Collectors.toList());
     }
 
     public eventDto getEventDto(event event) {

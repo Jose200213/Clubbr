@@ -22,7 +22,6 @@ public class eventDto {
     private String eventDescription;
     private float eventPrice;
     private int totalTickets;
-    private List<interestPoint> interestPoints;
 
     public eventDto(event event) {
         this.eventName = event.getEventName();
@@ -31,6 +30,5 @@ public class eventDto {
         this.eventDescription = event.getEventDescription();
         this.eventPrice = event.getEventPrice();
         this.totalTickets = event.getTotalTickets();
-        this.interestPoints = event.getInterestPoints();
     }
 }
