@@ -4,9 +4,7 @@ import com.Clubbr.Clubbr.Dto.eventDto;
 import com.Clubbr.Clubbr.Dto.eventListDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import com.Clubbr.Clubbr.Repository.workerRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.config.exception.NotFoundException;
@@ -31,13 +29,6 @@ public class eventService {
     private eventRepo eventRepo;
 
     @Autowired
-    private userRepo userRepo;
-
-    @Autowired
-    private stablishmentRepo stabRepo;
-
-    @Autowired
-
     private MqttClient mqttClient;
 
     @Autowired
@@ -126,14 +117,14 @@ public class eventService {
     @Transactional(readOnly = true)
     public event getEventByStabNameDate(Long stabID, String name, LocalDate date) {
         stablishment stab = stablishmentService.getStab(stabID);
-        return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date);
+        return eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, name, date).orElseThrow(() -> new ResourceNotFoundException("Event", "eventName", name, "Establecimiento", "stablishmentID", stabID));
     }
 
     @Transactional
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
 
         stablishment stab = stablishmentService.getStab(stabID);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        event existingEvent = getEventByStabNameDate(stabID, eventName, eventDate);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
@@ -147,7 +138,7 @@ public class eventService {
             }
         }
 
-        event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
+        event eventFlag = getEventByStabNameDate(stab.getStablishmentID(), targetEvent.getEventName(), targetEvent.getEventDate());
 
         if (eventFlag != null) {
             throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
@@ -174,7 +165,7 @@ public class eventService {
     @Transactional
     public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, String token) {
         stablishment stab = stablishmentService.getStab(stabID);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        event existingEvent = getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
@@ -233,18 +224,23 @@ public class eventService {
 
 
     @Transactional
-    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate) throws JsonProcessingException, MqttException {
+    public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate, String token) throws JsonProcessingException, MqttException {
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        stablishment stab = stabRepo.findById(stabID).orElse(null);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+        stablishment stab = stablishmentService.getStab(stabID);
+        event existingEvent = getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
 
-        //workers = workerService.getAllWorkers(stab);
+        if (userService.isManager(user)) {
+            manager manager = managerService.getManager(user);
+            if (!managerService.isManagerInStab(stab, manager)) {
+                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
+            }
+        }
 
         workers = workerRepo.findAllByStablishmentID(stab);
 
-        // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
 
         for(worker worker : workers){
@@ -256,24 +252,20 @@ public class eventService {
                 json.put("StabAddress", stab.getStabAddress());
                 json.put("EventName", existingEvent.getEventName());
                 json.put("StabId", stab.getStablishmentID());
-                json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
-
+                json.put("TelegramID", userService.getUser(worker.getUserID().getUserID()).getTelegramID());
 
                 jsonList.add(json);
             }
         }
 
-        // Convertir la lista de JSON a una cadena de texto JSON
         String jsonString = objectMapper.writeValueAsString(jsonList);
 
-        // Publicar la cadena de texto JSON como un mensaje MQTT
         byte[] payload = jsonString.getBytes();
         MqttMessage mqttMessage = new MqttMessage(payload);
-        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
+
         if (mqttClient != null) {
             mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
         } else {
-            // Manejar la situación en la que mqttClient es null
             System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
         }
     }

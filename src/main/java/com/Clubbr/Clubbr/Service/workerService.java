@@ -134,7 +134,7 @@ public class workerService {
 
         user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
         stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate);
+        event existingEvent = eventService.getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
 
         worker workerToUpdate = workerRepo.findByUserIDAndEventIDAndStablishmentID(targetUser, existingEvent, stab);
         workerToUpdate.setAttendance(attendance);

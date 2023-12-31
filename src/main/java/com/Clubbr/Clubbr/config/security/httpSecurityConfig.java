@@ -66,6 +66,8 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}").hasAuthority(permission.READ_EVENTS.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/add").hasAuthority(permission.CREATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/persistent/{repeticiones}").hasAuthority(permission.CREATE_EVENTS.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/attendance-control").hasAuthority(permission.ATTENDANCE_CONTROL.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/update").hasAuthority(permission.UPDATE_EVENTS.name());
 
@@ -123,6 +125,14 @@ public class httpSecurityConfig {
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
+            //endregion
+            //region PANIC ALERT CONTROLLER
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/panic-alerts").hasAuthority(permission.READ_PANIC_ALERTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/panic-alerts/{userId}").hasAuthority(permission.READ_PANIC_ALERTS.name());
+
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/event/user/panic-alert/activate").hasAuthority(permission.ACTIVATE_PANIC_ALERT.name());
+
+            authConfig.requestMatchers(HttpMethod.DELETE, "/stablishment/{stablishmentID}/event/panic-alert/{panicAlertID}/delete").hasAuthority(permission.DELETE_PANIC_ALERT.name());
             //endregion
 
             //authConfig.anyRequest().denyAll();
