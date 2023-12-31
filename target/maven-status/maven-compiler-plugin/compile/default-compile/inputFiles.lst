@@ -4,13 +4,13 @@ C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\ticke
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\eventService.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\stablishmentController.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\utils\role.java
-C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\stablishmentListDto.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\authenticationService.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\managerController.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\paymentController.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\workerID.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\eventController.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\interestPointService.java
+C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\workerDto.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\stablishmentDto.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\userService.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Repository\managerRepo.java
@@ -30,7 +30,6 @@ C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Repositor
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\interestPointDto.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\config\exception\BadRequestException.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Service\managerService.java
-C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Dto\eventListDto.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Controller\ticketController.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\event.java
 C:\Users\jhona\Documents\GitHub\Clubbr\src\main\java\com\Clubbr\Clubbr\Entity\item.java

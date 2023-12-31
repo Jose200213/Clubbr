@@ -33,7 +33,6 @@ com\Clubbr\Clubbr\config\security\httpSecurityConfig.class
 com\Clubbr\Clubbr\Dto\stablishmentDto.class
 com\Clubbr\Clubbr\Controller\authenticationController.class
 com\Clubbr\Clubbr\Entity\stablishment.class
-com\Clubbr\Clubbr\Dto\stablishmentListDto.class
 com\Clubbr\Clubbr\config\exception\BadRequestException.class
 com\Clubbr\Clubbr\Entity\worker.class
 com\Clubbr\Clubbr\Dto\authenticationResponse$authenticationResponseBuilder.class
@@ -49,7 +48,6 @@ com\Clubbr\Clubbr\Entity\payment.class
 com\Clubbr\Clubbr\Service\workerService.class
 com\Clubbr\Clubbr\Service\eventService.class
 com\Clubbr\Clubbr\Service\managerService.class
-com\Clubbr\Clubbr\Dto\eventListDto.class
 com\Clubbr\Clubbr\config\MqttConfig.class
 com\Clubbr\Clubbr\Dto\ticketDto$ticketDtoBuilder.class
 com\Clubbr\Clubbr\Entity\interestPoint.class

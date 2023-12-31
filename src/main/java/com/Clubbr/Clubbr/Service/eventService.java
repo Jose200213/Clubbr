@@ -54,7 +54,7 @@ public class eventService {
         stablishment stab = stablishmentService.getStab(stabID);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
+        event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, newEvent.getEventName(), newEvent.getEventDate()).orElse(null);
 
         if (eventFlag != null) {
 
@@ -123,7 +123,7 @@ public class eventService {
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
 
         stablishment stab = stablishmentService.getStab(stabID);
-        event existingEvent = getEventByStabNameDate(stabID, eventName, eventDate);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate).orElse(null);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
@@ -137,7 +137,7 @@ public class eventService {
             }
         }
 
-        event eventFlag = getEventByStabNameDate(stab.getStablishmentID(), targetEvent.getEventName(), targetEvent.getEventDate());
+        event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate()).orElse(null);
 
         if (eventFlag != null) {
             throw new BadRequestException("Can't update an Event with name: " + targetEvent.getEventName() + " and date: " + targetEvent.getEventDate() + " already exists");
@@ -164,7 +164,7 @@ public class eventService {
     @Transactional
     public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, String token) {
         stablishment stab = stablishmentService.getStab(stabID);
-        event existingEvent = getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate).orElse(null);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
@@ -187,7 +187,7 @@ public class eventService {
         stablishment stab = stablishmentService.getStab(stabID);
         user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         //event eventAux = new event();
-        event eventFlag = getEventByStabNameDate(stabID, newEvent.getEventName(), newEvent.getEventDate());
+        event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, newEvent.getEventName(), newEvent.getEventDate()).orElse(null);
 
         if (eventFlag != null) {
 
@@ -239,6 +239,9 @@ public class eventService {
         }
 
         workers = workerRepo.findAllByStablishmentID(stab);
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
 
         List<ObjectNode> jsonList = new ArrayList<>();
 

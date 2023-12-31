@@ -66,6 +66,9 @@ public class panicAlertService {
         event existingEvent = eventService.getEventByStabNameDate(stab.getStablishmentID(), targetEvent.getEventName(), targetEvent.getEventDate());
 
         workers = workerRepo.findAllByStablishmentID(stab);
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();

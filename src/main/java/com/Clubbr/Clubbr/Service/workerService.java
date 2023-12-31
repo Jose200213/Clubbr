@@ -9,6 +9,7 @@ import com.Clubbr.Clubbr.Entity.*;
 
 import com.Clubbr.Clubbr.advice.*;
 
+import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.utils.role;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -199,7 +200,7 @@ public class workerService {
         if (userService.isManager(requestUser)){
             manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
             if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
 
@@ -208,16 +209,21 @@ public class workerService {
         targetWorker.setStablishmentID(targetStab);
 
         if (targetWorker.getEventID() != null){
-
-            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
-            if(eventFlag == null){
-                throw new ResourceNotFoundException("Evento", "eventName", targetWorker.getEventID().getEventName(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
+            //Comprobacion en caso de que el usuario sea ya trabajador fijo del establecimiento y se haya intentado introducir de nuevo con un evento como eventual.
+            if (workerFlag != null && workerFlag.getEventID() == null){
+                throw new BadRequestException("El usuario ya es trabajador fijo del establecimiento.");
             }
+            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
             targetWorker.setAttendance(false);
             eventFlag.getWorkers().add(targetWorker);
             eventRepo.save(eventFlag);
 
         }else{
+            worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
+            if (workerFlag != null){
+                throw new BadRequestException("El usuario ya es fijo trabajador del establecimiento.");
+            }
             targetWorker.setWorkingHours(160L);
             targetWorker.setAttendance(true);
             targetWorker.setEventID(null);
@@ -225,10 +231,6 @@ public class workerService {
 
         targetStab.getWorkers().add(targetWorker);
         stablishmentRepo.save(targetStab);
-
-        if (targetWorker.getId() != null && workerRepo.existsById(targetWorker.getId())) {
-            targetWorker = entityManager.merge(targetWorker);
-        }
 
         workerRepo.save(targetWorker);
         userRepo.save(targetUser);
