@@ -31,8 +31,10 @@ public class workerDto {
         this.userID = worker.getUserID().getUserID();
         this.userName = worker.getUserID().getName();
         this.stablishmentID = worker.getStablishmentID().getStablishmentID();
-        this.eventID = worker.getEventID().getEventName();
-        this.interestPointID = worker.getInterestPointID().getInterestPointID();
+        if (worker.getEventID() == null) this.eventID = null;
+        else this.eventID = worker.getEventID().getEventName();
+        if (worker.getInterestPointID() == null) this.interestPointID = null;
+        else this.interestPointID = worker.getInterestPointID().getInterestPointID();
         this.workingHours = worker.getWorkingHours();
         this.salary = worker.getSalary();
         this.attendance = worker.isAttendance();

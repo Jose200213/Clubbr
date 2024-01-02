@@ -27,7 +27,8 @@ public class interestPointDto {
     public interestPointDto(interestPoint interestPoint) {
         this.interestPointID = interestPoint.getInterestPointID();
         this.stablishmentID = interestPoint.getStablishmentID().getStablishmentID();
-        this.eventName = interestPoint.getEventName().getEventName();
+        if (interestPoint.getEventName() == null) this.eventName = null;
+        else this.eventName = interestPoint.getEventName().getEventName();
         this.xCoordinate = interestPoint.getXCoordinate();
         this.yCoordinate = interestPoint.getYCoordinate();
         this.description = interestPoint.getDescription();
