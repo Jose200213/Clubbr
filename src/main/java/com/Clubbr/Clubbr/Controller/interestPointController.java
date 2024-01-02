@@ -26,7 +26,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointByStablishment(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("interestPointID") Long interestPointID){
         try {
             interestPoint interestPoint = interestPointService.getInterestPointByStablishment(stablishmentID, interestPointID);
-            return ResponseEntity.ok(interestPoint);
+            return ResponseEntity.ok(interestPointService.getInterestPointDto(interestPoint));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -40,7 +40,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointsByStablishment(@PathVariable("stablishmentID") Long stablishmentID){
         try {
             List<interestPoint> interestPoints = interestPointService.getInterestPointsByStablishment(stablishmentID);
-            return ResponseEntity.ok(interestPoints);
+            return ResponseEntity.ok(interestPointService.getInterestPointListDto(interestPoints));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -54,7 +54,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @PathVariable("interestPointID") Long interestPointID){
         try {
             interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, eventName, eventDate,interestPointID);
-            return ResponseEntity.ok(interestPoint);
+            return ResponseEntity.ok(interestPointService.getInterestPointDto(interestPoint));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -68,7 +68,7 @@ public class interestPointController {
     public ResponseEntity<?> getInterestPointsByEventName(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         try {
             List<interestPoint> interestPoints = interestPointService.getInterestPointsByEventName(eventName, eventDate, stablishmentID);
-            return ResponseEntity.ok(interestPoints);
+            return ResponseEntity.ok(interestPointService.getInterestPointListDto(interestPoints));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){

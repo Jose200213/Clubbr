@@ -2,7 +2,9 @@ package com.Clubbr.Clubbr.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.Clubbr.Clubbr.Dto.stablishmentDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.context.annotation.Lazy;
@@ -10,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
 
 
 /**
@@ -54,6 +54,12 @@ public class stablishmentService {
         return stabList;
     }
 
+    @Transactional(readOnly = true)
+    public List<stablishmentDto> getAllStabDto() {
+        List<stablishment> stabList = getAllStab();
+        return stabList.stream().map(stablishmentDto::new).collect(Collectors.toList());
+    }
+
     /**
      * Obtiene un establecimiento por su ID.
      * @param stabID el ID del establecimiento.
@@ -62,6 +68,11 @@ public class stablishmentService {
     public stablishment getStab(Long stabID) {
         return stabRepo.findById(stabID)
                 .orElseThrow(() -> new ResourceNotFoundException("Establecimiento", "stablishmentID", stabID));
+    }
+
+    public stablishmentDto getStabDto(Long stabID) {
+        stablishment stab = getStab(stabID);
+        return new stablishmentDto(stab);
     }
 
     /**

@@ -1,11 +1,9 @@
 package com.Clubbr.Clubbr.Service;
 
 import com.Clubbr.Clubbr.Entity.*;
-import com.Clubbr.Clubbr.Repository.eventRepo;
-import com.Clubbr.Clubbr.Repository.workerRepo;
 import com.Clubbr.Clubbr.Repository.panicAlertRepo;
-import com.Clubbr.Clubbr.Repository.stablishmentRepo;
-import com.Clubbr.Clubbr.Repository.userRepo;
+import com.Clubbr.Clubbr.Repository.workerRepo;
+import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -30,25 +28,32 @@ public class panicAlertService {
     private panicAlertRepo panicAlertRepo;
 
     @Autowired
+    private userService userService;
+
+    @Autowired
+    private managerService managerService;
+
+    @Autowired
     private MqttClient mqttClient;
 
     @Autowired
-    private userRepo userRepo;
-
-    @Autowired
-    private stablishmentRepo stabRepo;
-
-    @Autowired
-    private eventRepo eventRepo;
+    private stablishmentService stabService;
 
     @Autowired
     private workerRepo workerRepo;
 
+    @Autowired
+    private jwtService jwtService;
+
+    @Autowired
+    private eventService eventService;
+
 
     @Transactional
-    public void createPanicAlert(event targetEvent, String userId) throws JsonProcessingException, MqttException {
+    public void createPanicAlert(event targetEvent, String token) throws JsonProcessingException, MqttException {
         panicAlert newPanicAlert = new panicAlert();
-        user alertUser = userRepo.findByUserID(userId);
+        String userId = jwtService.extractUserIDFromToken(token);
+        user alertUser = userService.getUser(userId);
 
         newPanicAlert.setEventName(targetEvent);
         newPanicAlert.setStablishmentID(targetEvent.getStablishmentID());
@@ -57,19 +62,19 @@ public class panicAlertService {
 
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        stablishment stab = stabRepo.findById(targetEvent.getStablishmentID().getStablishmentID()).orElse(null);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate());
+        stablishment stab = stabService.getStab(targetEvent.getStablishmentID().getStablishmentID());
+        event existingEvent = eventService.getEventByStabNameDate(stab.getStablishmentID(), targetEvent.getEventName(), targetEvent.getEventDate());
 
-        //workers = workerService.getAllWorkers(stab);
         workers = workerRepo.findAllByStablishmentID(stab);
+        if (workers.isEmpty()) {
+            throw new ResourceNotFoundException("Trabajadores");
+        }
 
         // Crear una lista para almacenar los JSON
         List<ObjectNode> jsonList = new ArrayList<>();
 
-
         // Formatear la hora, minutos y segundos sin nanosegundos
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
 
         for(worker worker : workers){
             if(worker.getEventID() == existingEvent || worker.getEventID() == null){
@@ -80,23 +85,19 @@ public class panicAlertService {
                 json.put("EventName", existingEvent.getEventName());
                 json.put("UserName", alertUser.getName());
                 json.put("UserSurname", alertUser.getSurname());
-                json.put("TelegramID", userRepo.findById(worker.getUserID().getUserID()).orElse(null).getTelegramID());
+                json.put("TelegramID", userService.getUser(worker.getUserID().getUserID()).getTelegramID());
 
                 jsonList.add(json);
             }
         }
 
-        // Convertir la lista de JSON a una cadena de texto JSON
         String jsonString = objectMapper.writeValueAsString(jsonList);
 
-        // Publicar la cadena de texto JSON como un mensaje MQTT
         byte[] payload = jsonString.getBytes();
         MqttMessage mqttMessage = new MqttMessage(payload);
-        //mqttClient.publish("Clubbr/AttendanceControl", mqttMessage);
         if (mqttClient != null) {
             mqttClient.publish("Clubbr/PanicAlert", mqttMessage);
         } else {
-            // Manejar la situación en la que mqttClient es null
             System.err.println("No se puede publicar el mensaje porque el cliente MQTT no está disponible");
         }
 
@@ -105,14 +106,51 @@ public class panicAlertService {
     }
 
     @Transactional
-    public void deletePanicAlertById(Long panicAlertId) {
+    public void deletePanicAlertByIdFromStablishment(Long stablishmentID, Long panicAlertId, String token) {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment targetStab = stabService.getStab(stablishmentID);
+
+        if(userService.isManager(user)){
+            manager stabManager = managerService.getManager(user);
+            if(!managerService.isManagerInStab(targetStab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+        }
 
         panicAlertRepo.deleteById(panicAlertId);
     }
 
     @Transactional(readOnly = true)
-    public List<panicAlert> getPanicAlertsByStab(Long stabId) {
-        stablishment stab = stabRepo.findById(stabId).orElse(null);
+    public List<panicAlert> getPanicAlertsByStab(Long stabId, String token) {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment stab = stabService.getStab(stabId);
+
+        if(userService.isManager(user)){
+            manager stabManager = managerService.getManager(user);
+            if(!managerService.isManagerInStab(stab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", stab.getStablishmentID());
+            }
+        }
+
         return panicAlertRepo.findAllByStablishmentID(stab);
+    }
+
+    @Transactional(readOnly = true)
+    public List<panicAlert> getPanicAlertsByStabAndUser(Long stabId, String userId, String token) {
+        user user = userService.getUser(userId);
+        String userToken = jwtService.extractUserIDFromToken(token);
+        user userMG = userService.getUser(userToken);
+        stablishment stab = stabService.getStab(stabId);
+
+        if(userService.isManager(userMG)){
+            manager stabManager = managerService.getManager(userMG);
+            if(!managerService.isManagerInStab(stab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userMG, "Establecimiento", "stablishmentID", stab.getStablishmentID());
+            }
+        }
+
+        return panicAlertRepo.findAllByStablishmentIDAndUserID(stab, user);
     }
 }

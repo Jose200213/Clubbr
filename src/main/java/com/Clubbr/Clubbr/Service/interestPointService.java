@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.interestPointDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,6 @@ public class interestPointService {
                 .orElseThrow(() -> new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID));
     }
 
-    @Transactional(readOnly = true)
     public interestPoint getInterestPointByStablishment(Long stablishmentID, Long interestPointID){
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
         interestPoint interestPoint = getInterestPoint(interestPointID);
@@ -79,6 +79,14 @@ public class interestPointService {
             throw new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID, "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
         }
         return interestPoint;
+    }
+
+    public interestPointDto getInterestPointDto(interestPoint interestPoint){
+        return new interestPointDto(interestPoint);
+    }
+
+    public List<interestPointDto> getInterestPointListDto(List<interestPoint> interestPoint){
+        return interestPoint.stream().map(interestPointDto::new).collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional(readOnly = true)
