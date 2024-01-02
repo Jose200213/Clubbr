@@ -127,7 +127,7 @@ public class httpSecurityConfig {
 
             //authConfig.anyRequest().denyAll();
 
-            authConfig.anyRequest().permitAll();
+           authConfig.anyRequest().permitAll();
         };
     }
 }

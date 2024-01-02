@@ -21,8 +21,8 @@ public interface workerRepo extends JpaRepository<worker, Long>{
 
     worker findByUserID(user targetUser);
 
-    //worker findByUserIDAndEventAndStablishmentID(user targetUser, event existingEvent, stablishment stab);  //Tal y como esta la nueva clave cuaternaria, esta forma de busqueda ya no sirve.
 
     worker findByUserIDAndEventIDAndStablishmentID(user targetUser, event eventID, stablishment stab);
+    boolean existsByUserIDAndEventIDAndStablishmentID(user targetUser, event eventID, stablishment stab);
 
 }

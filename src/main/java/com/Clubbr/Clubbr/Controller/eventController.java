@@ -5,6 +5,7 @@ import com.Clubbr.Clubbr.Service.eventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,10 +19,11 @@ public class eventController {
 
     //Este Controller es llama a una version de añadir evento que permite añadir interest points al evento si y solo si los hay en el body.
     @PostMapping("/stablishment/{stablishmentID}/event/add")
-    public void addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> addEventToStab(@PathVariable("stablishmentID") Long stabID, @RequestBody event newEvent, @RequestHeader("Authorization") String token) {
 
         eventService.addEventToStab(stabID, newEvent, token);
 
+        return ResponseEntity.ok("Se agrego el evento correctamente ");
     }
 
     //Controller que devuelve todos los eventos de un local ordenados por fecha de forma ascendente.

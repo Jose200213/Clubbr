@@ -7,6 +7,7 @@ import com.Clubbr.Clubbr.Entity.*;
 
 import com.Clubbr.Clubbr.advice.*;
 
+import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import com.Clubbr.Clubbr.utils.role;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -174,6 +175,10 @@ public class workerService {
             targetWorker.setWorkingHours(160L);
             targetWorker.setAttendance(true);
             targetWorker.setEventID(null);
+        }
+
+        if (workerRepo.existsByUserIDAndEventIDAndStablishmentID(targetWorker.getUserID(), targetWorker.getEventID(), targetWorker.getStablishmentID())) {
+            throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
         }
 
         targetStab.getWorkers().add(targetWorker);
