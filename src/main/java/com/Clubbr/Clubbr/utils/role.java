@@ -24,7 +24,8 @@ public enum role {
             permission.CREATE_ITEMS, permission.UPDATE_ITEMS, permission.DELETE_ITEMS,
             permission.READ_ITEMS, permission.DELETE_STABLISHMENT_WORKERS,
             permission.UPDATE_WORKERS, permission.ATTENDANCE_CONTROL,
-            permission.ACTIVATE_PANIC_ALERT, permission.DELETE_PANIC_ALERT, permission.READ_PANIC_ALERTS
+            permission.ACTIVATE_PANIC_ALERT, permission.DELETE_PANIC_ALERT, permission.READ_PANIC_ALERTS,
+            permission.UPLOAD_PLAN, permission.READ_PLAN
     )),
 
     MANAGER(Arrays.asList(permission.READ_STABLISHMENTS, permission.CREATE_EVENTS,
@@ -40,7 +41,9 @@ public enum role {
             permission.DELETE_USERS, permission.UPDATE_STABLISHMENTS, permission.DELETE_STABLISHMENTS,
             permission.UPDATE_EVENTS, permission.DELETE_EVENTS, permission.UPDATE_INTEREST_POINTS,
             permission.DELETE_INTEREST_POINTS, permission.ATTENDANCE_CONTROL,
-            permission.DELETE_PANIC_ALERT, permission.READ_PANIC_ALERTS)),
+            permission.DELETE_PANIC_ALERT, permission.READ_PANIC_ALERTS,
+            permission.UPLOAD_PLAN, permission.READ_PLAN
+    )),
 
     USER(Arrays.asList(permission.READ_STABLISHMENTS, permission.READ_EVENTS,
             permission.READ_INTEREST_POINTS, permission.READ_TICKETS, permission.READ_MY_USER,

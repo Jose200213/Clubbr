@@ -47,11 +47,13 @@ public class httpSecurityConfig {
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/all").hasAuthority(permission.READ_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}").hasAuthority(permission.READ_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.GET, "/stablishment/manager/all").hasAuthority(permission.READ_MANAGER_STABLISHMENTS.name());
+            authConfig.requestMatchers(HttpMethod.GET, "/stablishment/{stablishmentID}/floor-plan").hasAuthority(permission.READ_PLAN.name());
 
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/add").hasAuthority(permission.CREATE_STABLISHMENTS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/worker/add").hasAuthority(permission.CREATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/add").hasAuthority(permission.CREATE_STAB_MANAGERS.name());
             authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/manager/{userID}/addOwner").hasAuthority(permission.CREATE_OWNER_MANAGER.name());
+            authConfig.requestMatchers(HttpMethod.POST, "/stablishment/{stablishmentID}/upload-floor-plan").hasAuthority(permission.UPLOAD_PLAN.name());
 
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/event/{eventName}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());
             authConfig.requestMatchers(HttpMethod.PUT, "/stablishment/{stablishmentID}/worker/{userID}/interestPoint/{interestPointID}/update").hasAuthority(permission.UPDATE_WORKERS.name());

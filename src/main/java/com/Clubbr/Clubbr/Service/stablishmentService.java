@@ -1,7 +1,13 @@
 package com.Clubbr.Clubbr.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.Clubbr.Clubbr.Dto.stablishmentDto;
@@ -12,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Clubbr.Clubbr.Repository.stablishmentRepo;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -97,7 +105,7 @@ public class stablishmentService {
      * @param stabID el ID del establecimiento.
      * @param token el token del manager.
      */
-    public void deleteStab(Long stabID, String token) {
+    public void deleteStab(Long stabID, String token) throws IOException {
         String userId = jwtService.extractUserIDFromToken(token);
         user user = userService.getUser(userId);
         stablishment targetStab = getStab(stabID);
@@ -108,6 +116,11 @@ public class stablishmentService {
                 throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
             }
         }
+
+        String floorPlanPath = targetStab.getFloorPlan();
+        Path path = Paths.get(floorPlanPath);
+        Files.deleteIfExists(path);
+
         stabRepo.deleteById(stabID);
     }
 
@@ -142,6 +155,52 @@ public class stablishmentService {
         stablishment.setOpenTime(targetStab.getOpenTime());
         stablishment.setStabName(targetStab.getStabName());
         stabRepo.save(stablishment);
+    }
+
+    public void uploadFloorPlan(Long stablishmentID, MultipartFile file, String token) throws IOException {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment targetStab = getStab(stablishmentID);
+
+        if(userService.isManager(user)){
+            manager stabManager = managerService.getManager(user);
+            if(!managerService.isManagerInStab(targetStab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+        }
+
+        String fileExtension = StringUtils.getFilenameExtension(Objects.requireNonNull(file.getOriginalFilename()));
+        String newFileName = "stablishment_" + stablishmentID + "." + fileExtension;
+
+        Path path = Paths.get("user/image/" + newFileName);
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        targetStab.setFloorPlan(path.toString());
+        stabRepo.save(targetStab);
+    }
+
+    public String getFloorPlan(Long stablishmentID, String token) throws Exception {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        stablishment targetStab = getStab(stablishmentID);
+
+        if(userService.isManager(user)){
+            manager stabManager = managerService.getManager(user);
+            if(!managerService.isManagerInStab(targetStab, stabManager)){
+                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
+            }
+        }
+
+        String floorPlanPath = targetStab.getFloorPlan().replace("\\", "/");
+        Path path = Paths.get(floorPlanPath);
+
+        if (Files.exists(path) && Files.isReadable(path)) {
+            String serverAddress = "http://localhost:8080/";
+            String imageUrl = serverAddress + floorPlanPath;
+            return imageUrl;
+        } else {
+            throw new RuntimeException("Could not read the file!");
+        }
     }
 
 }

@@ -38,6 +38,9 @@ public class stablishment {
     @Column(name = "capacity")
     private int capacity;
 
+    @Column(name = "floorPlan")
+    private String floorPlan;
+
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;

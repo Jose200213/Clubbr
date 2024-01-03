@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import com.Clubbr.Clubbr.Service.stablishmentService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/stablishment")
@@ -146,6 +147,48 @@ public class stablishmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al borrar el establecimiento: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method is used to upload a floor plan to a stablishment.
+     * @param stablishmentID This is the ID of the stablishment.
+     * @param file This is the floor plan file.
+     * @param token This is the JWT token of the manager.
+     * @return a message that confirms that the floor plan was uploaded successfully.
+     * @throws ResourceNotFoundException if the stablishment does not exist or if the manager does not own the stablishment.
+     * @throws Exception if there is an error in the server.
+     */
+    @PostMapping("/{stablishmentID}/upload-floor-plan")
+    public ResponseEntity<String> uploadFloorPlan(@PathVariable Long stablishmentID, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) {
+        try {
+            stabService.uploadFloorPlan(stablishmentID, file, token);
+            return ResponseEntity.ok("Plano subido con éxito");
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir el plano: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method is used to get a floor plan from a stablishment.
+     * @param stablishmentID This is the ID of the stablishment.
+     * @param token This is the JWT token of the manager.
+     * @return a link to the floor plan.
+     * @throws ResourceNotFoundException if the stablishment does not exist or if the manager does not own the stablishment.
+     * @throws RuntimeException if the file could not be read.
+     * @throws Exception if there is an error in the server.
+     */
+    @GetMapping("/{stablishmentID}/floor-plan")
+    public ResponseEntity<String> getFloorPlan(@PathVariable Long stablishmentID, @RequestHeader("Authorization") String token) {
+        try {
+            String floorPlanUrl = stabService.getFloorPlan(stablishmentID, token);
+            return ResponseEntity.ok(floorPlanUrl);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener el plano: " + e.getMessage());
         }
     }
 }
