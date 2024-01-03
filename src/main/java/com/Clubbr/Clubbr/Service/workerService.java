@@ -96,7 +96,8 @@ public class workerService {
             }
         }
 
-        List<worker> workers = workerRepo.findAllByEventID(targetEvent);
+        List<worker> workers = workerRepo.findAllByStablishmentIDAndEventIDOrStablishmentIDAndEventIDIsNull(
+                targetStablishment, targetEvent, targetStablishment);
         if (workers.isEmpty()) {
             throw new ResourceNotFoundException("Trabajadores");
         }
@@ -208,16 +209,22 @@ public class workerService {
         targetWorker.setUserID(targetUser);
         targetWorker.setStablishmentID(targetStab);
 
+       /* if (targetWorker.getEventID() != null){
+            worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
+            //Comprobacion en caso de que el usuario sea ya trabajador fijo del establecimiento y se haya intentado introducir de nuevo con un evento como eventual.
+            if (workerFlag != null && workerFlag.getEventID() == null){
+                throw new BadRequestException("El usuario ya es trabajador fijo del establecimiento.");
+            }
+            targetWorker.setAttendance(false);
+        */
         if (targetWorker.getEventID() != null){
             worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
             //Comprobacion en caso de que el usuario sea ya trabajador fijo del establecimiento y se haya intentado introducir de nuevo con un evento como eventual.
             if (workerFlag != null && workerFlag.getEventID() == null){
                 throw new BadRequestException("El usuario ya es trabajador fijo del establecimiento.");
             }
-            event eventFlag = eventService.getEventByStabNameDate(stablishmentID, targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
             targetWorker.setAttendance(false);
-            eventFlag.getWorkers().add(targetWorker);
-            eventRepo.save(eventFlag);
+
 
         }else{
             worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
@@ -232,9 +239,6 @@ public class workerService {
         if (workerRepo.existsByUserIDAndEventIDAndStablishmentID(targetWorker.getUserID(), targetWorker.getEventID(), targetWorker.getStablishmentID())) {
             throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
         }
-
-        targetStab.getWorkers().add(targetWorker);
-        stablishmentRepo.save(targetStab);
 
         workerRepo.save(targetWorker);
         userRepo.save(targetUser);

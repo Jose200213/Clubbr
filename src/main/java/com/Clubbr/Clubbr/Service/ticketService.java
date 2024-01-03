@@ -5,6 +5,7 @@ import com.Clubbr.Clubbr.Entity.stablishment;
 import com.Clubbr.Clubbr.Entity.ticket;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
+import com.Clubbr.Clubbr.config.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Clubbr.Clubbr.Repository.ticketRepo;
@@ -37,6 +38,11 @@ public class ticketService {
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
         event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
         user userId = userService.getUser(jwtService.extractUserIDFromToken(token));
+
+
+        if (ticketRepo.existsByUserIDAndEventNameAndStablishmentID(userId, event, stablishment)){
+            throw new BadRequestException("El usuario ya tiene un ticket para este evento");
+        }
 
         ticket newTicket = new ticket();
         newTicket.setEventName(event);

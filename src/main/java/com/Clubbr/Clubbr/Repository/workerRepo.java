@@ -17,6 +17,8 @@ public interface workerRepo extends JpaRepository<worker, Long>{
     List<worker> findAllByUserID(user userID);
     List<worker> findAllByEventIDIsNull();
     List<worker> findAllByEventID(event eventID);
+
+    List<worker> findAllByStablishmentIDAndEventIDOrStablishmentIDAndEventIDIsNull(stablishment stabID, event eventID, stablishment stabID2);
     Optional<worker> findByEventIDAndUserID(event eventID, user userID);
 
     void deleteByUserIDAndStablishmentID(user  user, stablishment stablishment);
