@@ -41,6 +41,20 @@ public class interestPointService {
     private eventRepo eventRepo;
 
 
+
+    /**
+     * This method is used to add a new interest point to a specific establishment.
+     *
+     * @param stabID This is the ID of the establishment where the new interest point will be added.
+     * @param newInterestPoint This is the new interest point that will be added to the establishment.
+     * @param token This is the JWT token of the user who is trying to add the new interest point.
+     *
+     * The method first retrieves the establishment and the user from their respective services using the provided IDs.
+     * It then checks if the user is a manager. If the user is a manager, it retrieves the manager details and checks if the manager is associated with the establishment.
+     * If the manager is not associated with the establishment, it throws a ResourceNotFoundException.
+     * If the user is not a manager or if the manager is associated with the establishment, it sets the establishment ID for the new interest point and adds the new interest point to the establishment's list of interest points.
+     * Finally, it saves the updated establishment and the new interest point to their respective repositories.
+     */
     @Transactional
     public void addInterestPointToStab(Long stabID, interestPoint newInterestPoint, String token){
         stablishment stablishment = stablishmentService.getStab(stabID);
@@ -60,12 +74,32 @@ public class interestPointService {
         interestPointRepo.save(newInterestPoint);
     }
 
+
+    /**
+     * This method is used to retrieve all interest points associated with a specific establishment.
+     *
+     * @param stablishmentID This is the ID of the establishment whose interest points are to be retrieved.
+     * @return List<interestPoint> This returns a list of interest points associated with the specified establishment.
+     *
+     * The method first retrieves the establishment using the provided ID.
+     * It then retrieves all interest points associated with this establishment from the interest point repository.
+     */
     @Transactional(readOnly = true)
     public List<interestPoint> getInterestPointsByStablishment(Long stablishmentID){
-        stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        return interestPointRepo.findByStablishmentID(stablishment);
+        return interestPointRepo.findByStablishmentID(stablishmentService.getStab(stablishmentID));
     }
 
+
+    /**
+     * This method is used to retrieve a specific interest point.
+     *
+     * @param interestPointID This is the ID of the interest point to be retrieved.
+     * @return interestPoint This returns the interest point with the specified ID.
+     * @throws ResourceNotFoundException This exception is thrown when the interest point with the specified ID does not exist.
+     *
+     * The method retrieves the interest point from the interest point repository using the provided ID.
+     * If the interest point does not exist, it throws a ResourceNotFoundException.
+     */
     public interestPoint getInterestPoint(Long interestPointID){
         return interestPointRepo.findById(interestPointID)
                 .orElseThrow(() -> new ResourceNotFoundException("Punto de interés", "interestPointID", interestPointID));
@@ -81,6 +115,15 @@ public class interestPointService {
         return interestPoint;
     }
 
+    /**
+     * This method is used to retrieve all interest points associated with a specific event.
+     * @param interestPoint This is the interest point to be converted to a DTO.
+     * @return interestPointDto This returns the DTO of the specified interest point.
+     * @throws ResourceNotFoundException This exception is thrown when the interest point with the specified ID does not exist.
+     * The method retrieves the interest point from the interest point repository using the provided ID.
+     * If the interest point does not exist, it throws a ResourceNotFoundException.
+     * Otherwise, it returns the DTO of the interest point.
+     */
     public interestPointDto getInterestPointDto(interestPoint interestPoint){
         return new interestPointDto(interestPoint);
     }

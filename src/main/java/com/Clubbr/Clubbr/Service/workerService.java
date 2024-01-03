@@ -307,7 +307,7 @@ public class workerService {
     }
 
     public void updateWorker(Long stablishmentID, worker targetWorker, String token) {
-        user requestUser = userService.getUser(targetWorker.getUserID().getUserID());
+        user requestUser = userService.getUser(jwtService.extractUserIDFromToken(token));
         stablishment stablishment = stablishmentService.getStab(stablishmentID);
 
         if (userService.isManager(requestUser)){

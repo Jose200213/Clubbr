@@ -17,6 +17,12 @@ public class userController {
     @Autowired
     private userService userService;
 
+    /**
+     * This method is used get all users.
+     * @return a list of users.
+     * @throws ResourceNotFoundException if there are no users.
+     * @throws Exception if there is an error in the server.
+     */
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers() {
         try {
@@ -29,6 +35,13 @@ public class userController {
         }
     }
 
+    /**
+     * This method is used to get a user by its ID.
+     * @param userID This is the ID of the user.
+     * @return the user with the specified ID.
+     * @throws ResourceNotFoundException if the user does not exist.
+     * @throws Exception if there is an error in the server.
+     */
     @GetMapping("/{userID}")
     public ResponseEntity<?> getUser(@PathVariable String userID) {
         try {
@@ -41,11 +54,30 @@ public class userController {
         }
     }
 
+    /**
+     * This method is used to update a user.
+     * @param targetUser This is the user that will be updated.
+     * @InputFormat: {
+     *    "userID": "string",
+     *    "password": "string",
+     *    "name": "string",
+     *    "surname": "string",
+     *    "email": "string",
+     *    "phone": "string",
+     *    "address": "string",
+     *    "country": "string",
+     *    "role": "string"
+     *    }
+     */
     @PutMapping("/update")
     public void updateUser(@RequestBody user targetUser) {
         userService.updateUser(targetUser);
     }
 
+    /**
+     * This method is used to delete a user.
+     * @param userID This is the ID of the user that will be deleted.
+     */
     @DeleteMapping("/delete/{userID}")
     public void deleteUser(@PathVariable String userID) {
         userService.deleteUser(userID);

@@ -14,6 +14,14 @@ public class managerController {
     @Autowired
     private managerService managerService;
 
+    /**
+     * This method is used to add an owner manager to a stablishment.
+     * @param stablishmentID This is the ID of the stablishment.
+     * @param userID This is the ID of the user.
+     * @return a message that indicates the manager has been added successfully.
+     * @throws ResourceNotFoundException if the stablishment does not exist.
+     * @throws Exception if there is an error in the server.
+     */
     @PostMapping("/{userID}/addOwner")
     public ResponseEntity<String> addOwnerManager(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("userID") String userID) {
         try {
@@ -26,6 +34,15 @@ public class managerController {
         }
     }
 
+    /**
+     * This method is used to add a standard manager to a stablishment.
+     * @param stablishmentID This is the ID of the stablishment.
+     * @param userID This is the ID of the user.
+     * @param token This is the JWT token of the user.
+     * @return a message that indicates the manager has been added successfully.
+     * @throws ResourceNotFoundException if the stablishment does not exist.
+     * @throws Exception if there is an error in the server.
+     */
     @PostMapping("/{userID}/add")
     public ResponseEntity<String> addManagerToStab(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable String userID, @RequestHeader("Authorization") String token){
         try{

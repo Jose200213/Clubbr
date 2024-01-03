@@ -19,6 +19,12 @@ public class stablishmentController {
     private stablishmentService stabService;
 
 
+    /**
+     * This method is used to get all stablishments.
+     * @return a list of all stablishments.
+     * @throws ResourceNotFoundException if there are no stablishments in the database.
+     * @throws Exception if there is an error in the server.
+     */
     @GetMapping("/all")
     public ResponseEntity<?> getAllStab() {
         try{
@@ -31,6 +37,13 @@ public class stablishmentController {
         }
     }
 
+    /**
+     * This method is used to get a stablishment by its ID.
+     * @param stablishmentID This is the ID of the stablishment to be retrieved.
+     * @return a stablishment.
+     * @throws ResourceNotFoundException if the stablishment does not exist.
+     * @throws Exception if there is an error in the server.
+     */
     @GetMapping("/{stablishmentID}")
     public ResponseEntity<?> getStab(@PathVariable Long stablishmentID) {
         try{
@@ -43,6 +56,14 @@ public class stablishmentController {
         }
     }
 
+    /**
+     * This method is used to get all stablishments from a manager.
+     * @param token This is the JWT token of the manager.
+     * @return a list of all stablishments from the manager.
+     * @throws ResourceNotFoundException if the manager does not exist
+     *                                  or if the manager does not have any stablishments.
+     * @throws Exception if there is an error in the server.
+     */
     @GetMapping("/manager/all")
     public ResponseEntity<?> getAllStablishmentFromManager(@RequestHeader("Authorization") String token) {
         try{
@@ -55,16 +76,47 @@ public class stablishmentController {
         }
     }
 
+    /**
+     * This method is used to add a new stablishment.
+     * @param newStab This is a json that contains the new stablishment's details.
+     *                <p>The stablishment's ID can be null as it generates automatically.</p>
+     * @return a message that confirms that the stablishment was added successfully.
+     * @throws Exception if there is an error in the server.
+     * @InputFormat: {
+     *     "stablishmentID": "Long",
+     *     "stabAddress": "string",
+     *     "stabName": "string",
+     *     "openTime": "LocalTime",
+     *     "closeTime": "LocalTime",
+     *     "capacity": "int"
+     *  }
+     */
     @PostMapping("/add")
     public ResponseEntity<String> addStab(@RequestBody stablishment newStab) {
         try {
             stabService.addStablishment(newStab);
-            return ResponseEntity.ok("Se agregó el establecimiento correctamente ");
+            return ResponseEntity.ok("Se agregó el establecimiento correctamente.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del servidor al agregar el establecimiento: " + e.getMessage());
         }
     }
 
+    /**
+     * This method is used to update a stablishment.
+     * @param targetStab This is a json that contains the stablishment's details.
+     * @param token This is the JWT token of the manager.
+     * @return a message that confirms that the stablishment was updated successfully.
+     * @throws ResourceNotFoundException if the stablishment does not exist or if the manager does not own the stablishment.
+     * @throws Exception if there is an error in the server.
+     * @InputFormat: {
+     *     "stablishmentID": "Long",
+     *     "stabAddress": "string",
+     *     "stabName": "string",
+     *     "openTime": "LocalTime",
+     *     "closeTime": "LocalTime",
+     *     "capacity": "int"
+     *  }
+     */
     @PutMapping("/update")
     public ResponseEntity<String> updateStab(@RequestBody stablishment targetStab, @RequestHeader("Authorization") String token) {
         try {
@@ -77,6 +129,14 @@ public class stablishmentController {
         }
     }
 
+    /**
+     * This method is used to delete a stablishment.
+     * @param stablishmentID This is the ID of the stablishment to be deleted.
+     * @param token This is the JWT token of the manager.
+     * @return a message that confirms that the stablishment was deleted successfully.
+     * @throws ResourceNotFoundException if the stablishment does not exist or if the manager does not own the stablishment.
+     * @throws Exception if there is an error in the server.
+     */
     @DeleteMapping("/delete/{stablishmentID}")
     public ResponseEntity<String> deleteStab(@PathVariable("stablishmentID") Long stablishmentID, @RequestHeader("Authorization") String token) {
         try {

@@ -20,6 +20,52 @@ public class ticketController {
     @Autowired
     private ticketService ticketService;
 
+    /**
+     * This method is used to get a ticket from a user by its ID.
+     * @param token This is the JWT token of the user.
+     * @param ticketID This is the ID of the ticket to be retrieved.
+     * @return a ticket.
+     * @throws ResourceNotFoundException if the ticket does not exist or if the user does not own the ticket.
+     * @throws Exception if there is an error in the server.
+     */
+    @GetMapping("/ticket/{ticketID}")
+    public ResponseEntity<?> getTicketFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable("ticketID") Long ticketID){
+        try {
+            return ResponseEntity.ok(ticketService.getTicketFromUser(token, ticketID));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method is used to get all tickets from a user.
+     * @param token This is the JWT token of the user.
+     * @return a list of all tickets from the user.
+     * @throws ResourceNotFoundException if the user does not exist or if the user does not own any tickets.
+     * @throws Exception if there is an error in the server.
+     */
+    @GetMapping("/ticket/all")
+    public ResponseEntity<?> getAllTicketsFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        try {
+            return ResponseEntity.ok(ticketService.getAllTicketsFromUser(token));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method is used to add a ticket to an event and associate it with a user.
+     * @param stablishmentID This is the ID of the stablishment where the event is held.
+     * @param eventName This is the name of the event.
+     * @param eventDate This is the date of the event.
+     * @param token This is the JWT token of the user.
+     * @throws ResourceNotFoundException if the stablishment, event or user does not exist.
+     * @throws Exception if there is an error in the server.
+     */
     @PostMapping("/stablishment/{stablishmentID}/event/{eventName}/{eventDate}/ticket/add")
     public ResponseEntity<String> addTicketToEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         try {
@@ -32,30 +78,7 @@ public class ticketController {
         }
     }
 
-    @GetMapping("/ticket/{ticketID}")
-    public ResponseEntity<?> getTicketFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable("ticketID") Long ticketID){
-        try {
-            return ResponseEntity.ok(ticketService.getTicketFromUser(token, ticketID));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/ticket/all")
-    public ResponseEntity<?> getAllTicketsFromUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        try {
-            return ResponseEntity.ok(ticketService.getAllTicketsFromUser(token));
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
-        }
-    }
-
     //@Scheduled(cron = "0 0 1 * * ?") // Ejecutar todos los días a la 1 AM
-    //@Scheduled(cron = "*/10 * * * * *") // Ejecutar cada minuto TEST
     public void scheduledDeleteExpiredTickets() {
         ticketService.deleteExpiredTickets();
     }
