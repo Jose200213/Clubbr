@@ -66,18 +66,9 @@ public class workerService {
     private userRepo userRepo;
 
     public List<worker> getAllWorkersFromStab(Long stablishmentID, String token) {
-        stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
-            }
-        }
-
-
-        List<worker> workers = workerRepo.findAllByStablishmentID(targetStablishment);
+        List<worker> workers = workerRepo.findAllByStablishmentID(stablishmentService.getStab(stablishmentID));
         if (workers.isEmpty()) {
             throw new ResourceNotFoundException("Trabajadores");
         }
@@ -85,16 +76,10 @@ public class workerService {
     }
 
     public List<worker> getAllWorkersFromEvent(Long stablishmentID, String eventName, LocalDate eventDate, String token) {
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
         event targetEvent = eventService.getEventByStabNameDate(targetStablishment.getStablishmentID(), eventName, eventDate);
-        user requestUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
-            }
-        }
 
         List<worker> workers = workerRepo.findAllByStablishmentIDAndEventIDOrStablishmentIDAndEventIDIsNull(
                 targetStablishment, targetEvent, targetStablishment);
@@ -105,17 +90,11 @@ public class workerService {
     }
 
     public worker getWorkerFromEvent(String userID, Long stablishmentID, String eventName, LocalDate eventDate, String token) {
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
-        user requestUser = userService.getUser(jwtService.extractUserIDFromToken(token));
         user targetUser = userService.getUser(userID);
         event targetEvent = eventService.getEventByStabNameDate(targetStablishment.getStablishmentID(), eventName, eventDate);
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
-            }
-        }
 
         return workerRepo.findByEventIDAndUserID(targetEvent, targetUser)
                 .orElseThrow(() -> new ResourceNotFoundException("Trabajador", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID()));
@@ -158,7 +137,7 @@ public class workerService {
     }
 
     public worker getWorkerFromStab(String userID, Long stablishmentID, String token) {
-        stablishment targetStablishment = stablishmentService.getStab(stablishmentID);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         user targetUser = userService.getUser(userID);
         user requestUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
@@ -168,14 +147,7 @@ public class workerService {
             }
         }
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
-            if (!managerService.isManagerInStab(targetStablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", targetStablishment.getStablishmentID());
-            }
-        }
-
-        return getWorker(targetUser, targetStablishment);
+        return getWorker(targetUser, stablishmentService.getStab(stablishmentID));
     }
 
     @Transactional
@@ -193,17 +165,10 @@ public class workerService {
 
     @Transactional
     public void addWorkerToStab(Long stablishmentID, worker targetWorker, String token){
-        String userId = jwtService.extractUserIDFromToken(token);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
-        user requestUser = userService.getUser(userId);
         user targetUser = userService.getUser(targetWorker.getUserID().getUserID());
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
 
         targetUser.setUserRole(role.WORKER);
         targetWorker.setUserID(targetUser);
@@ -245,18 +210,11 @@ public class workerService {
     }
 
     public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){
-        String userId = jwtService.extractUserIDFromToken(token);
-        user requestUser = userService.getUser(userId);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
         worker worker = getWorker(userService.getUser(userID), targetStab);
         interestPoint interestPoint = interestPointService.getInterestPointByStablishment(targetStab.getStablishmentID(), interestPointID);
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
 
         worker.setInterestPointID(interestPoint);
         interestPoint.getWorkers().add(worker);
@@ -265,19 +223,12 @@ public class workerService {
     }
 
     public void addWorkerToEventInterestPoint(Long stablishmentID, String eventName, LocalDate eventDate,String userID, Long interestPointID, String token){
-        String userId = jwtService.extractUserIDFromToken(token);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
-        user requestUser = userService.getUser(userId);
         worker worker = getWorker(userService.getUser(userID), targetStab);
         event event = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), eventName, eventDate);
         interestPoint interestPoint = interestPointService.getInterestPointByEventName(stablishmentID, event.getEventName(), event.getEventDate(),interestPointID);
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
 
         worker.setInterestPointID(interestPoint);
         interestPoint.getWorkers().add(worker);
@@ -286,17 +237,10 @@ public class workerService {
     }
 
     public void deleteWorkerFromStab(Long stablishmentID, String userID, String token){
-        String userId = jwtService.extractUserIDFromToken(token);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
-        user requestUser = userService.getUser(userId);
         worker worker = getWorker(userService.getUser(userID), targetStab);
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
 
         if (getAllWorkersFromUser(worker.getUserID()).size() == 1){
             worker.getUserID().setUserRole(role.USER);
@@ -307,17 +251,9 @@ public class workerService {
     }
 
     public void updateWorker(Long stablishmentID, worker targetWorker, String token) {
-        user requestUser = userService.getUser(jwtService.extractUserIDFromToken(token));
-        stablishment stablishment = stablishmentService.getStab(stablishmentID);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
+        worker workerToUpdate = workerRepo.findById(targetWorker.getId()).orElseThrow(() -> new ResourceNotFoundException("Trabajador", "id", targetWorker.getId()));
 
-        if (userService.isManager(requestUser)){
-            manager targetManager = managerService.getManager(requestUser);
-            if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", requestUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
-            }
-        }
-
-        worker workerToUpdate = getWorker(targetWorker.getUserID(), targetWorker.getStablishmentID());
         workerToUpdate.setInterestPointID(targetWorker.getInterestPointID());
         workerToUpdate.setSalary(targetWorker.getSalary());
         workerToUpdate.setWorkingHours(targetWorker.getWorkingHours());

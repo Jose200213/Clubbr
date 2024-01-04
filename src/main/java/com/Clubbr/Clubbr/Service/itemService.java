@@ -36,15 +36,9 @@ public class itemService {
 
     @Transactional
     public void addItemToStablishment(Long stablishmentID, item newItem, String token){
-        stablishment targetStab = stabService.getStab(stablishmentID);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if (userService.isManager(user)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        stablishment targetStab = stabService.getStab(stablishmentID);
 
         newItem.setItemQuantity(newItem.getItemStock());
         newItem.setStablishmentID(targetStab);
@@ -55,29 +49,16 @@ public class itemService {
 
     @Transactional(readOnly = true)
     public List<item> getItemsFromStablishment(Long stablishmentID, String token){
-        stablishment targetStab = stabService.getStab(stablishmentID);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if (userService.isManager(user)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
-        return itemRepo.findByStablishmentID(targetStab);
+        return itemRepo.findByStablishmentID(stabService.getStab(stablishmentID));
     }
 
     @Transactional(readOnly = true)
     public item getItemFromStablishment(Long stablishmentID, Long itemID, String token){
-        stablishment targetStab = stabService.getStab(stablishmentID);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if (userService.isManager(user)){
-            manager targetManager = managerService.getManager(userService.getUser(jwtService.extractUserIDFromToken(token)));
-            if (!managerService.isManagerInStab(targetStab, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        stablishment targetStab = stabService.getStab(stablishmentID);
 
         item item = getItem(itemID);
         if (item.getStablishmentID() != targetStab){

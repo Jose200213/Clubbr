@@ -106,23 +106,16 @@ public class stablishmentService {
      * @param token el token del manager.
      */
     public void deleteStab(Long stabID, String token) throws IOException {
-        String userId = jwtService.extractUserIDFromToken(token);
-        user user = userService.getUser(userId);
-        stablishment targetStab = getStab(stabID);
+        managerService.checkManagerIsFromStab(stabID, token);
 
-        if (userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(targetStab, stabManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
-
-        String floorPlanPath = targetStab.getFloorPlan();
+        String floorPlanPath = getStab(stabID).getFloorPlan();
         Path path = Paths.get(floorPlanPath);
         Files.deleteIfExists(path);
 
         stabRepo.deleteById(stabID);
     }
+
+
 
     /**
      * Añade un establecimiento.
@@ -138,16 +131,9 @@ public class stablishmentService {
      * @param token el token del manager.
      */
     public void updateStab(stablishment targetStab, String token) {
-        String userId = jwtService.extractUserIDFromToken(token);
-        stablishment stablishment = getStab(targetStab.getStablishmentID());
-        user user = userService.getUser(userId);
+        managerService.checkManagerIsFromStab(targetStab.getStablishmentID(), token);
 
-        if (userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(targetStab, stabManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        stablishment stablishment = getStab(targetStab.getStablishmentID());
 
         stablishment.setCapacity(targetStab.getCapacity());
         stablishment.setStabAddress(targetStab.getStabAddress());
@@ -158,16 +144,9 @@ public class stablishmentService {
     }
 
     public void uploadFloorPlan(Long stablishmentID, MultipartFile file, String token) throws IOException {
-        String userId = jwtService.extractUserIDFromToken(token);
-        user user = userService.getUser(userId);
-        stablishment targetStab = getStab(stablishmentID);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if(userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if(!managerService.isManagerInStab(targetStab, stabManager)){
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        stablishment targetStab = getStab(stablishmentID);
 
         String fileExtension = StringUtils.getFilenameExtension(Objects.requireNonNull(file.getOriginalFilename()));
         String newFileName = "stablishment_" + stablishmentID + "." + fileExtension;
@@ -180,16 +159,9 @@ public class stablishmentService {
     }
 
     public String getFloorPlan(Long stablishmentID, String token) throws Exception {
-        String userId = jwtService.extractUserIDFromToken(token);
-        user user = userService.getUser(userId);
-        stablishment targetStab = getStab(stablishmentID);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
-        if(userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if(!managerService.isManagerInStab(targetStab, stabManager)){
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        stablishment targetStab = getStab(stablishmentID);
 
         String floorPlanPath = targetStab.getFloorPlan().replace("\\", "/");
         Path path = Paths.get(floorPlanPath);

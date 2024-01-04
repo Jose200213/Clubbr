@@ -58,17 +58,9 @@ public class managerService {
     }
 
     public void addManagerToStab(Long stablishmentID, String userID, String token){
-        String userId = jwtService.extractUserIDFromToken(token);
+        checkManagerIsFromStab(stablishmentID, token);
         stablishment targetStab = stabService.getStab(stablishmentID);
-        user requestUser = userService.getUser(userId);
         user targetUser = userService.getUser(userID);
-
-        if (userService.isManager(requestUser)){
-            manager stabManager = getManager(requestUser);
-            if (!isManagerInStab(targetStab, stabManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
 
         targetUser.setUserRole(role.MANAGER);
         manager newManager = new manager();
@@ -84,5 +76,15 @@ public class managerService {
 
     public boolean isManagerInStab(stablishment targetStab, manager stabManager) {
         return targetStab.getManagerID().contains(stabManager);
+    }
+
+    public void checkManagerIsFromStab(Long targetStabID, String token) {
+        String userId = jwtService.extractUserIDFromToken(token);
+        user user = userService.getUser(userId);
+        if (!userService.isManager(user)) return;
+
+        if (!isManagerInStab(stabService.getStab(targetStabID), getManager(user))) {
+            throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStabID);
+        }
     }
 }

@@ -107,50 +107,22 @@ public class panicAlertService {
 
     @Transactional
     public void deletePanicAlertByIdFromStablishment(Long stablishmentID, Long panicAlertId, String token) {
-        String userId = jwtService.extractUserIDFromToken(token);
-        user user = userService.getUser(userId);
-        stablishment targetStab = stabService.getStab(stablishmentID);
-
-        if(userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if(!managerService.isManagerInStab(targetStab, stabManager)){
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", targetStab.getStablishmentID());
-            }
-        }
+        managerService.checkManagerIsFromStab(stablishmentID, token);
 
         panicAlertRepo.deleteById(panicAlertId);
     }
 
     @Transactional(readOnly = true)
     public List<panicAlert> getPanicAlertsByStab(Long stabId, String token) {
-        String userId = jwtService.extractUserIDFromToken(token);
-        user user = userService.getUser(userId);
-        stablishment stab = stabService.getStab(stabId);
+        managerService.checkManagerIsFromStab(stabId, token);
 
-        if(userService.isManager(user)){
-            manager stabManager = managerService.getManager(user);
-            if(!managerService.isManagerInStab(stab, stabManager)){
-                throw new ResourceNotFoundException("Manager", "userID", userId, "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
-
-        return panicAlertRepo.findAllByStablishmentID(stab);
+        return panicAlertRepo.findAllByStablishmentID(stabService.getStab(stabId));
     }
 
     @Transactional(readOnly = true)
     public List<panicAlert> getPanicAlertsByStabAndUser(Long stabId, String userId, String token) {
-        user user = userService.getUser(userId);
-        String userToken = jwtService.extractUserIDFromToken(token);
-        user userMG = userService.getUser(userToken);
-        stablishment stab = stabService.getStab(stabId);
+        managerService.checkManagerIsFromStab(stabId, token);
 
-        if(userService.isManager(userMG)){
-            manager stabManager = managerService.getManager(userMG);
-            if(!managerService.isManagerInStab(stab, stabManager)){
-                throw new ResourceNotFoundException("Manager", "userID", userMG, "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
-
-        return panicAlertRepo.findAllByStablishmentIDAndUserID(stab, user);
+        return panicAlertRepo.findAllByStablishmentIDAndUserID(stabService.getStab(stabId), userService.getUser(userId));
     }
 }

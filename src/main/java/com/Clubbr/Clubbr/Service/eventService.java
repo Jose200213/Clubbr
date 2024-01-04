@@ -50,10 +50,8 @@ public class eventService {
 
     @Transactional
     public void addEventToStab(Long stabID, event newEvent, String token) {
-
+        managerService.checkManagerIsFromStab(stabID, token);
         stablishment stab = stablishmentService.getStab(stabID);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
-
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, newEvent.getEventName(), newEvent.getEventDate()).orElse(null);
 
         if (eventFlag != null) {
@@ -62,12 +60,6 @@ public class eventService {
 
         }
 
-        if (userService.isManager(user)) {
-            manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
 
         newEvent.setStablishmentID(stab);
         newEvent.setTotalTickets(stab.getCapacity());
@@ -121,20 +113,12 @@ public class eventService {
 
     @Transactional
     public void updateEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, event targetEvent, String token) {
-
+        managerService.checkManagerIsFromStab(stabID, token);
         stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate).orElse(null);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to update not found");
-        }
-
-        if (userService.isManager(user)) {
-            manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
         }
 
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, targetEvent.getEventName(), targetEvent.getEventDate()).orElse(null);
@@ -163,20 +147,13 @@ public class eventService {
 
     @Transactional
     public void deleteEventFromStablishment(Long stabID, String eventName, LocalDate eventDate, String token) {
-        stablishment stab = stablishmentService.getStab(stabID);
-        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, eventName, eventDate).orElse(null);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stabID, token);
+        event existingEvent = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stablishmentService.getStab(stabID), eventName, eventDate).orElse(null);
 
         if (existingEvent == null) {
             throw new NotFoundException("Event to delete not found");
         }
 
-        if (userService.isManager(user)) {
-            manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
 
         eventRepo.delete(existingEvent);
     }
@@ -184,8 +161,8 @@ public class eventService {
     //////////////////////////////////////////// FUNCION AÑADE EVENTOS PERSISTENTES CON UNA FRECUENCIA PREDETERMINADA DE UNA SEMANA (7 DIAS) No usa Dto////////////////////////////////////////////
     @Transactional
     public void addPersistentEventToStab(Long stabID, int repeticiones, event newEvent, String token) {
+        managerService.checkManagerIsFromStab(stabID, token);
         stablishment stab = stablishmentService.getStab(stabID);
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         //event eventAux = new event();
         event eventFlag = eventRepo.findByStablishmentIDAndEventNameAndEventDate(stab, newEvent.getEventName(), newEvent.getEventDate()).orElse(null);
 
@@ -195,12 +172,7 @@ public class eventService {
 
         }
 
-        if (userService.isManager(user)) {
-            manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
+
 
         newEvent.setStablishmentID(stab);
         newEvent.setTotalTickets(stab.getCapacity());
@@ -224,19 +196,13 @@ public class eventService {
 
     @Transactional
     public void attendanceControlWorkers(Long stabID, String eventName, LocalDate eventDate, String token) throws JsonProcessingException, MqttException {
+        managerService.checkManagerIsFromStab(stabID, token);
         List<worker> workers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
-        user user = userService.getUser(jwtService.extractUserIDFromToken(token));
         stablishment stab = stablishmentService.getStab(stabID);
         event existingEvent = getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
 
-        if (userService.isManager(user)) {
-            manager manager = managerService.getManager(user);
-            if (!managerService.isManagerInStab(stab, manager)) {
-                throw new ResourceNotFoundException("Manager", "userID", user.getUserID(), "Establecimiento", "stablishmentID", stab.getStablishmentID());
-            }
-        }
 
         workers = workerRepo.findAllByStablishmentID(stab);
         if (workers.isEmpty()) {

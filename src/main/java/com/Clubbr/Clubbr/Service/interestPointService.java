@@ -57,15 +57,9 @@ public class interestPointService {
      */
     @Transactional
     public void addInterestPointToStab(Long stabID, interestPoint newInterestPoint, String token){
+        managerService.checkManagerIsFromStab(stabID, token);
         stablishment stablishment = stablishmentService.getStab(stabID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
-            }
-        }
 
         newInterestPoint.setStablishmentID(stablishment);
         stablishment.getInterestPoints().add(newInterestPoint);
@@ -146,16 +140,9 @@ public class interestPointService {
 
     @Transactional
     public void addInterestPointToEvent(Long stabID, String eventName, LocalDate eventDate, interestPoint newInterestPoint, String token){
-        stablishment stablishment = stablishmentService.getStab(stabID);
-        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
+        managerService.checkManagerIsFromStab(stabID, token);
+        event event = eventService.getEventByStabNameDate(stablishmentService.getStab(stabID).getStablishmentID(), eventName, eventDate);
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
-            }
-        }
 
         newInterestPoint.setEventName(event);
         event.getInterestPoints().add(newInterestPoint);
@@ -166,22 +153,15 @@ public class interestPointService {
 
     @Transactional(readOnly = true)
     public List<interestPoint> getInterestPointsByEventName(String eventName, LocalDate eventDate, Long stablishmentID){
-        stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        event event = eventService.getEventByStabNameDate(stablishment.getStablishmentID(), eventName, eventDate);
+        event event = eventService.getEventByStabNameDate(stablishmentService.getStab(stablishmentID).getStablishmentID(), eventName, eventDate);
         return interestPointRepo.findByEventName(event);
     }
 
     @Transactional
     public void updateInterestPointFromStablishment(Long stablishmentID, Long interestPointID, interestPoint targetInterestPoint, String token){
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         interestPoint interestPoint = getInterestPointByStablishment(stablishmentID, interestPointID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(interestPoint.getStablishmentID(), targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", interestPoint.getStablishmentID().getStablishmentID());
-            }
-        }
 
         interestPoint.setDescription(targetInterestPoint.getDescription());
         interestPoint.setWorkers(targetInterestPoint.getWorkers());
@@ -192,16 +172,9 @@ public class interestPointService {
 
     @Transactional
     public void updateInterestPointFromEvent(Long stablishmentID, String eventName, LocalDate eventDate, Long interestPointID, interestPoint targetInterestPoint, String token){
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, eventDate, interestPointID);
-        stablishment stablishment = stablishmentService.getStab(stablishmentID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(stablishment, targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
-            }
-        }
 
         interestPoint.setDescription(targetInterestPoint.getDescription());
         interestPoint.setWorkers(targetInterestPoint.getWorkers());
@@ -212,31 +185,17 @@ public class interestPointService {
 
     @Transactional
     public void deleteInterestPointFromStablishment(Long stablishmentID, Long interestPointID, String token){
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         interestPoint interestPoint = getInterestPointByStablishment(stablishmentID, interestPointID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
 
-        if (userService.isManager(targetUser)){
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(interestPoint.getStablishmentID(), targetManager)){
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", interestPoint.getStablishmentID().getStablishmentID());
-            }
-        }
 
         interestPointRepo.delete(interestPoint);
     }
 
     @Transactional
     public void deleteInterestPointFromEvent(Long stablishmentID, String eventName, LocalDate eventDate, Long interestPointID, String token) {
-        stablishment stablishment = stablishmentService.getStab(stablishmentID);
+        managerService.checkManagerIsFromStab(stablishmentID, token);
         interestPoint interestPoint = getInterestPointByEventName(stablishmentID, eventName, eventDate, interestPointID);
-        user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
-
-        if (userService.isManager(targetUser)) {
-            manager targetManager = managerService.getManager(targetUser);
-            if (!managerService.isManagerInStab(stablishment, targetManager)) {
-                throw new ResourceNotFoundException("Manager", "userID", targetUser.getUserID(), "Establecimiento", "stablishmentID", stablishment.getStablishmentID());
-            }
-        }
 
         interestPointRepo.delete(interestPoint);
     }
