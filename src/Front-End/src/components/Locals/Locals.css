@@ -1,4 +1,9 @@
-.page-lists {
+/********************************************************************************************************/
+/************************************************ LOCALS ************************************************/
+/********************************************************************************************************/
+
+
+  .locals-lists {
     list-style-type: none;
     align-items: center;
     overflow: auto;
@@ -8,127 +13,135 @@
     height: 100vh;
   }
   
-    .page-lists-item {  
+    .locals-lists > li:last-child {
+      margin-bottom: 130px;
+    }
+  
+    .locals-lists::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .locals-item {  
       height: 175px;
-      left: 63px;
-      top: 48px;
-      padding: 5px 7px;
+      padding-bottom: 10px;
       transition: margin-bottom 0.5s ease;
       width: 100%;
     }
-  
-      .page-lists-item-container {
+    
+      .locals-item-container {
         background-color: #57a8ca4a;
-        border-radius: 41px;
+        border-radius: 20px;
         height: 175px;
-        position: relative;
         width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
       }
-  
-        .page-lists-item-container-ellipse {
-          background-color: #d9d9d959;
-          border-radius: 62.5px;
-          height: 125px;
-          left: 31px;
-          position: absolute;
-          top: 25px;
-          width: 125px;
-          overflow: hidden;
-        }
-  
-          .page-lists-item-container-logo {
-            height: 125px;
-            position: absolute;
-            width: 125px;
-            object-fit: cover;
-          }
-  
-        .page-lists-item-container-event {
-          height: 80px;
-          position: absolute;
-          width: 80px;
-          object-fit: cover;
-          left: 1200px;
-          top: 42px;
-          transition: all 0.2s ease;
-        }
-  
-        .page-lists-item-container-event:hover {
-          transform: scale(1.2);
-        }
-  
-        .page-lists-item-container-name {
-          color: #ffffff;
-          font-family: "Inria Sans", Helvetica;
-          font-size: 16px;
-          font-weight: 400;
-          left: 182px;
-          letter-spacing: 0;
-          line-height: normal;
-          position: absolute;
-          top: 23px;
-          white-space: nowrap;
-          width: 474px;
-        } 
-  
-        .page-lists-item-container-desc {
-          color: #ffffff;
-          font-family: "Inria Sans", Helvetica;
-          font-size: 12px;
-          font-weight: 400;
-          left: 190px;
-          letter-spacing: 0;
-          line-height: normal;
-          position: absolute;
-          top: 74px;
-          width: 928px;
-        }
+
+/************************************************ LOGO ************************************************/
+    
+  .locals-logo {
+    background-color: #d9d9d959;
+    border-radius: 62.5px;
+    height: 125px;
+    width: 125px;
+    overflow: hidden;
+    margin-left: 10px;
+  }
+
+    .locals-image {
+      height: 125px;
+      width: 125px;
+      object-fit: fill;
+    }
+
+/************************************************ TEXT ************************************************/
+
+  .locals-text {
+    height: 100%;
+    width: 70%;
+  }
+          
+    .locals-name {
+      color: #ffffff;
+      font-family: "Inria Sans", Helvetica;
+      font-size: clamp(20px, 4vw, 40px);
+      font-weight: 400;
+      width: 100%;
+      margin-top: 2%;
+      height: 20%;
+      margin-bottom: 3%;
+    } 
       
-      .page-lists-item-dropdown {
-        background-color: #d2e7f04a;
-        border-radius: 41px;
-        height: 175px;
-        position: relative;
-        width: 1312px;
-        margin-top: 10px;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-      } 
+    .locals-desc {
+      color: #ffffff;
+      font-family: "Inria Sans", Helvetica;
+      font-size: clamp(16px, 3vw, 32px);
+      font-weight: 400;
+      width: 95%;
+      margin-left: 5%;
+      height: 55%;
+    }
 
-      .page-lists-item-dropdown-tickets {
-        border: 2px solid black;
-        height: 160px;
-        width: 1200px;
-        position: relative;
-        justify-content: center;
+/************************************************ EVENTS GOTO ************************************************/
+
+  .locals-goTo {
+    height: 70%;
+    width: 20%;
+    transition: all 0.2s ease;
+  }
+
+    .locals-goTo:hover {
+      transform: scale(1.1);
+    }
+           
+/***********************************************************************************************************/
+/************************************************ DROPDOWNS ************************************************/
+/***********************************************************************************************************/
+
+  .locals-item-dropdown {
+    background-color: #d2e7f04a;
+    border-radius: 20px;
+    height: 175px;
+    width: 100%;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  } 
+
+    .locals-dropdown-container {
+      height: 160px;
+      width: 100%;
+      justify-content: center;
+      display: flex;
+    }
+
+      .locals-dropdown-list {
+        width: 95%;
+        list-style-type: none;
         align-items: center;
+        padding: 15px 5px;
+        justify-content: center;
+        text-align: center;
         display: flex;
+        flex-direction: column;
       }
 
-        .dropdown-tickets-list {
-          list-style-type: none;
-          align-items: center;
-          padding-top: 15px;
-          padding-left: 0;
-          padding: 15px 5px;
-          border: 2px solid red;
-          justify-content: center;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
+        .locals-dropdown-element {
+          height: 30px;
+          width: 100%;
+          padding: 5px auto;
+          position: relative;
+          margin-bottom: 5px;
+          background-color: rgba(255, 255, 255, 0.35);
+          border-radius: 62.5px;
+
         }
 
-          .dropdown-tickets-list-element {
-            height: 20px;
-            width: 1100px;
-            padding: 5px auto;
-            border: 2px solid green;
-            position: relative;
-            margin-bottom: 5px;
-          }
-
-  /******************** ANIMACIONES **************************/
+/*******************************************************************************************************/
+/******************************************** ANIMS & UTILS ********************************************/
+/*******************************************************************************************************/
 
   .dropdown-enter {
     position: absolute;
@@ -136,11 +149,11 @@
     opacity: 0;
   }
 
-  .dropdown-enter-active {
-    transform: translateY(0%);
-    opacity: 1;
-    transition: all 0.5s ease;
-  }
+    .dropdown-enter-active {
+      transform: translateY(0%);
+      opacity: 1;
+      transition: all 0.5s ease;
+    }
 
   .dropdown-exit {
     transform: translateY(0%);
@@ -148,12 +161,19 @@
     transition: all 0.5s ease;
   }
 
-  .dropdown-exit-active  {
-    position: absolute;
-    transform: translateY(-110%);
-    opacity: 0;
-  }
+    .dropdown-exit-active  {
+      position: absolute;
+      transform: translateY(-110%);
+      opacity: 0;
+    }
 
   .push-down {
     margin-bottom: 200px;
   }
+
+  @media(min-width: 1024px) {
+    .locals-item-container {
+      border-radius: 200px;
+    }
+  }
+            

@@ -4,29 +4,48 @@ import {CSSTransition} from "react-transition-group";
 
 import {useAuth} from "../utils/TokenContext";
 import FetchApi from "../utils/ApiUtils";
+import {Link} from "react-router-dom";
 
-function LocalsItem({ local }) {
+import "./Locals/Locals.css"
+
+function LocalsItem({local}) {
     const [dropdown, setDropdown] = useState(false);
 
     return (
-        <li key={local.stablishmentID} className={`page-lists-item ${dropdown ? 'push-down' : ''}`}>
-            <div className='page-lists-item-container'>
-                <div className='page-lists-item-container-ellipse'>
-                    <img className='page-lists-item-container-logo' src={'https://placehold.co/125'} alt='logo' />
+        <li key={local.stablishmentID} className={`locals-item ${dropdown ? 'push-down' : ''}`}>
+            <div className='locals-item-container'>
+                <div className='locals-logo'>
+                    <img className='locals-image' src={'https://placehold.co/125'} alt='logo'/>
                 </div>
-                <img className="page-lists-item-container-event" alt="Event icon" src={eventsicon} onClick={() => setDropdown(!dropdown)}
+                
+                <div className="locals-text">
+                    <div className='locals-name'> {local.stabName} </div>
+                    <div className='locals-desc'> {local.stabName} </div>
+                </div>
+
+                <img className="locals-goTo" alt="Event icon" src={eventsicon}
+                     onClick={() => setDropdown(!dropdown)}
                 />
-                <div className='page-lists-item-container-name'> {local.stabName} </div>
-                <div className='page-lists-item-container-desc'> {local.stabName} </div>
             </div>
 
             <CSSTransition in={dropdown} unmountOnExit timeout={500} classNames={'dropdown'}>
-                <div className='page-lists-item-dropdown'>
-                    <div className='page-lists-item-dropdown-locals'>
-                        <ul className='dropdown-locals-list'>
-                            <li className='dropdown-locals-list-element'>item1</li>
-                            <li className='dropdown-locals-list-element'>item2</li>
-                            <li className='dropdown-locals-list-element'>item3</li>
+                <div className='locals-item-dropdown'>
+                    <div className='locals-dropdown-container'>
+                        <ul className='locals-dropdown-list'>
+                            <li className='locals-dropdown-element'>
+                                <Link to={`/${local.stablishmentID}/createEvent`}> Eventos </Link>
+                            </li>
+                            <li className='locals-dropdown-element'>
+                                <Link to={`/${local.stablishmentID}/addWorker`}> Trabajadores </Link>
+                            </li>
+                            <li className='locals-dropdown-element'>
+                                <Link to={`/${local.stablishmentID}/inventory`}> Inventario </Link>
+
+                            </li>
+                            <li className='locals-dropdown-element'>
+                                <Link to={`/${local.stablishmentID}/addInterestPoint`}> Puntos de Interes </Link>
+                            </li>
+
                         </ul>
                     </div>
                 </div>
@@ -37,7 +56,7 @@ function LocalsItem({ local }) {
 
 function LocalsList() {
     const [locals, setLocals] = useState(null);
-    const { getToken } = useAuth();
+    const {getToken} = useAuth();
     const token = getToken();
 
 
@@ -46,7 +65,7 @@ function LocalsList() {
         FetchApi('http://localhost:8080/stablishment/all', 'GET', undefined, token)
 
             .then((localsJson) => {
-                setLocals(localsJson)
+                setLocals(localsJson);
             })
 
             .catch((error) => {
@@ -60,10 +79,9 @@ function LocalsList() {
     }
 
     const eventsItems = locals.map((local) =>
-        <LocalsItem key={local.stablishmentID} local={local} />);
+        <LocalsItem key={local.stablishmentID} local={local}/>);
 
-    return <ul className={'page-lists'}> {eventsItems} </ul>;
-
+    return <ul className={'locals-lists'}> {eventsItems} </ul>
 
 }
 

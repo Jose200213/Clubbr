@@ -2,22 +2,6 @@
   text-align: center;
 }
 
-
-.button-db {
-  border: 3px solid black;
-  height: 10%;
-  width: 10%;
-  justify-self: center;
-  top: 200px;
-  position: relative;
-  left: 45%;
-}
-
-.button-db:hover {
-  transform: scale(1.2);
-  transition: all 0.2s ease;
-}
-
 /**************************************************************************************/
 /********************************** GENERALES *****************************************/
 /**************************************************************************************/
@@ -63,23 +47,14 @@ body::-webkit-scrollbar-thumb {
   width: 100%;
 }
 
-.background-image {
+.background-image, #background-image {
   background-image: url(/img/background.png);
   background-position: 50% 50%;
   background-size: cover;
-
   display: flex;
-    align-items: center;
-    padding: 12px;
-
+  align-items: center;
+  padding: 12px;
   height: 100vh;
-
-  /*height: 100%;
-  min-height: 715px;
-  position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
-  justify-content: center;*/
 }
 
 .background-image::-webkit-scrollbar {

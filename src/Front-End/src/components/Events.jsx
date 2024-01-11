@@ -4,28 +4,84 @@ import {CSSTransition} from "react-transition-group";
 
 import {useAuth} from "../utils/TokenContext";
 import FetchApi from "../utils/ApiUtils";
+import {Link, useParams} from "react-router-dom";
+import eventsicon from "../svg/eventicon.svg";
 
-function EventsItem({ event }) {
+import "./Events/Events.css"
+
+function EventsItem({event}) {
     const [dropdown, setDropdown] = useState(false);
 
     return (
-        <li key={event.eventName} className={`page-lists-item ${dropdown ? 'push-down' : ''}`}>
-            <div className='page-lists-item-container'>
-                <div className='page-lists-item-container-ellipse'>
-                    <img className='page-lists-item-container-logo' src={event.logoUrl} alt='logo' />
+        <li key={event.eventID} className={`events-item ${dropdown ? 'push-down' : ''}`}>
+            <div className='events-item-container'>
+                <div className='events-logo'>
+                    <img className='events-image' src={event.logoUrl} alt='logo'/>
                 </div>
-                <img className="page-lists-item-container-event" alt="Event icon" src={ticketicon} onClick={() => setDropdown(!dropdown)}
+                
+                <div className="events-text">
+                    <div className='events-name'> {event.eventName} </div>
+                    <div className='events-desc'> {event.eventDescription} </div>
+                </div>
+
+                <img className="events-goTo" alt="Tickets icon" src={ticketicon}
+                     onClick={() => setDropdown(!dropdown)}
                 />
-                <div className='page-lists-item-container-name'> {event.eventName} </div>
-                <div className='page-lists-item-container-desc'> {event.eventDescription} </div>
             </div>
             <CSSTransition in={dropdown} unmountOnExit timeout={500} classNames={'dropdown'}>
-                <div className='page-lists-item-dropdown'>
-                    <div className='page-lists-item-dropdown-events'>
-                        <ul className='dropdown-events-list'>
-                            <li className='dropdown-events-list-element'>item1</li>
-                            <li className='dropdown-events-list-element'>item2</li>
-                            <li className='dropdown-events-list-element'>item3</li>
+                <div className='events-item-dropdown'>
+                    <div className='events-dropdown-container'>
+                        <ul className='events-dropdown-list'>
+                            <li className='events-dropdown-element'>
+                                <Link
+                                    to={`/${event.stablishmentID}/${event.eventName}/${event.eventDate}/addTicket`}> Comprar Ticket </Link>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </CSSTransition>
+
+        </li>
+    );
+}
+
+function EventsFromStabItem({event}) {
+    const [dropdown, setDropdown] = useState(false);
+
+
+    return (
+        <li key={event.eventID} className={`events-item ${dropdown ? 'push-down-eventsStab' : ''}`}>
+            <div className='events-item-container'>
+                <div className='events-logo'>
+                    <img className='events-image' src={event.logoUrl} alt='logo'/>
+                </div>
+
+                <div className="events-text">
+                    <div className='events-name'> {event.eventName} </div>
+                    <div className='events-desc'> {event.eventDescription} </div>
+                </div>
+
+                <img className="events-goTo" alt="Tickets icon" src={eventsicon}
+                     onClick={() => setDropdown(!dropdown)}
+                />
+
+            </div>
+
+            <CSSTransition in={dropdown} unmountOnExit timeout={500} classNames={'dropdown'}>
+                <div className='events-item-dropdown'>
+                    <div className='events-dropdown-container'>
+                        <ul className='events-dropdown-list'>
+                            <li className='events-dropdown-element'>
+                                <Link
+                                    to={`/${event.stablishmentID}/${event.eventName}/${event.eventDate}/addWorker`}> Trabajadores </Link>
+                            </li>
+                            <li className='events-dropdown-element'>
+                                <Link
+                                    to={`/${event.stablishmentID}/${event.eventName}/${event.eventDate}/addInterestPoint`}> Puntos
+                                    de Interes </Link>
+                            </li>
+
                         </ul>
                     </div>
                 </div>
@@ -36,7 +92,7 @@ function EventsItem({ event }) {
 
 function EventsList() {
     const [events, setEvents] = useState(null);
-    const { getToken } = useAuth();
+    const {getToken} = useAuth();
     const token = getToken();
 
 
@@ -59,9 +115,42 @@ function EventsList() {
     }
 
     const eventsItems = events.map((event) =>
-        <EventsItem key={event.eventName} event={event} />);
+        <EventsItem key={event.eventID} event={event}/>);
 
-    return <ul className='page-lists'>{eventsItems}</ul>;
+    return <ul className='events-lists'>{eventsItems}</ul>;
 }
 
-export default EventsList
+function EventsFromStabList() {
+    const [events, setEvents] = useState(null);
+    const {getToken} = useAuth();
+    const token = getToken();
+    const {stablishmentID} = useParams();
+
+
+    useEffect(() => {
+
+        FetchApi(`http://localhost:8080/stablishment/${stablishmentID}/event/all-ordered`, 'GET', undefined, token)
+
+            .then((eventsJson) => {
+                setEvents(eventsJson)
+            })
+
+            .catch((error) => {
+                console.log(error);
+            });
+
+    });
+
+    if (events === null) {
+        return <p>Cargando datos...</p>;
+    }
+
+    const eventsItems = events.map((event) =>
+        <EventsFromStabItem key={event.eventID} event={event}/>);
+
+    return <ul className='eventsStab-lists'>
+        {eventsItems}
+    </ul>;
+}
+
+export {EventsList, EventsFromStabList}

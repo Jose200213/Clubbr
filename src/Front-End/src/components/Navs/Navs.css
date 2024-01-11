@@ -1,4 +1,8 @@
-.general-nav {
+/******************************************************************************************************/
+/************************************************ NAVS ************************************************/
+/******************************************************************************************************/
+
+  .general-nav, #general-nav {
     background-color: rgb(56, 58, 121);
     border-radius: 41px;
     height: 10%;
@@ -9,146 +13,159 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    left: 50%;
-    transform: translateX(-50%);
   }
   
-    /******************** FIJOS **************************/
+/************************************************ FIXED ************************************************/
   
-    .fixed-button {
-      height: 64px;
-      position: relative;
-      width: 300px;
-      animation: openNavButton 0.5s forwards;
+  .fixed-container {
+    height: 70%;
+    width: 30%;
+    animation: openNavButton 0.5s forwards;
+    display: flex;
+    justify-content: center;
+  }
+        
+    .fixed-shape {
+      background-color: #6a6fe4;
+      border-radius: 32px;
+      height: 100%;
+      width: 70%;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
     }
   
-      .fixed-button-container {
-        height: 64px;
-        position: relative;
-        width: 250px;
-        margin: 0 auto;
+      .fixed-icon {
+        height: 100%;
+        transition: all 0.2s ease;
+        width: 80%;
       }
   
-        .fixed-button-container-shape {
-          background-color: #6a6fe4;
-          border-radius: 32px;
-          height: 64px;
-          left: 0;
-          position: absolute;
-          top: 0;
-          width: 250px;
-        }
-  
-        .fixed-button-container-icon {
-          height: 35px;
-          left: 17px;
-          position: absolute;
-          top: 16px;
-          transition: all 0.2s ease;
-          width: 41px;
-        }
-  
-        .fixed-button-container-icon:hover{
+        .fixed-icon:hover{
           transform: scale(1.2);
         }
   
-        .fixed-button-container-text {
-          color: #ffffff;
-          font-size: 40px;
-          font-weight: 400;
-          left: 66px;
-          letter-spacing: 0;
-          line-height: normal;
-          position: absolute;
-          top: 9px;
-          white-space: nowrap;
-          width: 184px;
+      .fixed-text {
+        display: none;
+        width: 0;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        margin-left: -5%;
+      }
+
+        .button-text {
+          font-size: clamp(12px, 5vh, 40px);
+          font-weight: 400; 
         }
+
+    
   
-    /******************** DISPLAY **************************/
+/************************************************ DISPLAY ************************************************/
+  
+  .display-container {
+    height: 100%;
+    width: 30%;
+    animation: openNavButton 0.5s forwards;
+    display: flex;
+    align-items: center;
+  }
   
     .display-button {
-      height: 64px;
-      position: relative;
-      width: 300px;
-      animation: openNavButton 0.5s forwards;
+      height: 80%;
+      margin: 0 auto;
+      width: 50%;
     }
   
-      .display-button-container {
+      .display-icon {
+        width: 100%;
         height: 100%;
-        margin: 0 auto;
-        width: 51px;
       }
   
-        .display-button-container-icon {
-          width: 64px;
-          height: 64px;
-          
-        }
-  
-        .display-button-container-icon:hover {
+        .display-icon:hover {
           transition: 0.2s ease;
           transform: scale(1.2);
         }
   
-    /******************** ANIMACIONES **************************/
+/*******************************************************************************************************/
+/******************************************** ANIMS & UTILS ********************************************/
+/*******************************************************************************************************/
   
-  
-    .fixed-enter {
-      display: block;
-    }
+  .fixed-enter {
+    display: block;
+  }
   
     .fixed-enter-active {
       animation: openNavButton 0.5s forwards;
     }
   
-    .fixed-exit {
-      display: none;
-    }
+  .fixed-exit {
+    display: none;
+  }
   
     .fixed-exit-active {
       animation: closeNavButton 0.5s forwards;
     }
   
-    .display-enter {
-      display: block;
-    }
+  .display-enter {
+    display: block;
+  }
   
     .display-enter-active {
       animation: openNavButton 0.5s forwards;
     }
   
-    .display-exit {
-      display: none;
-    }
+  .display-exit {
+    display: none;
+  }
   
     .display-exit-active {
       animation: closeNavButton 0.5s forwards;
     }
   
-    @keyframes openNavButton {
-      0% {
-        display: block;
-        transform: scale(0);
-      }
-      100% {
-        transform: scale(1);
-      }
+  @keyframes openNavButton {
+    0% {
+      display: block;
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes closeNavButton {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0);
+      display: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    /*********************** DISPLAY ***********************/
+    .display-container {
+      height: 70%;      
     }
   
-    @keyframes closeNavButton {
-      0% {
-        transform: scale(1);
-      }
-      100% {
-        transform: scale(0);
-        display: none;
-      }
+    .display-button {
+      width: 25%;
     }
 
-
-    @media (min-width: 1024px) {
-        
-      
-        
+    /*********************** FIXED ***********************/
+    .fixed-icon {
+      margin-left: 5%;
+      height: 80%;
+      width: 30%;
     }
+
+    .fixed-text {
+      display: flex;
+      width: 70%;
+    }
+
+    .fixed-shape {
+      width: 280px;
+    }
+  }

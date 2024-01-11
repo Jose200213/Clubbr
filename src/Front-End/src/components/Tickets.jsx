@@ -1,38 +1,54 @@
-import React, {useState} from "react";
-import eventsicon from "../svg/eventicon.svg";
+import React, {useEffect, useState} from "react";
 import {CSSTransition} from "react-transition-group";
-import {tickets} from "../tickets";
+import {useAuth} from "../utils/TokenContext";
+import FetchApi from "../utils/ApiUtils";
+import ticketicon from "../svg/ticketicon.svg";
+
+import "./Tickets/Tickets.css"
+
 
 function TicketsItem({ ticket }) {
-    const [dropdown, setDropdown] = useState(false);
 
     return (
-        <li key={ticket.id} className={`page-lists-item ${dropdown ? 'push-down' : ''}`}>
-            <div className='page-lists-item-container'>
-                <img className="page-lists-item-container-event" alt="Event icon" src={eventsicon} onClick={() => setDropdown(!dropdown)}/>
-                <div className='page-lists-item-container-name'> {ticket.name} </div>
-                <div className='page-lists-item-container-desc'> {ticket.schedule} </div>
-            </div>
-            <CSSTransition in={dropdown} unmountOnExit timeout={500} classNames={'dropdown'}>
-                <div className='page-lists-item-dropdown'>
-                    <div className='page-lists-item-dropdown-tickets'>
-                        <ul className='dropdown-tickets-list'>
-                            <li className='dropdown-tickets-list-element'>item1</li>
-                            <li className='dropdown-tickets-list-element'>item2</li>
-                            <li className='dropdown-tickets-list-element'>item3</li>
-                        </ul>
-                    </div>
-
+        <li key={ticket.ticketID} className={`tickets-item`}>
+            <div className='tickets-item-container'>
+                <div className="tickets-text">
+                    <div className='tickets-name'> {ticket.eventName} </div>
+                    <div className='tickets-desc'> {ticket.eventDate} </div>
                 </div>
-            </CSSTransition>
+                <img className="tickets-icon" alt="Ticket icon" src={ticketicon} />       
+            </div>
         </li>
     );
 }
 
 function TicketsList() {
-    const ticketsItems = tickets.map((ticket) => <TicketsItem key={ticket.id} ticket={ticket} />);
+    const [tickets, setTickets] = useState(null);
+    const { getToken } = useAuth();
+    const token = getToken();
 
-    return <ul className='page-lists'>{ticketsItems}</ul>;
+    useEffect(() => {
+
+        FetchApi('http://localhost:8080/ticket/all', 'GET', undefined, token)
+
+            .then((ticketsJson) => {
+                setTickets(ticketsJson)
+            })
+
+            .catch((error) => {
+                console.log(error);
+            });
+
+    }, []);
+
+    if (tickets === null) {
+        return <p>Cargando datos...</p>;
+    }
+
+    const ticketsItems = tickets.map((ticket) =>
+        <TicketsItem key={ticket.ticketID} ticket={ticket} />);
+
+    return <ul className='tickets-lists'>{ticketsItems}</ul>;
 }
 
 export default TicketsList

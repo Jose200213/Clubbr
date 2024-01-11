@@ -1,0 +1,97 @@
+/**************************************************************************************************************/
+/************************************************ CREATE EVENT ************************************************/
+/**************************************************************************************************************/
+
+  .createEvent-container {
+    width: 350px;
+    height: 100%;
+  }
+
+    .createEvent-shape {
+      background-color: #57a8ca4a;
+      border-radius: 10px; /* Redondear las esquinas */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin-right: 25px;
+    } 
+
+      .createEvent-title {
+        font-size: 24px;
+        color: #ffffff; /* Puedes ajustar el color según tu preferencia */
+      }
+
+      .createEvent-fields-container {
+        width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
+      }
+
+  .eventsStab-container {
+    width: 100%;
+    height: 100%;
+  }
+
+/************************************************ FIELDS ************************************************/
+
+  .createEvent-input-label {
+      margin-bottom: 10px;
+  }
+
+    .createEvent-input,
+    .createEvent-desc-input {
+        width: calc(100% - 20px); /* Ajusta el ancho para tener en cuenta el padding */
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: none;
+    }
+
+  .createEvent-submit {
+      font-family: 'TuFuentePreferida', sans-serif; /* Reemplaza 'TuFuentePreferida' con el nombre de tu fuente */
+      background-color: transparent; /* Fondo transparente para que se vea el color del contenedor detrás */
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+
+    .createEvent-submit:disabled {
+      background-color: #a0a0a0; /* Color de fondo cuando el botón está deshabilitado */
+      cursor: not-allowed;
+    }
+
+    .createEvent-submit:hover {
+      background-color: #4caf50; /* Cambia el color al pasar el mouse */
+    }
+
+/*******************************************************************************************************/
+/******************************************** ANIMS & UTILS ********************************************/
+/*******************************************************************************************************/
+    
+  @media (max-width:1024px) {
+    .background-image {
+      flex-flow: column;
+      overflow-y: scroll;
+    }
+
+    .background-image::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .createEvent-container {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .createEvent-shape {
+        margin-right: 0;
+    }
+  }
+
+  

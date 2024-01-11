@@ -1,4 +1,8 @@
-.page-lists {
+/*********************************************************************************************************/
+/************************************************ TICKETS ************************************************/
+/*********************************************************************************************************/
+
+  .tickets-lists {
     list-style-type: none;
     align-items: center;
     overflow: auto;
@@ -6,154 +10,79 @@
     width: 100%;
     padding: 0;
     height: 100vh;
-  }
-  
-    .page-lists-item {  
+    }
+
+    .tickets-lists li:last-child {
+      margin-bottom: 130px;
+    }
+
+    .tickets-lists::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .tickets-item {  
       height: 175px;
-      left: 63px;
-      top: 48px;
-      padding: 5px 7px;
+      padding-bottom: 10px;
       transition: margin-bottom 0.5s ease;
       width: 100%;
     }
-  
-      .page-lists-item-container {
+    
+      .tickets-item-container {
         background-color: #57a8ca4a;
-        border-radius: 41px;
+        border-radius: 20px;
         height: 175px;
-        position: relative;
         width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
       }
-  
-        .page-lists-item-container-ellipse {
-          background-color: #d9d9d959;
-          border-radius: 62.5px;
-          height: 125px;
-          left: 31px;
-          position: absolute;
-          top: 25px;
-          width: 125px;
-          overflow: hidden;
-        }
-  
-          .page-lists-item-container-logo {
-            height: 125px;
-            position: absolute;
-            width: 125px;
-            object-fit: cover;
-          }
-  
-        .page-lists-item-container-event {
-          height: 80px;
-          position: absolute;
-          width: 80px;
-          object-fit: cover;
-          left: 1200px;
-          top: 42px;
+    
+        .tickets-icon {
+          height: 70%;
+          width: 20%;
           transition: all 0.2s ease;
         }
-  
-        .page-lists-item-container-event:hover {
+    
+        .tickets-icon:hover {
           transform: scale(1.2);
         }
-  
-        .page-lists-item-container-name {
-          color: #ffffff;
-          font-family: "Inria Sans", Helvetica;
-          font-size: 16px;
-          font-weight: 400;
-          left: 182px;
-          letter-spacing: 0;
-          line-height: normal;
-          position: absolute;
-          top: 23px;
-          white-space: nowrap;
-          width: 474px;
-        } 
-  
-        .page-lists-item-container-desc {
-          color: #ffffff;
-          font-family: "Inria Sans", Helvetica;
-          font-size: 12px;
-          font-weight: 400;
-          left: 190px;
-          letter-spacing: 0;
-          line-height: normal;
-          position: absolute;
-          top: 74px;
-          width: 928px;
+    
+        .tickets-text {
+          height: 100%;
+          width: 70%;
         }
+
+          .tickets-name {
+            color: #ffffff;
+            font-family: "Inria Sans", Helvetica;
+            font-size: clamp(20px, 4vw, 40px);
+            font-weight: 400;
+            width: 100%;
+            margin-top: 3%;
+            height: 20%;
+            margin-bottom: 3%;
+          } 
       
-      .page-lists-item-dropdown {
-        background-color: #d2e7f04a;
-        border-radius: 41px;
-        height: 175px;
-        position: relative;
-        width: 1312px;
-        margin-top: 10px;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-      } 
-
-      .page-lists-item-dropdown-tickets {
-        border: 2px solid black;
-        height: 160px;
-        width: 1200px;
-        position: relative;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-      }
-
-        .dropdown-tickets-list {
-          list-style-type: none;
-          align-items: center;
-          padding-top: 15px;
-          padding-left: 0;
-          padding: 15px 5px;
-          border: 2px solid red;
-          justify-content: center;
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-        }
-
-          .dropdown-tickets-list-element {
-            height: 20px;
-            width: 1100px;
-            padding: 5px auto;
-            border: 2px solid green;
-            position: relative;
-            margin-bottom: 5px;
+          .tickets-desc {
+            color: #ffffff;
+            font-family: "Inria Sans", Helvetica;
+            font-size: clamp(16px, 3vw, 24px);
+            font-weight: 400;
+            width: 95%;
+            margin-left: 5%;
+            height: 55%;
           }
 
-  /******************** ANIMACIONES **************************/
+/*******************************************************************************************************/
+/******************************************** ANIMS & UTILS ********************************************/
+/*******************************************************************************************************/
 
-  .dropdown-enter {
-    position: absolute;
-    transform: translateY(-110%);
-    opacity: 0;
-  }
+  @media(min-width: 1024px) {
+    .tickets-item-container {
+      border-radius: 200px;
+    }
 
-  .dropdown-enter-active {
-    transform: translateY(0%);
-    opacity: 1;
-    transition: all 0.5s ease;
-  }
-
-  .dropdown-exit {
-    transform: translateY(0%);
-    opacity: 1;
-    transition: all 0.5s ease;
-  }
-
-  .dropdown-exit-active  {
-    position: absolute;
-    transform: translateY(-110%);
-    opacity: 0;
-  }
-
-  .push-down {
-    margin-bottom: 200px;
+    .tickets-name{
+      margin-top: 5%;
+    }
   }

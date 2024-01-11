@@ -1,10 +1,9 @@
-import { useAuth } from "./TokenContext"
-
 
 const FetchApi = async (url, mode, body, token) => {
     try {
         const headers = {
             'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
         };
 
         const opciones = {
@@ -14,20 +13,26 @@ const FetchApi = async (url, mode, body, token) => {
         }
 
         // Hacer la solicitud
-        const respuesta = await fetch(url, opciones);
+        const response = await fetch(url, opciones);
 
         // Verificar si la solicitud fue exitosa (código de estado 200)
-        if (respuesta.ok) {
-            // Convertir la respuesta a formato JSON
-            return respuesta.json();
+        if (response.ok) {
 
+            const contentType = response.headers.get('Content-Type');
 
-        } else {
-            console.error('Error al obtener los datos:', respuesta.status);
-            throw new Error(`Error en la solicitud a ${url}`);
+            if (contentType && contentType.includes('text/plain')) {
+                // Si es texto, devolver directamente el texto
+                return response.text();
+            } else {
+                // Si no es texto, convertir la respuesta a formato JSON
+                return response.json();
+            }
+        }
+        else {
+            const errorMessage =  await response.text()
+            throw new Error(`${response.status} - ${errorMessage}`);
         }
     } catch (error) {
-        console.error('Error de red:', error);
         throw error;
     }
 }
