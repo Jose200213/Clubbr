@@ -19,6 +19,7 @@ public class workerDto {
     private Long id;
     private String userID;
     private String userName;
+    private String userSurname;
     private Long stablishmentID;
     private String eventID;
     private Long interestPointID;
@@ -30,6 +31,7 @@ public class workerDto {
         this.id = worker.getId();
         this.userID = worker.getUserID().getUserID();
         this.userName = worker.getUserID().getName();
+        this.userSurname = worker.getUserID().getSurname();
         this.stablishmentID = worker.getStablishmentID().getStablishmentID();
         if (worker.getEventID() == null) this.eventID = null;
         else this.eventID = worker.getEventID().getEventName();

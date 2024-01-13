@@ -23,9 +23,9 @@ public class paymentController {
      * @throws Exception if there is an error in the server.
      */
     @GetMapping("/payment/user/{userID}")
-    public ResponseEntity<?> getPaymentByUserID(@PathVariable("userID") String userID){
+    public ResponseEntity<?> getPaymentsByUserID(@PathVariable("userID") String userID){
         try {
-            List<payment> payments = paymentService.getPaymentByUserID(userID);
+            List<payment> payments = paymentService.getPaymentsByUserID(userID);
             return ResponseEntity.ok(payments);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -39,9 +39,9 @@ public class paymentController {
      * @throws Exception if there is an error in the server.
      */
     @GetMapping("/payment/stablishment/{stablishmentID}")
-    public ResponseEntity<?> getPaymentByStab(@PathVariable("stablishmentID") Long stablishmentID){
+    public ResponseEntity<?> getPaymentsByStab(@PathVariable("stablishmentID") Long stablishmentID){
         try {
-            List<payment> payments = paymentService.getPaymentByStab(stablishmentID);
+            List<payment> payments = paymentService.getPaymentsByStab(stablishmentID);
             return ResponseEntity.ok(payments);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -57,9 +57,9 @@ public class paymentController {
      * @throws Exception if there is an error in the server.
      */
     @GetMapping("/payment/stablishment/{stablishmentID}/event/{eventName}/{eventDate}")
-    public ResponseEntity<?> getPaymentByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
+    public ResponseEntity<?> getPaymentsByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         try {
-            List<payment> payments = paymentService.getPaymentByEvent(stablishmentID, eventName, eventDate);
+            List<payment> payments = paymentService.getPaymentsByEvent(stablishmentID, eventName, eventDate);
             return ResponseEntity.ok(payments);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

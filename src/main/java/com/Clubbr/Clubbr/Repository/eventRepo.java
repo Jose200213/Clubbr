@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface eventRepo extends JpaRepository<event, eventID> {
 
     List<event> findAllByStablishmentIDOrderByEventDateAsc(stablishment stablishment);
+    List<event> findAllByStablishmentIDAndEventDateAfterOrderByEventDateAsc(stablishment stablishment, LocalDate eventDate);
 
     Optional<event> findByStablishmentIDAndEventNameAndEventDate(@Param("stablishmentID") stablishment stabID, @Param("eventName") String name, @Param("eventDate") LocalDate date);
 

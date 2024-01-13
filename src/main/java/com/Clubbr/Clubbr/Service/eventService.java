@@ -90,7 +90,7 @@ public class eventService {
     @Transactional(readOnly = true)
     public List<event> getAllEventsOrderedByDateInStab(Long stabID) {
         stablishment stab = stablishmentService.getStab(stabID);
-        return eventRepo.findAllByStablishmentIDOrderByEventDateAsc(stab);
+        return eventRepo.findAllByStablishmentIDAndEventDateAfterOrderByEventDateAsc(stab, LocalDate.now());
     }
 
     public List<event> getAllEvents() {

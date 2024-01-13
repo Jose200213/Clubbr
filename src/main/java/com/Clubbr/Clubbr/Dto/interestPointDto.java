@@ -23,6 +23,7 @@ public class interestPointDto {
     private float xCoordinate;
     private float yCoordinate;
     private String description;
+    private List<workerDto> workers;
 
     public interestPointDto(interestPoint interestPoint) {
         this.interestPointID = interestPoint.getInterestPointID();
@@ -32,5 +33,9 @@ public class interestPointDto {
         this.xCoordinate = interestPoint.getXCoordinate();
         this.yCoordinate = interestPoint.getYCoordinate();
         this.description = interestPoint.getDescription();
+
+        for (worker worker : interestPoint.getWorkers()) {
+            this.workers.add(new workerDto(worker));
+        }
     }
 }
