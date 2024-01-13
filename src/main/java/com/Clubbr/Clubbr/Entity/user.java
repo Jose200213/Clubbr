@@ -27,36 +27,36 @@ public class user implements UserDetails {
     @Id
     @Column (name = "userID")
     @JsonProperty("userID")
-    private String userID; //
+    private String userID;
 
     @Column (name = "password")
     private String password;
 
     @Column (name = "userRole")
     @Enumerated(EnumType.STRING)
-    private role userRole; //
+    private role userRole;
 
     @Column (name = "name")
-    private String name; //
+    private String name;
 
     @Column (name = "surname")
-    private String surname; //
+    private String surname;
 
     @Column (name = "country")
-    private String country; //
+    private String country;
 
     @Column (name = "address")
-    private String address; //
+    private String address;
 
     @Column (name = "email")
-    private String email; //
+    private String email;
 
     @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ticket> tickets;
 
     @Column(name = "TelegramID", unique = true)
-    private Long telegramID; //
+    private Long telegramID;
 
     @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "userPanicAlerts")

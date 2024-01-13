@@ -26,7 +26,7 @@ public class paymentController {
     public ResponseEntity<?> getPaymentsByUserID(@PathVariable("userID") String userID){
         try {
             List<payment> payments = paymentService.getPaymentsByUserID(userID);
-            return ResponseEntity.ok(payments);
+            return ResponseEntity.ok(paymentService.getPaymentsDtoList(payments));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -42,7 +42,7 @@ public class paymentController {
     public ResponseEntity<?> getPaymentsByStab(@PathVariable("stablishmentID") Long stablishmentID){
         try {
             List<payment> payments = paymentService.getPaymentsByStab(stablishmentID);
-            return ResponseEntity.ok(payments);
+            return ResponseEntity.ok(paymentService.getPaymentsDtoList(payments));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -60,7 +60,7 @@ public class paymentController {
     public ResponseEntity<?> getPaymentsByEvent(@PathVariable("stablishmentID") Long stablishmentID, @PathVariable("eventName") String eventName, @PathVariable("eventDate") LocalDate eventDate){
         try {
             List<payment> payments = paymentService.getPaymentsByEvent(stablishmentID, eventName, eventDate);
-            return ResponseEntity.ok(payments);
+            return ResponseEntity.ok(paymentService.getPaymentsDtoList(payments));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

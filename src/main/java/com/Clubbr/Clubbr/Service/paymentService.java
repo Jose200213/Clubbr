@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.paymentDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.workerRepo;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
@@ -91,6 +92,10 @@ public class paymentService {
     public List<payment> getPaymentsByUserID(String userID){
         user targetUser = userService.getUser(userID);
         return paymentRepository.findByWorkerID_UserIDAndPaymentDate(targetUser, YearMonth.now());
+    }
+
+    public List<paymentDto> getPaymentsDtoList(List<payment> payments){
+        return payments.stream().map(paymentDto::new).collect(java.util.stream.Collectors.toList());
     }
 
     public List<payment> getPaymentsByStab(Long stablishmentID){
