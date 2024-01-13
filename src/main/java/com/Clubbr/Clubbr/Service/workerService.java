@@ -169,19 +169,11 @@ public class workerService {
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
         user targetUser = userService.getUser(targetWorker.getUserID().getUserID());
 
-
         targetUser.setUserRole(role.WORKER);
         targetWorker.setUserID(targetUser);
         targetWorker.setStablishmentID(targetStab);
 
-       /* if (targetWorker.getEventID() != null){
-            worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
-            //Comprobacion en caso de que el usuario sea ya trabajador fijo del establecimiento y se haya intentado introducir de nuevo con un evento como eventual.
-            if (workerFlag != null && workerFlag.getEventID() == null){
-                throw new BadRequestException("El usuario ya es trabajador fijo del establecimiento.");
-            }
-            targetWorker.setAttendance(false);
-        */
+
         if (targetWorker.getEventID() != null){
             worker workerFlag = workerRepo.findByUserIDAndStablishmentID(targetUser, targetStab).orElse(null);
             //Comprobacion en caso de que el usuario sea ya trabajador fijo del establecimiento y se haya intentado introducir de nuevo con un evento como eventual.
@@ -205,8 +197,8 @@ public class workerService {
             throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
         }
 
-        userRepo.save(targetUser);
         workerRepo.save(targetWorker);
+        userRepo.save(targetUser);
 
     }
 
