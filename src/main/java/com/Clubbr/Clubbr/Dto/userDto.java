@@ -1,18 +1,11 @@
 package com.Clubbr.Clubbr.Dto;
 
-import com.Clubbr.Clubbr.Entity.panicAlert;
-import com.Clubbr.Clubbr.Entity.ticket;
 import com.Clubbr.Clubbr.Entity.user;
 import com.Clubbr.Clubbr.utils.role;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

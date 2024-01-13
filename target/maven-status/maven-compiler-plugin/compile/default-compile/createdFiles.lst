@@ -7,7 +7,9 @@ com\Clubbr\Clubbr\Controller\stablishmentController.class
 com\Clubbr\Clubbr\Dto\workerDto.class
 com\Clubbr\Clubbr\Repository\ticketRepo.class
 com\Clubbr\Clubbr\Repository\eventRepo.class
+com\Clubbr\Clubbr\Dto\panicAlertDto.class
 com\Clubbr\Clubbr\Service\stablishmentService.class
+com\Clubbr\Clubbr\utils\attendance.class
 com\Clubbr\Clubbr\config\security\filter\jwtAuthenticationFilter.class
 com\Clubbr\Clubbr\Entity\ticket.class
 com\Clubbr\Clubbr\Service\paymentService.class
@@ -21,6 +23,7 @@ com\Clubbr\Clubbr\Controller\userController.class
 com\Clubbr\Clubbr\Controller\itemController.class
 com\Clubbr\Clubbr\Controller\panicAlertController.class
 com\Clubbr\Clubbr\Entity\manager$managerBuilder.class
+com\Clubbr\Clubbr\Dto\userDto$userDtoBuilder.class
 com\Clubbr\Clubbr\Repository\paymentRepo.class
 com\Clubbr\Clubbr\Repository\managerRepo.class
 com\Clubbr\Clubbr\Controller\paymentController.class
@@ -60,6 +63,7 @@ com\Clubbr\Clubbr\Service\interestPointService.class
 com\Clubbr\Clubbr\Controller\managerController.class
 com\Clubbr\Clubbr\Entity\manager.class
 com\Clubbr\Clubbr\Service\userService.class
+com\Clubbr\Clubbr\Dto\paymentDto$paymentDtoBuilder.class
 com\Clubbr\Clubbr\Dto\interestPointDto.class
 com\Clubbr\Clubbr\Repository\itemRepo.class
 com\Clubbr\Clubbr\utils\role.class
@@ -67,7 +71,9 @@ com\Clubbr\Clubbr\Entity\user$userBuilder.class
 com\Clubbr\Clubbr\Service\itemService.class
 com\Clubbr\Clubbr\Dto\registerRequest$registerRequestBuilder.class
 com\Clubbr\Clubbr\Repository\workerRepo.class
+com\Clubbr\Clubbr\Dto\userDto.class
 com\Clubbr\Clubbr\Repository\stablishmentRepo.class
 com\Clubbr\Clubbr\Repository\userRepo.class
+com\Clubbr\Clubbr\Dto\paymentDto.class
 com\Clubbr\Clubbr\Dto\attendanceDto.class
 com\Clubbr\Clubbr\Dto\ticketDto.class

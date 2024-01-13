@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Entity;
 
+import com.Clubbr.Clubbr.utils.attendance;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -59,6 +60,7 @@ public class worker {
     private List<payment> paymentID;
     
     @Column(name = "attendance")
-    private boolean attendance;
+    @Enumerated(EnumType.ORDINAL)
+    private attendance attendance;
 
 }

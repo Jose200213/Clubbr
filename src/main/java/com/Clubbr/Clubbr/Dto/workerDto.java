@@ -1,16 +1,9 @@
 package com.Clubbr.Clubbr.Dto;
 
-import com.Clubbr.Clubbr.Entity.*;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import com.Clubbr.Clubbr.Entity.worker;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,7 +18,7 @@ public class workerDto {
     private Long interestPointID;
     private Long workingHours;
     private float salary;
-    private boolean attendance;
+    private int attendance;
 
     public workerDto(worker worker) {
         this.id = worker.getId();
@@ -39,6 +32,6 @@ public class workerDto {
         else this.interestPointID = worker.getInterestPointID().getInterestPointID();
         this.workingHours = worker.getWorkingHours();
         this.salary = worker.getSalary();
-        this.attendance = worker.isAttendance();
+        this.attendance = worker.getAttendance().ordinal();
     }
 }

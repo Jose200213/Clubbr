@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.panicAlertDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.panicAlertRepo;
 import com.Clubbr.Clubbr.Repository.workerRepo;
@@ -20,6 +21,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class panicAlertService {
@@ -110,6 +112,14 @@ public class panicAlertService {
         managerService.checkManagerIsFromStab(stablishmentID, token);
 
         panicAlertRepo.deleteById(panicAlertId);
+    }
+
+    public List<panicAlertDto> getPanicsListDto(List<panicAlert> panicAlerts){
+        return panicAlerts.stream().map(panicAlertDto::new).collect(Collectors.toList());
+    }
+
+    public panicAlertDto getPanicDto(panicAlert panicAlert){
+        return new panicAlertDto(panicAlert);
     }
 
     @Transactional(readOnly = true)

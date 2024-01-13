@@ -1,17 +1,10 @@
 package com.Clubbr.Clubbr.Dto;
 
-import com.Clubbr.Clubbr.Entity.event;
 import com.Clubbr.Clubbr.Entity.payment;
-import com.Clubbr.Clubbr.Entity.stablishment;
-import com.Clubbr.Clubbr.Entity.worker;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.YearMonth;
 
 @AllArgsConstructor
 @NoArgsConstructor
