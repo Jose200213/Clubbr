@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,7 +34,7 @@ public class interestPointDto {
         this.xCoordinate = interestPoint.getXCoordinate();
         this.yCoordinate = interestPoint.getYCoordinate();
         this.description = interestPoint.getDescription();
-
+        this.workers = new ArrayList<>();
         for (worker worker : interestPoint.getWorkers()) {
             this.workers.add(new workerDto(worker));
         }
