@@ -180,6 +180,12 @@ public class workerService {
             if (workerFlag != null && workerFlag.getEventID() == null){
                 throw new BadRequestException("El usuario ya es trabajador fijo del establecimiento.");
             }
+            if (workerRepo.existsByUserIDAndEventIDAndStablishmentID(targetWorker.getUserID(), targetWorker.getEventID(), targetWorker.getStablishmentID())) {
+                throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
+            }
+            event targetEvent = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
+            targetWorker.setEventID(targetEvent);
+            targetEvent.getWorkers().add(targetWorker);
             targetWorker.setAttendance(false);
 
 
@@ -193,9 +199,6 @@ public class workerService {
             targetWorker.setEventID(null);
         }
 
-        if (workerRepo.existsByUserIDAndEventIDAndStablishmentID(targetWorker.getUserID(), targetWorker.getEventID(), targetWorker.getStablishmentID())) {
-            throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
-        }
 
         workerRepo.save(targetWorker);
         userRepo.save(targetUser);
