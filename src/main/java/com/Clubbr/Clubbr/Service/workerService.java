@@ -205,8 +205,9 @@ public class workerService {
             throw new BadRequestException("El trabajador especificado ya se encuentra en el establecimiento como trabajador fijo o en el evento especificado");
         }
 
-        workerRepo.save(targetWorker);
         userRepo.save(targetUser);
+        workerRepo.save(targetWorker);
+
     }
 
     public void addWorkerToStabInterestPoint(Long stablishmentID, String userID, Long interestPointID, String token){

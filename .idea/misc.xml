@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="JavadocGenerationManager">
-    <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/Desktop" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../../../Javadoc Clubbr" />
+    <option name="OTHER_OPTIONS" value="-tag InputFormat:a:&quot;Input Format&quot;." />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -10,7 +11,6 @@
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
-    <option name="workspaceImportForciblyTurnedOn" value="true" />
   </component>
   <component name="PWA">
     <option name="enabled" value="true" />

@@ -19,6 +19,7 @@ public class stablishmentDto {
     private LocalTime openTime;
     private LocalTime closeTime;
     private int capacity;
+    private String banner;
 
     public stablishmentDto(stablishment stablishment) {
         this.stablishmentID = stablishment.getStablishmentID();
@@ -27,5 +28,6 @@ public class stablishmentDto {
         this.openTime = stablishment.getOpenTime();
         this.closeTime = stablishment.getCloseTime();
         this.capacity = stablishment.getCapacity();
+        this.banner = stablishment.getBanner();
     }
 }

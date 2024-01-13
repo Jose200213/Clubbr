@@ -49,6 +49,9 @@ public class event {
     @Column(name = "totalTickets")
     private int totalTickets;
 
+    @Column(name = "eventBanner")
+    private String eventBanner;
+
     @OneToMany(mappedBy = "eventName", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<interestPoint> interestPoints;
