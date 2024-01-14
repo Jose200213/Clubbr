@@ -10,6 +10,7 @@ import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.advice.*;
 
 import com.Clubbr.Clubbr.config.exception.BadRequestException;
+import com.Clubbr.Clubbr.utils.attendance;
 import com.Clubbr.Clubbr.utils.role;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -151,14 +152,15 @@ public class workerService {
     }
 
     @Transactional
-    public void updateAttendance(String telegramID, boolean attendance, String eventName, LocalDate eventDate, Long stabID) {
+    public void updateAttendance(String telegramID, boolean att, String eventName, LocalDate eventDate, Long stabID) {
 
         user targetUser = userRepo.findByTelegramID(Long.parseLong(telegramID));
         stablishment stab = stablishmentRepo.findById(stabID).orElse(null);
         event existingEvent = eventService.getEventByStabNameDate(stab.getStablishmentID(), eventName, eventDate);
 
         worker workerToUpdate = workerRepo.findByUserIDAndEventIDAndStablishmentID(targetUser, existingEvent, stab);
-        workerToUpdate.setAttendance(attendance);
+        if(att) workerToUpdate.setAttendance(attendance.TRUE);
+        else workerToUpdate.setAttendance(attendance.FALSE);
         workerRepo.save(workerToUpdate);
 
     }
@@ -186,7 +188,7 @@ public class workerService {
             event targetEvent = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), targetWorker.getEventID().getEventName(), targetWorker.getEventID().getEventDate());
             targetWorker.setEventID(targetEvent);
             targetEvent.getWorkers().add(targetWorker);
-            targetWorker.setAttendance(false);
+            targetWorker.setAttendance(attendance.PENDING);
 
 
         }else{
@@ -195,7 +197,7 @@ public class workerService {
                 throw new BadRequestException("El usuario ya es fijo trabajador del establecimiento.");
             }
             targetWorker.setWorkingHours(160L);
-            targetWorker.setAttendance(true);
+            targetWorker.setAttendance(attendance.TRUE);
             targetWorker.setEventID(null);
         }
 

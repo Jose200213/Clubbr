@@ -27,7 +27,7 @@ public class userController {
     public ResponseEntity<?> getAllUsers() {
         try {
             List<user> users = userService.getAllUsers();
-            return ResponseEntity.ok(users);
+            return ResponseEntity.ok(userService.getUserDtoList(users));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
@@ -46,7 +46,7 @@ public class userController {
     public ResponseEntity<?> getUser(@PathVariable String userID) {
         try {
             user targetUser = userService.getUser(userID);
-            return ResponseEntity.ok(targetUser);
+            return ResponseEntity.ok(userService.getUserDto(targetUser));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){

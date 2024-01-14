@@ -1,5 +1,6 @@
 package com.Clubbr.Clubbr.Service;
 
+import com.Clubbr.Clubbr.Dto.paymentDto;
 import com.Clubbr.Clubbr.Entity.*;
 import com.Clubbr.Clubbr.Repository.workerRepo;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
@@ -41,76 +42,28 @@ public class paymentService {
         user targetUser = userService.getUser(userID);
         List<worker> workers = workerService.getAllWorkersFromUser(targetUser);
 
-        for (worker worker : workers){
-            //Aqui calcular cuanto hay que pagarle
-            float paymentAmount = calculatePayment(worker);
-
-            //Crear objeto payment y guardarlo en la base de datos
-            payment payment = new payment();
-            payment.setWorkerID(worker);
-            payment.setStablishmentID(worker.getStablishmentID());
-            payment.setEventID(worker.getEventID());
-            payment.setAmount(paymentAmount);
-            payment.setPaymentDate(YearMonth.now());
-            payment.setPaid(false);
-
-            paymentRepository.save(payment);
-        }
+        generatePayments(workers);
     }
 
     public void generatePaymentForStablishment(Long stablishmentID, String token){
         List<worker> workers = workerService.getAllWorkersFromStab(stablishmentID, token);
 
-        for (worker worker : workers){
-            //Aqui calcular cuanto hay que pagarle
-            float paymentAmount = calculatePayment(worker);
-
-            //Crear objeto payment y guardarlo en la base de datos
-            payment payment = new payment();
-            payment.setWorkerID(worker);
-            payment.setAmount(paymentAmount);
-            payment.setPaymentDate(YearMonth.now());
-            payment.setPaid(false);
-
-            paymentRepository.save(payment);
-        }
+        generatePayments(workers);
     }
 
-    //Metodo para generar el pago de todos los usuarios (Auto pago el 1 de cada mes)
-    //@Scheduled(cron = "0 0 0 1 * ?")
-    public void generatePaymentForStabUsers(){
-        List<worker> workers = workerService.getWorkersWithNullEventID();
-
-        for (worker worker : workers){
-            //Aqui calcular cuanto hay que pagarle
-            float paymentAmount = calculatePayment(worker);
-
-            //Crear objeto payment y guardarlo en la base de datos
-            payment payment = new payment();
-            payment.setWorkerID(worker);
-            payment.setAmount(paymentAmount);
-            payment.setPaymentDate(YearMonth.now());
-            payment.setPaid(false);
-
-            paymentRepository.save(payment);
-        }
-    }
-
-    //@Scheduled(fixedRate = 43200000) //Cada 12 horas
-    public void generatePaymentForAllUsers(){
-        List<worker> workers = workerService.getAllWorkers();
-
-        for (worker worker : workers){
-            //Aqui calcular cuanto hay que pagarle
+    private void generatePayments(List<worker> workerList){
+        for (worker worker : workerList){
             payment payment = paymentRepository.findByWorkerIDAndPaymentDate(worker, YearMonth.now());
-
-            if (payment == null){
-                float paymentAmount = calculatePayment(worker);
+            if (payment == null) {
+                //Aqui calcular cuanto hay que pagarle
 
                 //Crear objeto payment y guardarlo en la base de datos
                 payment newPayment = new payment();
                 newPayment.setWorkerID(worker);
-                newPayment.setAmount(paymentAmount);
+                newPayment.setAmount(calculatePayment(worker));
+                newPayment.setStablishmentID(worker.getStablishmentID());
+                if (worker.getEventID() != null)
+                    newPayment.setEventID(worker.getEventID());
                 newPayment.setPaymentDate(YearMonth.now());
                 newPayment.setPaid(false);
 
@@ -122,17 +75,35 @@ public class paymentService {
         }
     }
 
-    public List<payment> getPaymentByUserID(String userID){
+    //Metodo para generar el pago de todos los usuarios (Auto pago el 1 de cada mes)
+    //@Scheduled(cron = "0 0 0 1 * ?")
+    public void generatePaymentForStabUsers(){
+        List<worker> workers = workerService.getWorkersWithNullEventID();
+
+        generatePayments(workers);
+    }
+
+    //@Scheduled(fixedRate = 43200000) //Cada 12 horas
+    public void generatePaymentForAllUsers(){
+        List<worker> workers = workerService.getAllWorkers();
+        generatePayments(workers);
+    }
+
+    public List<payment> getPaymentsByUserID(String userID){
         user targetUser = userService.getUser(userID);
         return paymentRepository.findByWorkerID_UserIDAndPaymentDate(targetUser, YearMonth.now());
     }
 
-    public List<payment> getPaymentByStab(Long stablishmentID){
+    public List<paymentDto> getPaymentsDtoList(List<payment> payments){
+        return payments.stream().map(paymentDto::new).collect(java.util.stream.Collectors.toList());
+    }
+
+    public List<payment> getPaymentsByStab(Long stablishmentID){
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
         return paymentRepository.findByStablishmentIDAndPaymentDate(targetStab, YearMonth.now());
     }
 
-    public List<payment> getPaymentByEvent(Long stablishmentID, String eventName, LocalDate eventDate){
+    public List<payment> getPaymentsByEvent(Long stablishmentID, String eventName, LocalDate eventDate){
         stablishment targetStab = stablishmentService.getStab(stablishmentID);
         event targetEvent = eventService.getEventByStabNameDate(targetStab.getStablishmentID(), eventName, eventDate);
         return paymentRepository.findByEventIDAndPaymentDate(targetEvent, YearMonth.now());

@@ -1,13 +1,11 @@
 package com.Clubbr.Clubbr.Dto;
 
-import com.Clubbr.Clubbr.Entity.*;
+import com.Clubbr.Clubbr.Entity.stablishment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
 import java.time.LocalTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

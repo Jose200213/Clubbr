@@ -32,7 +32,7 @@ public class panicAlertController {
     public ResponseEntity<?> getPanicAlertsByStab(@PathVariable("stablishmentID") Long stabID, @RequestHeader("Authorization") String token) {
         try {
             List<panicAlert> panicAlerts = panicAlertService.getPanicAlertsByStab(stabID, token);
-            return ResponseEntity.ok(panicAlerts);
+            return ResponseEntity.ok(panicAlertService.getPanicsListDto(panicAlerts));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class panicAlertController {
     public ResponseEntity<?> getPanicAlertsByStabAndUser(@PathVariable("stablishmentID") Long stabID, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
         try {
             List<panicAlert> panicAlerts = panicAlertService.getPanicAlertsByStabAndUser(stabID, userId, token);
-            return ResponseEntity.ok(panicAlerts);
+            return ResponseEntity.ok(panicAlertService.getPanicsListDto(panicAlerts));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
