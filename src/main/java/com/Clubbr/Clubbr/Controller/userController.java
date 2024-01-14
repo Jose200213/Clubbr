@@ -1,7 +1,9 @@
 package com.Clubbr.Clubbr.Controller;
 
+import com.Clubbr.Clubbr.Service.jwtService;
 import com.Clubbr.Clubbr.advice.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class userController {
 
     @Autowired
     private userService userService;
+
+    @Autowired
+    private jwtService jwtService;
 
     /**
      * This method is used get all users.
@@ -46,6 +51,18 @@ public class userController {
     public ResponseEntity<?> getUser(@PathVariable String userID) {
         try {
             user targetUser = userService.getUser(userID);
+            return ResponseEntity.ok(userService.getUserDto(targetUser));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno del servidor: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/myUser")
+    public ResponseEntity<?> getMyUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        try {
+            user targetUser = userService.getUser(jwtService.extractUserIDFromToken(token));
             return ResponseEntity.ok(userService.getUserDto(targetUser));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
