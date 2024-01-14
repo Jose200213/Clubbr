@@ -1,0 +1,12 @@
+com.Clubbr.Clubbr
+com.Clubbr.Clubbr.advice
+com.Clubbr.Clubbr.config
+com.Clubbr.Clubbr.config.exception
+com.Clubbr.Clubbr.config.security
+com.Clubbr.Clubbr.config.security.filter
+com.Clubbr.Clubbr.Controller
+com.Clubbr.Clubbr.Dto
+com.Clubbr.Clubbr.Entity
+com.Clubbr.Clubbr.Repository
+com.Clubbr.Clubbr.Service
+com.Clubbr.Clubbr.utils

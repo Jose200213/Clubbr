@@ -22,7 +22,7 @@ public class authenticationController {
      *
      * @param authenticationRequest This is a DTO that contains the user's ID and password.
      *
-     * @InputFormat: {
+     * @custom.inputformat {
      *     "userID": "string",
      *     "password": "string"
      * }
@@ -42,7 +42,7 @@ public class authenticationController {
      *                        <p>The user's ID must be unique.</p>
      *                        <p>The user's role can be null, in which case it will be set to "USER".</p>
      *
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "userID": "string",
      *    "password": "string",
      *    "name": "string",

@@ -74,7 +74,7 @@ public class userController {
     /**
      * This method is used to update a user.
      * @param targetUser This is the user that will be updated.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "userID": "string",
      *    "password": "string",
      *    "name": "string",

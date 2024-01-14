@@ -112,7 +112,7 @@ public class workerController {
      * @return a message that indicates the worker has been added successfully.
      * @throws ResourceNotFoundException if the stablishment does not exist.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *      "id": "Long",
      *     "userID": { "userID": "string"},
      *     "workingHours": "Long",
@@ -186,7 +186,7 @@ public class workerController {
      * @return a message that indicates the worker has been updated successfully.
      * @throws ResourceNotFoundException if the stablishment or worker does not exist or the worker does not belong to the stablishment.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *      "id": "Long",
      *     "userID": { "userID": "string"},
      *     "workingHours": "Long",

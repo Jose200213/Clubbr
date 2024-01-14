@@ -83,7 +83,7 @@ public class stablishmentController {
      *                <p>The stablishment's ID can be null as it generates automatically.</p>
      * @return a message that confirms that the stablishment was added successfully.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *     "stablishmentID": "Long",
      *     "stabAddress": "string",
      *     "stabName": "string",
@@ -109,7 +109,7 @@ public class stablishmentController {
      * @return a message that confirms that the stablishment was updated successfully.
      * @throws ResourceNotFoundException if the stablishment does not exist or if the manager does not own the stablishment.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *     "stablishmentID": "Long",
      *     "stabAddress": "string",
      *     "stabName": "string",

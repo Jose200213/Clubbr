@@ -109,7 +109,7 @@ public class interestPointController {
      * @throws ResourceNotFoundException if the stablishment does not exist.
      * @throws Exception if there is an error in the server.
      * @return a message that indicates that the interest point was added successfully.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "interestPointID": "Long",
      *    "description": "String",
      *    "xCoordinate": "float",
@@ -139,7 +139,7 @@ public class interestPointController {
      * @throws ResourceNotFoundException if the stablishment or event does not exist.
      * @throws Exception if there is an error in the server.
      * @return a message that indicates that the interest point was added successfully.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "interestPointID": "Long",
      *    "description": "String",
      *    "xCoordinate": "float",
@@ -167,7 +167,7 @@ public class interestPointController {
      * @throws ResourceNotFoundException if the stablishment or interest point does not exist.
      * @throws Exception if there is an error in the server.
      * @return a message that indicates that the interest point was updated successfully.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "interestPointID": "Long",
      *    "description": "String",
      *    "xCoordinate": "float",
@@ -197,7 +197,7 @@ public class interestPointController {
      * @throws ResourceNotFoundException if the stablishment, event or interest point does not exist.
      * @throws Exception if there is an error in the server.
      * @return a message that indicates that the interest point was updated successfully.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "description": "String",
      *    "xCoordinate": "float",
      *    "yCoordinate": "float"

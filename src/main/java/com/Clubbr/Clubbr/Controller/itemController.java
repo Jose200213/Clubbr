@@ -68,7 +68,7 @@ public class itemController {
      *
      * @param token This is the JWT token of the user.
      * @return a message confirming the item was added.
-     * @InputFormat: {
+     * @custom.inputformat {
      *     "itemID": "Long",
      *     "itemName": "string",
      *     "itemReference": "string",
@@ -99,7 +99,7 @@ public class itemController {
      * @param updateItem This is the item to be updated.
      * @param token This is the JWT token of the user.
      * @return a message confirming the item was updated.
-     * @InputFormat: {
+     * @custom.inputformat {
      *     "itemID": "Long",
      *     "itemName": "string",
      *     "itemReference": "string",

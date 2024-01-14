@@ -21,9 +21,9 @@ public class eventController {
     private eventService eventService;
 
     /**
-     * This method is used to get all events from a stablishment ordered by date.
+     * This method is used to get all events from a stablishment ordered by date starting by today.
      * @param stabID This is the ID of the stablishment.
-     * @return a list of all events from the stablishment ordered by date ascendant.
+     * @return a list of all events from the stablishment ordered by date ascendant starting by today.
      * @throws ResourceNotFoundException if the stablishment does not exist or if the stablishment does not have any events.
      * @throws Exception if there is an error in the server.
      */
@@ -39,8 +39,8 @@ public class eventController {
     }
 
     /**
-     * This method is used to get all events.
-     * @return a list of all events.
+     * This method is used to get all events starting by today ordered by date.
+     * @return a list of all events ordered by date.
      * @throws ResourceNotFoundException if there are no events.
      * @throws Exception if there is an error in the server.
      */
@@ -78,7 +78,7 @@ public class eventController {
      * @return a message that indicates the event has been added successfully.
      * @throws ResourceNotFoundException if the stablishment does not exist.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "eventName": "String",
      *    "eventDate": "LocalDate",
      *    "eventDescription": "String",
@@ -109,7 +109,7 @@ public class eventController {
      * @return a message that indicates the event has been added successfully.
      * @throws ResourceNotFoundException if the stablishment does not exist.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "eventName": "String",
      *    "eventDate": "LocalDate",
      *    "eventDescription": "String",
@@ -164,7 +164,7 @@ public class eventController {
      * @return a message that indicates the event has been updated successfully.
      * @throws ResourceNotFoundException if the stablishment or event does not exist.
      * @throws Exception if there is an error in the server.
-     * @InputFormat: {
+     * @custom.inputformat {
      *    "eventName": "String",
      *    "eventDate": "LocalDate",
      *    "eventDescription": "String",
