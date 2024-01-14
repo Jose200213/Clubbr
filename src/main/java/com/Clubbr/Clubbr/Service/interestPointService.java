@@ -80,7 +80,7 @@ public class interestPointService {
      */
     @Transactional(readOnly = true)
     public List<interestPoint> getInterestPointsByStablishment(Long stablishmentID){
-        return interestPointRepo.findByStablishmentID(stablishmentService.getStab(stablishmentID));
+        return interestPointRepo.findAllByStablishmentIDAndEventNameIsNull(stablishmentService.getStab(stablishmentID));
     }
 
 
@@ -153,8 +153,9 @@ public class interestPointService {
 
     @Transactional(readOnly = true)
     public List<interestPoint> getInterestPointsByEventName(String eventName, LocalDate eventDate, Long stablishmentID){
+        stablishment stablishment = stablishmentService.getStab(stablishmentID);
         event event = eventService.getEventByStabNameDate(stablishmentService.getStab(stablishmentID).getStablishmentID(), eventName, eventDate);
-        return interestPointRepo.findByEventName(event);
+        return interestPointRepo.findAllByStablishmentIDAndEventNameIsNullOrStablishmentIDIsNullAndEventName(stablishment, event);
     }
 
     @Transactional

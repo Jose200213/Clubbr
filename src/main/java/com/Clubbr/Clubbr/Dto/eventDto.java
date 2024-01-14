@@ -18,7 +18,9 @@ import java.util.List;
 public class eventDto {
     private String eventName;
     private String eventDate;
+    private String eventTime;
     private Long stablishmentID;
+    private String stabName;
     private String eventDescription;
     private float eventPrice;
     private int totalTickets;
@@ -26,7 +28,9 @@ public class eventDto {
 
     public eventDto(event event) {
         this.eventName = event.getEventName();
+        this.stabName = event.getStablishmentID().getStabName();
         this.eventDate = event.getEventDate().toString();
+        this.eventTime = event.getEventTime();
         this.stablishmentID = event.getStablishmentID().getStablishmentID();
         this.eventDescription = event.getEventDescription();
         this.eventPrice = event.getEventPrice();

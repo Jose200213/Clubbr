@@ -18,9 +18,10 @@ public class ticketDto {
     private String eventName;
     private LocalDate eventDate;
     private String eventTime;
-    private String eventAddress;
+    private String stabName;
     private float ticketPrice;
     private LocalDateTime purchaseDateTime;
+    private String ticketBanner;
 
     public ticketDto(ticket ticket) {
         this.ticketID = ticket.getTicketID();
@@ -28,6 +29,9 @@ public class ticketDto {
         this.eventDate = ticket.getEventName().getEventDate();
         this.ticketPrice = ticket.getTicketPrice();
         this.purchaseDateTime = ticket.getPurchaseDateTime();
+        this.ticketBanner = ticket.getEventName().getEventBanner();
+        this.eventTime = ticket.getEventName().getEventTime();
+        this.stabName = ticket.getStablishmentID().getStabName();
 
     }
 

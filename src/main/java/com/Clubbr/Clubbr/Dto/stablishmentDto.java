@@ -20,6 +20,8 @@ public class stablishmentDto {
     private LocalTime closeTime;
     private int capacity;
     private String banner;
+    private String wideBanner;
+
 
     public stablishmentDto(stablishment stablishment) {
         this.stablishmentID = stablishment.getStablishmentID();
@@ -29,5 +31,7 @@ public class stablishmentDto {
         this.closeTime = stablishment.getCloseTime();
         this.capacity = stablishment.getCapacity();
         this.banner = stablishment.getBanner();
+        if (stablishment.getWideBanner() == null) this.wideBanner = null;
+        else this.wideBanner = stablishment.getWideBanner();
     }
 }

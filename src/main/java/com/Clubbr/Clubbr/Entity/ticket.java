@@ -47,4 +47,5 @@ public class ticket {
 
     @Column(name = "validated")
     private boolean validated;
+
 }

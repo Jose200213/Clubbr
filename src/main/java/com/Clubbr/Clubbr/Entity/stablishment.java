@@ -44,6 +44,9 @@ public class stablishment {
     @Column(name = "banner")
     private String banner;
 
+    @Column(name = "wideBanner")
+    private String wideBanner;
+
     @OneToMany(mappedBy = "stablishmentID", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "stablishmentWorkers")
     private List<worker> workers;

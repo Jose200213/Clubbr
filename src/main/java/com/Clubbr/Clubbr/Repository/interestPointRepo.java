@@ -13,7 +13,9 @@ import java.util.List;
 public interface interestPointRepo extends JpaRepository<interestPoint, Long> {
 
     List<interestPoint> findByStablishmentID(stablishment stablishmentID);
-    List<interestPoint> findByEventName(event eventName);
 
+    List<interestPoint> findAllByStablishmentIDAndEventNameIsNull(stablishment stablishmentID);
+
+    List<interestPoint> findAllByStablishmentIDAndEventNameIsNullOrStablishmentIDIsNullAndEventName(stablishment stablishmentID, event eventName);
 
 }
