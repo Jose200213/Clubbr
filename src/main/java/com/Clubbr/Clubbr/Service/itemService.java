@@ -40,7 +40,6 @@ public class itemService {
 
         stablishment targetStab = stabService.getStab(stablishmentID);
 
-        newItem.setItemQuantity(newItem.getItemStock());
         newItem.setStablishmentID(targetStab);
         targetStab.getInventory().add(newItem);
         stabRepo.save(targetStab);
